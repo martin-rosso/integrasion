@@ -16,6 +16,8 @@ module Integrasion
   class ThirdPartyClient < ApplicationRecord
     serialize :available_scopes, coder: JSON
 
+    encrypts :secret
+
     enum :service, google_calendar: 0
     enum :tcp_status, authorized: 0, disabled: 1, expired: 2
 
