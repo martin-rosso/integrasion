@@ -23,4 +23,6 @@ Gem::Specification.new do |spec|
   end
 
   spec.add_dependency "rails", ">= 7.2.2.1"
+  spec.add_dependency 'google-apis-calendar_v3', '~> 0.46.0'
+  spec.add_dependency 'googleauth', '~> 1.14'
 end
