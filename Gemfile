@@ -22,7 +22,7 @@ group :development, :test do
   gem "simplecov-lcov"
   gem "undercover", "= 0.5.0"
 
-  gem 'annotate', '~> 3.2.0'
+  gem "annotate", "~> 3.2.0"
 
-  gem 'byebug'
+  gem "byebug"
 end

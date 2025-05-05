@@ -10,5 +10,15 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 0) do
+ActiveRecord::Schema[7.2].define(version: 2025_05_05_192315) do
+  create_table "integrasion_third_party_clients", force: :cascade do |t|
+    t.integer "service"
+    t.json "secret"
+    t.integer "tcp_status"
+    t.integer "brand_name"
+    t.boolean "user_integrations_allowed"
+    t.string "available_scopes"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 end
