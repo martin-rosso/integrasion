@@ -13,7 +13,7 @@
 #
 module Integrasion
   AVAILABLE_SCOPES = {
-    google_calendar: [ 'Google::Apis::CalendarV3::AUTH_CALENDAR_APP_CREATED' ]
+    google_calendar: [ "Google::Apis::CalendarV3::AUTH_CALENDAR_APP_CREATED" ]
   }
 
   class ThirdPartyClient < ApplicationRecord
