@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_05_05_192315) do
+ActiveRecord::Schema[7.2].define(version: 2025_05_05_195024) do
   create_table "integrasion_third_party_clients", force: :cascade do |t|
     t.integer "service"
     t.json "secret"
@@ -18,6 +18,13 @@ ActiveRecord::Schema[7.2].define(version: 2025_05_05_192315) do
     t.integer "brand_name"
     t.boolean "user_integrations_allowed"
     t.string "available_scopes"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "users", force: :cascade do |t|
+    t.string "email"
+    t.string "password"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
