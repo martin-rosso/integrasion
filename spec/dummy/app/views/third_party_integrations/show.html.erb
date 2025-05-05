@@ -5,3 +5,10 @@
 <table>
   <%= render partial: 'third_party_integration', locals: { third_party_integration: @third_party_integration } %>
 </table>
+
+<% if @credentials.present? %>
+  Logueadooo
+<% end %>
+<% if @url.present? %>
+  <%= link_to "Autorizar", @url %>
+<% end %>
