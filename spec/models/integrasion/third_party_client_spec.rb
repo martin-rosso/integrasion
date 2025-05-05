@@ -19,6 +19,7 @@ module Integrasion
     it 'available_scopes is serialized' do
       client = ThirdPartyClient.first
       expect(client.available_scopes).to be_a Array
+      expect(client.secret).to be_a Hash
     end
   end
 end

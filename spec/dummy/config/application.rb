@@ -18,7 +18,7 @@ require "action_cable/engine"
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
 
-Dotenv.load(".env.#{Rails.env}.local", ".env.#{Rails.env}", '.env.local', '.env')
+Dotenv.load(".env.#{Rails.env}.local", '.env.local', ".env.#{Rails.env}", '.env')
 
 module Dummy
   class Application < Rails::Application
