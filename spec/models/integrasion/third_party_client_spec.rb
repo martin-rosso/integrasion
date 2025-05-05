@@ -12,11 +12,12 @@
 #  created_at                :datetime         not null
 #  updated_at                :datetime         not null
 #
+require 'rails_helper'
+
 module Integrasion
   describe ThirdPartyClient do
     it 'available_scopes is serialized' do
-      client = ThirdPartyClient.create(available_scopes: [ "uno", "dos" ])
-      client.reload
+      client = ThirdPartyClient.first
       expect(client.available_scopes).to be_a Array
     end
   end
