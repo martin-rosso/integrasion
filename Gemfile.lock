@@ -88,12 +88,15 @@ GEM
     crass (1.0.6)
     date (3.4.1)
     diff-lcs (1.6.1)
+    docile (1.4.1)
     drb (2.2.1)
     erubi (1.13.1)
     globalid (1.2.1)
       activesupport (>= 6.1)
     i18n (1.14.7)
       concurrent-ruby (~> 1.0)
+    imagen (0.2.0)
+      parser (>= 2.5, != 2.5.1.1)
     io-console (0.8.0)
     irb (1.15.2)
       pp (>= 0.6.0)
@@ -243,7 +246,15 @@ GEM
       rubocop-performance (>= 1.24)
       rubocop-rails (>= 2.30)
     ruby-progressbar (1.13.0)
+    rugged (1.7.2)
     securerandom (0.4.1)
+    simplecov (0.22.0)
+      docile (~> 1.1)
+      simplecov-html (~> 0.11)
+      simplecov_json_formatter (~> 0.1)
+    simplecov-html (0.13.1)
+    simplecov-lcov (0.8.0)
+    simplecov_json_formatter (0.1.4)
     sprockets (4.2.2)
       concurrent-ruby (~> 1.0)
       logger
@@ -259,6 +270,11 @@ GEM
     timeout (0.4.3)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
+    undercover (0.5.0)
+      bigdecimal
+      imagen (>= 0.1.8)
+      rainbow (>= 2.1, < 4.0)
+      rugged (>= 0.27, < 1.8)
     unicode-display_width (3.1.4)
       unicode-emoji (~> 4.0, >= 4.0.4)
     unicode-emoji (4.0.4)
@@ -284,8 +300,11 @@ DEPENDENCIES
   puma
   rspec-rails (~> 8.0.0)
   rubocop-rails-omakase
+  simplecov
+  simplecov-lcov
   sprockets-rails
   sqlite3
+  undercover (= 0.5.0)
 
 BUNDLED WITH
    2.5.17

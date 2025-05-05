@@ -17,4 +17,8 @@ gem "rubocop-rails-omakase", require: false
 
 group :development, :test do
   gem "rspec-rails", "~> 8.0.0"
+
+  gem "simplecov"
+  gem "simplecov-lcov"
+  gem "undercover", "= 0.5.0"
 end

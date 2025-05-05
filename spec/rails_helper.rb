@@ -1,7 +1,25 @@
 # This file is copied to spec/ when you run 'rails generate rspec:install'
+require 'simplecov'
+
+if ENV.fetch('LCOV', true)
+  require 'simplecov-lcov'
+  require 'undercover'
+
+  SimpleCov::Formatter::LcovFormatter.config.report_with_single_file = true
+  SimpleCov.formatter = SimpleCov::Formatter::LcovFormatter
+end
+
+SimpleCov.start 'rails' do
+  add_filter %r{^/app/admin/}
+  if ENV['BRANCH_COV'] == '1'
+    enable_coverage(:branch) # Report branch coverage to trigger branch-level undercover warnings
+  end
+end
+
 require 'spec_helper'
 ENV['RAILS_ENV'] ||= 'test'
-require_relative '../config/environment'
+
+require_relative '../spec/dummy/config/environment'
 # Prevent database truncation if the environment is production
 abort("The Rails environment is running in production mode!") if Rails.env.production?
 # Uncomment the line below in case you have `--require rails_helper` in the `.rspec` file
@@ -36,9 +54,6 @@ rescue ActiveRecord::PendingMigrationError => e
 end
 RSpec.configure do |config|
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
-  config.fixture_paths = [
-    Rails.root.join('spec/fixtures')
-  ]
 
   # If you're not using ActiveRecord, or you'd prefer not to run each of your
   # examples within a transaction, remove the following line or assign false

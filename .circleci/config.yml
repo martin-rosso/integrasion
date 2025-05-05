@@ -1,0 +1,55 @@
+version: 2.1
+executors:
+  ruby:
+    docker:
+      - image: cimg/ruby:3.3.4
+        environment:
+          RAILS_ENV: test
+          BUNDLER_VERSION: 2.5.17
+commands:
+  bundle_install:
+    description: Install Ruby dependencies with Bundler
+    steps:
+      - restore_cache:
+          keys:
+            - bundle-v6-{{ arch }}-{{ checksum ".ruby-version" }}-{{ checksum "Gemfile.lock" }}
+            - bundle-v6-{{ arch }}-{{ checksum ".ruby-version" }}-
+
+      - run:
+          name: Install Ruby Dependencies
+          command: |
+            gem install bundler -v $BUNDLER_VERSION --conservative --no-document
+            gem install overcommit
+            bundle config --local deployment true
+            bundle config --local path vendor/bundle
+            bundle config --local without production
+            bundle check || (bundle install --jobs=4 --retry=3 && bundle clean)
+      - save_cache:
+          paths:
+            - ./vendor/bundle
+          key: bundle-v6-{{ arch }}-{{ checksum ".ruby-version" }}-{{ checksum "Gemfile.lock" }}
+
+jobs:
+  lint-test:
+    executor: ruby
+    steps:
+      - checkout
+      - bundle_install
+      - run:
+          name: Run Overcommit
+          command: |
+            git config --local user.name "Circle CI"
+            git config --local user.email ci@example.com
+            overcommit --sign
+            overcommit --run
+
+      - run:
+          name: Run tests
+          command: |
+            bundle exec rails db:schema:load
+            bundle exec rspec
+            bundle exec undercover --compare origin/main
+workflows:
+  build-test:
+    jobs:
+      - lint-test
