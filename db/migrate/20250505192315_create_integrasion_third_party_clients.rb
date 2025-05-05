@@ -6,7 +6,6 @@ class CreateIntegrasionThirdPartyClients < ActiveRecord::Migration[7.2]
       t.integer :tcp_status
       t.integer :brand_name
       t.boolean :user_integrations_allowed
-      t.string :available_scopes
 
       t.timestamps
     end

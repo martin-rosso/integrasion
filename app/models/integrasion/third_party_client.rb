@@ -8,14 +8,15 @@
 #  tcp_status                :integer
 #  brand_name                :integer
 #  user_integrations_allowed :boolean
-#  available_scopes          :string
 #  created_at                :datetime         not null
 #  updated_at                :datetime         not null
 #
 module Integrasion
-  class ThirdPartyClient < ApplicationRecord
-    serialize :available_scopes, coder: JSON
+  AVAILABLE_SCOPES = {
+    google_calendar: [ 'Google::Apis::CalendarV3::AUTH_CALENDAR_APP_CREATED' ]
+  }
 
+  class ThirdPartyClient < ApplicationRecord
     encrypts :secret
 
     enum :service, google_calendar: 0

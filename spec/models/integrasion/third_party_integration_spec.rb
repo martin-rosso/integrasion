@@ -1,3 +1,17 @@
+# == Schema Information
+#
+# Table name: integrasion_third_party_integrations
+#
+#  id                                :integer          not null, primary key
+#  user_id                           :integer          not null
+#  integrasion_third_party_client_id :integer          not null
+#  third_party_id_user               :string
+#  scope                             :string
+#  expires_at                        :datetime
+#  tpi_status                        :integer
+#  created_at                        :datetime         not null
+#  updated_at                        :datetime         not null
+#
 require 'rails_helper'
 
 module Integrasion
