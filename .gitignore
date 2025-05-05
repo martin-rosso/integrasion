@@ -10,3 +10,5 @@
 /spec/dummy/tmp/
 
 coverage
+
+.byebug_history
