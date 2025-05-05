@@ -93,6 +93,10 @@ GEM
     date (3.4.1)
     diff-lcs (1.6.1)
     docile (1.4.1)
+    dotenv (3.1.8)
+    dotenv-rails (3.1.8)
+      dotenv (= 3.1.8)
+      railties (>= 6.1)
     drb (2.2.1)
     erubi (1.13.1)
     globalid (1.2.1)
@@ -302,6 +306,7 @@ PLATFORMS
 DEPENDENCIES
   annotate (~> 3.2.0)
   byebug
+  dotenv-rails (~> 3.1.0)
   integrasion!
   puma
   rspec-rails (~> 8.0.0)
