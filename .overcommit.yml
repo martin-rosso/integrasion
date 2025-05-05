@@ -1,0 +1,47 @@
+gemfile: false
+verify_signatures: false
+
+CommitMsg:
+  CapitalizedSubject:
+    enabled: false
+
+PreCommit:
+  BundleCheck:
+    enabled: true
+
+  FixMe:
+    enabled: true
+    keywords: ["FIXME"]
+    exclude:
+      - .overcommit.yml
+      - .rubocop_todo.yml
+
+  LocalPathsInGemfile:
+    enabled: true
+
+  RailsSchemaUpToDate:
+    enabled: false
+
+  RubySyntax:
+    enabled: true
+    exclude:
+      - pg_scaffold/lib/generators/**/templates/**/*
+      - pg_rails/**/*
+
+  RuboCop:
+    enabled: true
+    required_executable: bundle
+    command: ["bundle", "exec", "rubocop"]
+    on_warn: fail
+
+  TrailingWhitespace:
+    enabled: true
+    exclude:
+      - "**/*.svg"
+      - "**/db/structure.sql"
+      - "**/*.slim"
+      - "vendor/**/*"
+
+# PostCheckout:
+#   ALL:
+#     quiet: true
