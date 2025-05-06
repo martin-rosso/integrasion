@@ -1,11 +1,13 @@
 <tr>
   <td><%= third_party_integration.id %></td>
+  <td><%= third_party_integration.name %></td>
   <td><%= third_party_integration.third_party_client %></td>
-  <td><%= third_party_integration.user.id %></td>
-  <td><%= third_party_integration.third_party_id_user %></td>
+  <td><%= third_party_integration.user.to_gid %></td>
   <td><%= third_party_integration.scope %></td>
-  <td><%= third_party_integration.tpi_status %></td>
+  <td><%= third_party_integration.token_status %></td>
+  <td><%= third_party_integration.expires_in %></td>
   <td><%= link_to "Show", third_party_integration %></td>
+  <td><%= link_to "Edit", edit_third_party_integration_path(third_party_integration) %></td>
   <td>
     <%= form_with url: url_for(third_party_integration), method: :delete do %>
       <%= button_tag "Delete" %>

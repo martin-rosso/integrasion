@@ -2,12 +2,6 @@ require "googleauth/token_store"
 
 module Integrasion
   class ActiveRecordGoogleTokenStore < Google::Auth::TokenStore
-    def initialize(third_party_integration)
-      @third_party_integration = third_party_integration
-
-      super()
-    end
-
     # (see Google::Auth::Stores::TokenStore#load)
     def load(id)
       token = find_by_id(id)
@@ -20,8 +14,13 @@ module Integrasion
     end
 
     # (see Google::Auth::Stores::TokenStore#store)
-    def store(id, token)
-      ThirdPartyToken.create!(id_user: id, third_party_integration: @third_party_integration, secret: token)
+    def store(third_party_integration, token)
+      ActiveRecord::Base.transaction do
+        # Maybe these should be destroyed
+        third_party_integration.third_party_tokens.active.update_all(tpt_status: :expired)
+
+        ThirdPartyToken.create!(environment: Rails.env, third_party_integration:, secret: token, tpt_status: :active)
+      end
     end
 
     # (see Google::Auth::Stores::TokenStore#delete)
@@ -29,16 +28,16 @@ module Integrasion
       token = find_by_id(id)
 
       if token.present?
-        token.destroy!
+        token.update!(tpt_status: :revoked)
       else
-        pg_warn("Couldn't find token for deletion: #{id}")
+        pg_warn("Couldn't find token for revocation: #{id}")
       end
     end
 
     private
 
     def find_by_id(id)
-      ThirdPartyToken.where(id_user: id, third_party_integration: @third_party_integration).first
+      ThirdPartyToken.where(environment: Rails.env, third_party_integration: id, tpt_status: :active).last
     end
   end
 end

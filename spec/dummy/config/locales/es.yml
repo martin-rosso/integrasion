@@ -1,4 +1,6 @@
 es:
   google:
-    auth_calendar_app_created: "Crear calendarios"
+    auth_email: "Ver tu dirección de correo electrónico de Google"
+    auth_calendar_app_created: "Crear calendarios de Google secundarios, y consultar, crear, modificar y borrar eventos en ellos"
+    auth_calendar_calendarlist: "Ver, agregar y eliminar Google calendars a los que estás suscripto"
 

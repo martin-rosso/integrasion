@@ -27,12 +27,5 @@
 
   <body>
     <%= yield %>
-
-    <h2>ThirdPartyTokens (<%= Integrasion::ThirdPartyToken.count %>)</h2>
-    <ol>
-      <% Integrasion::ThirdPartyToken.all.each do |token| %>
-        <li><%= token.attributes.as_json %></li>
-      <% end %>
-    </ol>
   </body>
 </html>

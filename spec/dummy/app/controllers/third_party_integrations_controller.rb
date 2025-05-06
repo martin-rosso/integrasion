@@ -1,5 +1,9 @@
 class ThirdPartyIntegrationsController < ApplicationController
-  before_action :set_third_party_integration, only: [ :show, :destroy ]
+  before_action :set_third_party_integration, only: [ :show, :edit, :update, :destroy, :revoke_authorization ]
+
+  def index
+    @third_party_integrations = Integrasion::ThirdPartyIntegration.where(discarded_at: nil)
+  end
 
   def new
     @client = Integrasion::ThirdPartyClient.find(params[:client_id])
@@ -11,52 +15,61 @@ class ThirdPartyIntegrationsController < ApplicationController
   def create
     @third_party_integration = Integrasion::ThirdPartyIntegration.new(third_party_integration_params)
     @third_party_integration.user = Current.user
-    @third_party_integration.tpi_status = :pending
     @third_party_integration.save!
 
     redirect_to @third_party_integration
   end
 
+  def edit
+    @client = @third_party_integration.third_party_client
+    @available_scopes = Integrasion::AVAILABLE_SCOPES[@client.service.to_sym].keys
+  end
+
+  def update
+    @third_party_integration.update!(third_party_integration_params)
+
+    redirect_to third_party_integrations_path
+  end
+
   def destroy
-    @third_party_integration.destroy!
+    @third_party_integration.update!(discarded_at: Time.current)
 
     redirect_to third_party_integrations_path
   end
 
   def show
-    # if @cuenta_email.check_autorizacion(request)
-    #   # @cuenta_email.update_attributes(status: :autorizada)
-    # else
-    #   # @cuenta_email.update_attributes(status: :no_autorizada)
+    manager = Integrasion::GoogleService.new(@third_party_integration)
 
-    # end
-    #
-    # FIXME: no debería pasar el user email sino el GoogleApisAuthorization#email
-    # y además no es necesario pasarlo en el initialize sino directamente en el get_credentials
-    manager = Integrasion::GoogleService.new(@third_party_integration, request)
+    @tokens = Integrasion::ThirdPartyToken.where(third_party_integration: @third_party_integration)
 
+    if params[:check_token]
+      @token_info = manager.token_info
+    end
 
-    # Este get_credentiales es necesario, si no, no se guarda el token
-    @credentials = manager.get_credentials
+    # Este get_credentials es necesario, si no, no se guarda el token
+    @credentials = manager.get_credentials(request)
     if @credentials.nil?
       @url = manager.get_authorization_url(request)
-    else
     end
   end
 
+  def revoke_authorization
+    manager = Integrasion::GoogleService.new(@third_party_integration)
+    manager.revoke_authorization!
+
+    redirect_to @third_party_integration
+  end
+
   def callback
-    manager = Integrasion::GoogleService.new(nil)
-    target_url = manager.handle_auth_callback_deferred(request)
-    redirect_to target_url
+    target_url = Integrasion::GoogleService.handle_auth_callback_deferred(request)
     # Vuelve a show
-    # Esto es necesario, y que allí se llame a get_credentials
-    # Y si llamo acá mismo a get_credentials?
+    redirect_to target_url
   end
 
   private
 
   def third_party_integration_params
-    params.require(:third_party_integration).permit(:third_party_client_id, :third_party_id_user, scope: [])
+    params.require(:third_party_integration).permit(:third_party_client_id, :name, scope: [])
   end
 
   def set_third_party_integration

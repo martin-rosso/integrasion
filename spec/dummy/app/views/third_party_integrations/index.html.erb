@@ -5,15 +5,17 @@
 <table>
   <tr>
     <th>ID</th>
+    <th>Name</th>
     <th>Service</th>
     <th>User ID</th>
-    <th>Third party user id</th>
     <th>Scope</th>
-    <th>TPI Status</th>
+    <th>Token status</th>
+    <th>Expires in</th>
+    <th></th>
     <th></th>
   </tr>
 
-  <% Integrasion::ThirdPartyIntegration.all.each do |third_party_integration| %>
+  <% @third_party_integrations.each do |third_party_integration| %>
     <%= render partial: 'third_party_integration', locals: { third_party_integration: } %>
   <% end %>
 </table>

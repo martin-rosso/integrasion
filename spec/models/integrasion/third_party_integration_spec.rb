@@ -5,10 +5,10 @@
 #  id                    :integer          not null, primary key
 #  user_id               :integer          not null
 #  third_party_client_id :integer          not null
-#  third_party_id_user   :string
+#  name                  :string
 #  scope                 :string
 #  expires_at            :datetime
-#  tpi_status            :integer
+#  discarded_at          :datetime
 #  created_at            :datetime         not null
 #  updated_at            :datetime         not null
 #
@@ -18,7 +18,7 @@ module Integrasion
   describe ThirdPartyIntegration do
     subject do
       client = ThirdPartyClient.first
-      ThirdPartyIntegration.create!(user: User.first, third_party_client: client)
+      ThirdPartyIntegration.create!(user: User.first, third_party_client: client, scope: [ "auth_calendar_app_created" ])
     end
 
     it do

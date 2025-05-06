@@ -24,10 +24,10 @@ ActiveRecord::Schema[7.2].define(version: 2025_05_06_125057) do
   create_table "integrasion_third_party_integrations", force: :cascade do |t|
     t.integer "user_id", null: false
     t.integer "third_party_client_id", null: false
-    t.string "third_party_id_user"
+    t.string "name"
     t.string "scope"
     t.datetime "expires_at"
-    t.integer "tpi_status"
+    t.datetime "discarded_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["third_party_client_id"], name: "idx_on_third_party_client_id_60c15e2e2b"
@@ -36,8 +36,9 @@ ActiveRecord::Schema[7.2].define(version: 2025_05_06_125057) do
 
   create_table "integrasion_third_party_tokens", force: :cascade do |t|
     t.integer "third_party_integration_id", null: false
-    t.string "id_user"
     t.json "secret"
+    t.integer "tpt_status", null: false
+    t.string "environment", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["third_party_integration_id"], name: "idx_on_third_party_integration_id_48c9ddba1c"

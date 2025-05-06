@@ -1,45 +1,77 @@
 require "googleauth"
 require "googleauth/stores/file_token_store"
 require "google-apis-calendar_v3"
+require "google-apis-oauth2_v2"
 
 module Integrasion
   class GoogleService
-    def initialize(third_party_integration, request = nil)
+    class << self
+      def handle_auth_callback_deferred(request)
+        target_url = Google::Auth::WebUserAuthorizer.handle_auth_callback_deferred(request)
+
+        target_url
+      end
+    end
+
+    def initialize(third_party_integration)
       @third_party_integration = third_party_integration
-      @user_id = third_party_integration&.third_party_id_user
-      @third_party_client = third_party_integration&.third_party_client
-      @request = request
     end
 
-    SCOPE = [ Google::Apis::CalendarV3::AUTH_CALENDAR_APP_CREATED ].freeze
+    EXCEPTIONS = [
+      Signet::AuthorizationError,
 
-    def authorizer
-      # FIXME: load from rails credentials if present
-      hsh = @third_party_client.secret
-      client_id = Google::Auth::ClientId.from_hash hsh
+      # El usuario revocó los permisos
+      Google::Apis::ClientError,
 
-      token_store = Integrasion::ActiveRecordGoogleTokenStore.new(@third_party_integration)
-      Google::Auth::WebUserAuthorizer.new client_id, SCOPE, token_store, "/u/google/callback"
+      Google::Apis::AuthorizationError
+    ]
+
+    def token_info
+      service = Google::Apis::Oauth2V2::Oauth2Service.new
+      credentials = get_credentials
+      if credentials.present?
+        service.authorization = credentials
+        inf = service.tokeninfo
+        inf
+      else
+        "-"
+      end
+    rescue *EXCEPTIONS => e
+      Integrasion::ActiveRecordGoogleTokenStore.new.delete(@third_party_integration)
+      e.class.to_s
     end
 
-    def handle_auth_callback_deferred(request)
-      target_url = Google::Auth::WebUserAuthorizer.handle_auth_callback_deferred(request)
-      # @cuenta_email.update_attributes(status: :autorizada) if @cuenta_email.check_autorizacion(nil)
-
-      target_url
+    def revoke_authorization!
+      authorizer.revoke_authorization(@third_party_integration)
     end
 
-    # @request es opcional. Debe estar presente en la autorización
-    # (cuando google_auth/callback redirige a google_auth/authorize
-    # luego
-    def get_credentials
-      return unless @user_id.present?
-
-      authorizer.get_credentials @user_id, @request
+    # @request es opcional.
+    # Debe estar presente en la autorización (cuando google callback redirige
+    # al show)
+    def get_credentials(request = nil)
+      if request.present? && request.session["code_verifier"].present?
+        authorizer.code_verifier = request.session["code_verifier"]
+      end
+      authorizer.get_credentials @third_party_integration, request
     end
 
     def get_authorization_url(request)
-      authorizer.get_authorization_url(request: request)
+      request.session["code_verifier"] ||= Google::Auth::WebUserAuthorizer.generate_code_verifier
+      authorizer.code_verifier = request.session["code_verifier"]
+      authorizer.get_authorization_url(request:, login_hint: "bla@gmail.com")
+    end
+
+    private
+
+    def authorizer
+      third_party_client = @third_party_integration.third_party_client
+      client_id = Google::Auth::ClientId.from_hash(third_party_client.secret)
+
+      token_store = Integrasion::ActiveRecordGoogleTokenStore.new
+
+      @authorizer ||=
+        Google::Auth::WebUserAuthorizer.new(
+          client_id, @third_party_integration.external_api_scope, token_store, "/u/google/callback")
     end
   end
 end

@@ -5,7 +5,7 @@ module Integrasion
 
   secret = JSON.parse(ENV.fetch('SEEDS_GOOGLE_APIS_SECRET'))
   ThirdPartyClient.create(
-    service: :google_calendar, user_integrations_allowed: true,
+    service: :google, user_integrations_allowed: true,
     tcp_status: :authorized, secret:
   )
 
