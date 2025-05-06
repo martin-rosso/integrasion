@@ -35,7 +35,6 @@ ActiveRecord::Schema[7.2].define(version: 2025_05_06_125057) do
   end
 
   create_table "integrasion_third_party_tokens", force: :cascade do |t|
-    t.integer "service"
     t.integer "third_party_integration_id", null: false
     t.string "id_user"
     t.json "secret"

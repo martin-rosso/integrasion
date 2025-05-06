@@ -11,13 +11,6 @@ module Integrasion
       @request = request
     end
 
-    APPLICATION_NAME = "Procura Bien"
-    # CREDENTIALS_PATH = 'credentials.json'
-    # The file token.yaml stores the user's access and refresh tokens, and is
-    # created automatically when the authorization flow completes for the first
-    # time.
-    TOKEN_PATH = "xgoogle_tokens.yaml"
-    # SCOPE = [Google::Apis::GmailV1::AUTH_GMAIL_READONLY, Google::Apis::GmailV1::AUTH_SCOPE].freeze
     SCOPE = [ Google::Apis::CalendarV3::AUTH_CALENDAR_APP_CREATED ].freeze
 
     def authorizer
@@ -25,7 +18,7 @@ module Integrasion
       hsh = @third_party_client.secret
       client_id = Google::Auth::ClientId.from_hash hsh
 
-      token_store = Google::Auth::Stores::FileTokenStore.new file: TOKEN_PATH
+      token_store = Integrasion::ActiveRecordGoogleTokenStore.new(@third_party_integration)
       Google::Auth::WebUserAuthorizer.new client_id, SCOPE, token_store, "/u/google/callback"
     end
 
