@@ -5,10 +5,10 @@
   <td><%= third_party_integration.third_party_id_user %></td>
   <td><%= third_party_integration.scope %></td>
   <td><%= third_party_integration.tpi_status %></td>
-  <td><%= link_to "Ver", third_party_integration %></td>
+  <td><%= link_to "Show", third_party_integration %></td>
   <td>
     <%= form_with url: url_for(third_party_integration), method: :delete do %>
-      <%= button_tag "Borrar" %>
+      <%= button_tag "Delete" %>
     <% end %>
   </td>
 </tr>

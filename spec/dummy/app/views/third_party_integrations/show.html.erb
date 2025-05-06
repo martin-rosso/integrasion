@@ -1,13 +1,14 @@
-<%= link_to "Volver", third_party_integrations_path %>
+<%= link_to "Back to list", third_party_integrations_path %>
 <br>
-<h1>Viendo la integración</h1>
+<h1>ThirdPartyIntegration: <%= @third_party_integration.id %></h1>
 
 <table>
   <%= render partial: 'third_party_integration', locals: { third_party_integration: @third_party_integration } %>
 </table>
 
+<br>
 <% if @credentials.present? %>
-  Logueadooo
+  <span style="color: green">Valid credentials</span>
 <% end %>
 <% if @url.present? %>
   <%= link_to "Autorizar", @url %>
