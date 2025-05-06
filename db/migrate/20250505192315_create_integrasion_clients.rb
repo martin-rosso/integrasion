@@ -1,6 +1,6 @@
-class CreateIntegrasionThirdPartyClients < ActiveRecord::Migration[7.2]
+class CreateIntegrasionClients < ActiveRecord::Migration[7.2]
   def change
-    create_table :integrasion_third_party_clients do |t|
+    create_table :integrasion_clients do |t|
       t.integer :service
       t.json :secret
       t.integer :tcp_status

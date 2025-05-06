@@ -1,0 +1,24 @@
+<%= form_with(model: @integration) do |f| %>
+  <div>
+    <%= f.hidden_field :client_id %>
+  </div>
+  <br>
+  <div>
+    <%= f.label :name, "Name (Optional)" %>
+    <%= f.text_field :name %>
+  </div>
+  <br>
+  <div>
+    <label>Permissions</label>
+    <br>
+    <% @available_scopes.each do |scope| %>
+      <%= check_box_tag "integration[scope][]", scope, @integration.scope&.include?(scope.to_s), id: "integration_scope_#{scope}" %>
+      <%= label_tag "integration_scope_#{scope}", t("google.#{scope}") %>
+      <br>
+    <% end %>
+  </div>
+  <br>
+  <div>
+    <%= f.submit %>
+  </div>
+<% end %>

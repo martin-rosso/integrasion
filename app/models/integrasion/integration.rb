@@ -1,31 +1,31 @@
 # == Schema Information
 #
-# Table name: integrasion_third_party_integrations
+# Table name: integrasion_integrations
 #
-#  id                    :integer          not null, primary key
-#  user_id               :integer          not null
-#  third_party_client_id :integer          not null
-#  name                  :string
-#  scope                 :string
-#  expires_at            :datetime
-#  discarded_at          :datetime
-#  created_at            :datetime         not null
-#  updated_at            :datetime         not null
+#  id           :integer          not null, primary key
+#  user_id      :integer          not null
+#  client_id    :integer          not null
+#  name         :string
+#  scope        :string
+#  expires_at   :datetime
+#  discarded_at :datetime
+#  created_at   :datetime         not null
+#  updated_at   :datetime         not null
 #
 module Integrasion
-  class ThirdPartyIntegration < ApplicationRecord
+  class Integration < ApplicationRecord
     include Discard::Model if defined? Discard::Model
     include Hashid::Rails if defined? Hashid::Rails
 
     serialize :scope, coder: JSON
     belongs_to :user
-    belongs_to :third_party_client, class_name: "Integrasion::ThirdPartyClient"
-    has_many :third_party_tokens, class_name: "Integrasion::ThirdPartyToken"
+    belongs_to :client, class_name: "Integrasion::Client"
+    has_many :tokens, class_name: "Integrasion::Token"
 
     validates :scope, presence: true
 
     def external_api_scope
-      scope.map { |permission| third_party_client.external_api_scopes[permission.to_sym] }
+      scope.map { |permission| client.external_api_scopes[permission.to_sym] }
     end
 
     def credentials

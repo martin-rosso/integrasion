@@ -1,0 +1,16 @@
+<tr>
+  <td><%= integration.id %></td>
+  <td><%= integration.name %></td>
+  <td><%= integration.client %></td>
+  <td><%= integration.user.to_gid %></td>
+  <td><%= integration.scope %></td>
+  <td><%= integration.token_status %></td>
+  <td><%= integration.expires_in %></td>
+  <td><%= link_to "Show", integration %></td>
+  <td><%= link_to "Edit", edit_integration_path(integration) %></td>
+  <td>
+    <%= form_with url: url_for(integration), method: :delete do %>
+      <%= button_tag "Delete" %>
+    <% end %>
+  </td>
+</tr>

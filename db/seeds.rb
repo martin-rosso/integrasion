@@ -1,10 +1,10 @@
 module Integrasion
-  ThirdPartyIntegration.delete_all
+  Integration.delete_all
   User.delete_all
-  ThirdPartyClient.delete_all
+  Client.delete_all
 
   secret = JSON.parse(ENV.fetch('SEEDS_GOOGLE_APIS_SECRET'))
-  ThirdPartyClient.create(
+  Client.create(
     service: :google, user_integrations_allowed: true,
     tcp_status: :authorized, secret:
   )

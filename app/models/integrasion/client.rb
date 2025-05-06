@@ -1,6 +1,6 @@
 # == Schema Information
 #
-# Table name: integrasion_third_party_clients
+# Table name: integrasion_clients
 #
 #  id                        :integer          not null, primary key
 #  service                   :integer
@@ -23,7 +23,7 @@ module Integrasion
     }
   }
 
-  class ThirdPartyClient < ApplicationRecord
+  class Client < ApplicationRecord
     encrypts :secret
 
     enum :service, google: 0

@@ -13,8 +13,8 @@ module Integrasion
       end
     end
 
-    def initialize(third_party_integration)
-      @third_party_integration = third_party_integration
+    def initialize(integration)
+      @integration = integration
     end
 
     EXCEPTIONS = [
@@ -37,12 +37,12 @@ module Integrasion
         "-"
       end
     rescue *EXCEPTIONS => e
-      Integrasion::ActiveRecordGoogleTokenStore.new.delete(@third_party_integration)
+      Integrasion::ActiveRecordGoogleTokenStore.new.delete(@integration)
       e.class.to_s
     end
 
     def revoke_authorization!
-      authorizer.revoke_authorization(@third_party_integration)
+      authorizer.revoke_authorization(@integration)
     end
 
     # @request es opcional.
@@ -52,7 +52,7 @@ module Integrasion
       if request.present? && request.session["code_verifier"].present?
         authorizer.code_verifier = request.session["code_verifier"]
       end
-      authorizer.get_credentials @third_party_integration, request
+      authorizer.get_credentials @integration, request
     end
 
     def get_authorization_url(request)
@@ -64,14 +64,14 @@ module Integrasion
     private
 
     def authorizer
-      third_party_client = @third_party_integration.third_party_client
-      client_id = Google::Auth::ClientId.from_hash(third_party_client.secret)
+      client = @integration.client
+      client_id = Google::Auth::ClientId.from_hash(client.secret)
 
       token_store = Integrasion::ActiveRecordGoogleTokenStore.new
 
       @authorizer ||=
         Google::Auth::WebUserAuthorizer.new(
-          client_id, @third_party_integration.external_api_scope, token_store, "/u/google/callback")
+          client_id, @integration.external_api_scope, token_store, "/u/google/callback")
     end
   end
 end

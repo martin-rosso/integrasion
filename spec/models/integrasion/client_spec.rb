@@ -1,6 +1,6 @@
 # == Schema Information
 #
-# Table name: integrasion_third_party_clients
+# Table name: integrasion_clients
 #
 #  id                        :integer          not null, primary key
 #  service                   :integer
@@ -14,9 +14,9 @@
 require 'rails_helper'
 
 module Integrasion
-  describe ThirdPartyClient do
+  describe Client do
     it 'secret is serialized' do
-      client = ThirdPartyClient.first
+      client = Client.first
       expect(client.secret).to be_a Hash
     end
   end

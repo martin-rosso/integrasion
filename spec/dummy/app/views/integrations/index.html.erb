@@ -1,0 +1,21 @@
+<h1>Integrations</h1>
+<% Integrasion::Client.all.each do |client| %>
+  <%= link_to "Connect with #{client}", new_integration_path(client_id: client.id) %>
+<% end %>
+<table>
+  <tr>
+    <th>ID</th>
+    <th>Name</th>
+    <th>Service</th>
+    <th>User ID</th>
+    <th>Scope</th>
+    <th>Token status</th>
+    <th>Expires in</th>
+    <th></th>
+    <th></th>
+  </tr>
+
+  <% @integrations.each do |integration| %>
+    <%= render partial: 'integration', locals: { integration: } %>
+  <% end %>
+</table>

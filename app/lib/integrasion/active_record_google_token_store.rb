@@ -14,12 +14,12 @@ module Integrasion
     end
 
     # (see Google::Auth::Stores::TokenStore#store)
-    def store(third_party_integration, token)
+    def store(integration, token)
       ActiveRecord::Base.transaction do
         # Maybe these should be destroyed
-        third_party_integration.third_party_tokens.active.update_all(tpt_status: :expired)
+        integration.tokens.active.update_all(tpt_status: :expired)
 
-        ThirdPartyToken.create!(environment: Rails.env, third_party_integration:, secret: token, tpt_status: :active)
+        Token.create!(environment: Rails.env, integration:, secret: token, tpt_status: :active)
       end
     end
 
@@ -37,7 +37,7 @@ module Integrasion
     private
 
     def find_by_id(id)
-      ThirdPartyToken.where(environment: Rails.env, third_party_integration: id, tpt_status: :active).last
+      Token.where(environment: Rails.env, integration: id, tpt_status: :active).last
     end
   end
 end
