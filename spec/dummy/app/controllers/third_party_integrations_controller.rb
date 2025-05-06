@@ -5,7 +5,7 @@ class ThirdPartyIntegrationsController < ApplicationController
     @client = Integrasion::ThirdPartyClient.find(params[:client_id])
     @available_scopes = Integrasion::AVAILABLE_SCOPES[@client.service.to_sym].keys
     @third_party_integration =
-      Integrasion::ThirdPartyIntegration.new(integrasion_third_party_client_id: @client.id)
+      Integrasion::ThirdPartyIntegration.new(third_party_client_id: @client.id)
   end
 
   def create
@@ -56,7 +56,7 @@ class ThirdPartyIntegrationsController < ApplicationController
   private
 
   def third_party_integration_params
-    params.require(:third_party_integration).permit(:integrasion_third_party_client_id, :third_party_id_user, scope: [])
+    params.require(:third_party_integration).permit(:third_party_client_id, :third_party_id_user, scope: [])
   end
 
   def set_third_party_integration

@@ -4,9 +4,9 @@
 
 <%= form_with(model: @third_party_integration) do |f| %>
   <div>
-    <%#= f.select :integrasion_third_party_client, options_from_collection_for_select(@clients, :id, :to_s) %>
+    <%#= f.select :third_party_client, options_from_collection_for_select(@clients, :id, :to_s) %>
     Integrar con: <%= @client %>
-    <%= f.hidden_field :integrasion_third_party_client_id %>
+    <%= f.hidden_field :third_party_client_id %>
   </div>
   <div>
     <% @available_scopes.each do |scope| %>

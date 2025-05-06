@@ -23,14 +23,14 @@ ActiveRecord::Schema[7.2].define(version: 2025_05_05_195429) do
 
   create_table "integrasion_third_party_integrations", force: :cascade do |t|
     t.integer "user_id", null: false
-    t.integer "integrasion_third_party_client_id", null: false
+    t.integer "third_party_client_id", null: false
     t.string "third_party_id_user"
     t.string "scope"
     t.datetime "expires_at"
     t.integer "tpi_status"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["integrasion_third_party_client_id"], name: "idx_on_integrasion_third_party_client_id_2b8ce8e752"
+    t.index ["third_party_client_id"], name: "idx_on_third_party_client_id_60c15e2e2b"
     t.index ["user_id"], name: "index_integrasion_third_party_integrations_on_user_id"
   end
 
@@ -41,6 +41,6 @@ ActiveRecord::Schema[7.2].define(version: 2025_05_05_195429) do
     t.datetime "updated_at", null: false
   end
 
-  add_foreign_key "integrasion_third_party_integrations", "integrasion_third_party_clients"
+  add_foreign_key "integrasion_third_party_integrations", "integrasion_third_party_clients", column: "third_party_client_id"
   add_foreign_key "integrasion_third_party_integrations", "users"
 end
