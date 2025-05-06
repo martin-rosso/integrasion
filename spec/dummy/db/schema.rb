@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_05_05_195429) do
+ActiveRecord::Schema[7.2].define(version: 2025_05_06_125057) do
   create_table "integrasion_third_party_clients", force: :cascade do |t|
     t.integer "service"
     t.json "secret"
@@ -34,6 +34,16 @@ ActiveRecord::Schema[7.2].define(version: 2025_05_05_195429) do
     t.index ["user_id"], name: "index_integrasion_third_party_integrations_on_user_id"
   end
 
+  create_table "integrasion_third_party_tokens", force: :cascade do |t|
+    t.integer "service"
+    t.integer "third_party_integration_id", null: false
+    t.string "id_user"
+    t.json "secret"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["third_party_integration_id"], name: "idx_on_third_party_integration_id_48c9ddba1c"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email"
     t.string "password"
@@ -43,4 +53,5 @@ ActiveRecord::Schema[7.2].define(version: 2025_05_05_195429) do
 
   add_foreign_key "integrasion_third_party_integrations", "integrasion_third_party_clients", column: "third_party_client_id"
   add_foreign_key "integrasion_third_party_integrations", "users"
+  add_foreign_key "integrasion_third_party_tokens", "integrasion_third_party_integrations", column: "third_party_integration_id"
 end
