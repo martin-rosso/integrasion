@@ -14,7 +14,10 @@
 #
 module Integrasion
   class ThirdPartyIntegration < ApplicationRecord
+    serialize :scope, coder: JSON
     belongs_to :user
     belongs_to :integrasion_third_party_client, class_name: "Integrasion::ThirdPartyClient"
+
+    enum :tpi_status, pending: 0, authorized: 1, disabled: 2, expired: 3
   end
 end

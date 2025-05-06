@@ -11,9 +11,13 @@
 #  created_at                :datetime         not null
 #  updated_at                :datetime         not null
 #
+require "google-apis-calendar_v3"
+
 module Integrasion
   AVAILABLE_SCOPES = {
-    google_calendar: [ "Google::Apis::CalendarV3::AUTH_CALENDAR_APP_CREATED" ]
+    google_calendar: {
+      auth_calendar_app_created: Google::Apis::CalendarV3::AUTH_CALENDAR_APP_CREATED
+    }
   }
 
   class ThirdPartyClient < ApplicationRecord
@@ -22,7 +26,11 @@ module Integrasion
     enum :service, google_calendar: 0
     enum :tcp_status, authorized: 0, disabled: 1, expired: 2
 
-    validates :service, :available_scopes, :user_integrations_allowed,
+    validates :service, :user_integrations_allowed,
               :tcp_status, :secret, presence: true
+
+    def to_s
+      service.titleize
+    end
   end
 end

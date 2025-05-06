@@ -1,6 +1,7 @@
 module Integrasion
-  ThirdPartyClient.delete_all
+  ThirdPartyIntegration.delete_all
   User.delete_all
+  ThirdPartyClient.delete_all
 
   secret = JSON.parse(ENV.fetch('SEEDS_GOOGLE_APIS_SECRET'))
   ThirdPartyClient.create(

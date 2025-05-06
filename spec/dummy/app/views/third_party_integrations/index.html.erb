@@ -1,0 +1,19 @@
+<h1>Integrations</h1>
+<% Integrasion::ThirdPartyClient.all.each do |third_party_client| %>
+  <%= link_to "Connect with #{third_party_client}", new_third_party_integration_path(client_id: third_party_client.id) %>
+<% end %>
+<table>
+  <tr>
+    <th>ID</th>
+    <th>Service</th>
+    <th>User ID</th>
+    <th>Third party user id</th>
+    <th>Scope</th>
+    <th>TPI Status</th>
+    <th></th>
+  </tr>
+
+  <% Integrasion::ThirdPartyIntegration.all.each do |third_party_integration| %>
+    <%= render partial: 'third_party_integration', locals: { third_party_integration: } %>
+  <% end %>
+</table>
