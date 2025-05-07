@@ -12,8 +12,7 @@ module Integrasion
       let(:service) { GoogleService.new(integration) }
 
       before do
-        mock = double(Google::Auth::UserRefreshCredentials.new, expires_at: 10.minutes.from_now)
-        allow_any_instance_of(Google::Auth::WebUserAuthorizer).to receive(:get_credentials).and_return(mock)
+        mock_get_credentials
         mok = Google::Apis::Oauth2V2::Tokeninfo.new(email: "test@host.com")
         allow_any_instance_of(Google::Apis::Oauth2V2::Oauth2Service).to receive(:tokeninfo).and_return(mok)
       end

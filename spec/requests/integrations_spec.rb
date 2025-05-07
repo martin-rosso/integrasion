@@ -45,8 +45,7 @@ module Integrasion
 
         new_url = "/u/google/callback?state=%7B%22session_id%22:%22ebU1fag%3D%3D%22,%22current_uri%22:%22http://localhost:3000/integrations/1%22%7D&code=4/0Ab_&scope=https://www.googleapis.com/auth/calendar.calendarlist%20https://www.googleapis.com/auth/calendar.app.created"
 
-        mock = double(Google::Auth::UserRefreshCredentials.new, expires_at: 10.minutes.from_now)
-        allow_any_instance_of(Google::Auth::WebUserAuthorizer).to receive(:get_credentials).and_return(mock)
+        mock_get_credentials
 
         get new_url
 
