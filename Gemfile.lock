@@ -319,14 +319,6 @@ GEM
     simplecov-html (0.13.1)
     simplecov-lcov (0.8.0)
     simplecov_json_formatter (0.1.4)
-    sprockets (4.2.2)
-      concurrent-ruby (~> 1.0)
-      logger
-      rack (>= 2.2.4, < 4)
-    sprockets-rails (3.5.2)
-      actionpack (>= 6.1)
-      activesupport (>= 6.1)
-      sprockets (>= 3.0.0)
     sqlite3 (1.6.2)
       mini_portile2 (~> 2.8.0)
     stringio (3.1.7)
@@ -372,7 +364,6 @@ DEPENDENCIES
   rubocop-rails-omakase
   simplecov
   simplecov-lcov
-  sprockets-rails
   sqlite3
   undercover (= 0.5.0)
 
