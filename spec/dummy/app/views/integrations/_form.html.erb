@@ -11,7 +11,7 @@
   <div>
     <label>Permissions</label>
     <br>
-    <% @available_scopes.each do |scope| %>
+    <% @integration.client.available_scopes_for_select.each do |scope| %>
       <%= check_box_tag "integration[scope][]", scope, @integration.scope&.include?(scope.to_s), id: "integration_scope_#{scope}" %>
       <%= label_tag "integration_scope_#{scope}", t("google.#{scope}") %>
       <br>
