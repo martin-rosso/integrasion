@@ -17,7 +17,7 @@ require "google-apis-oauth2_v2"
 module Nexo
   AVAILABLE_SCOPES = {
     google: {
-      # auth_email: Google::Apis::Oauth2V2::AUTH_USERINFO_EMAIL,
+      auth_email: Google::Apis::Oauth2V2::AUTH_USERINFO_EMAIL,
       auth_calendar_app_created: Google::Apis::CalendarV3::AUTH_CALENDAR_APP_CREATED,
       auth_calendar_calendarlist: Google::Apis::CalendarV3::AUTH_CALENDAR_CALENDARLIST
     }
@@ -36,7 +36,11 @@ module Nexo
       service.titleize
     end
 
-    def external_api_scopes
+    def available_scopes_for_select
+      service_scopes.keys
+    end
+
+    def service_scopes
       AVAILABLE_SCOPES[service.to_sym]
     end
   end

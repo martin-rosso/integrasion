@@ -1,15 +1,18 @@
-class IntegrationsController < ApplicationController
+class IntegrationsController < ActionController::Base
+  include Nexo::ControllerHelper
+
+  layout "application"
+
   before_action :set_integration, only: [ :show, :edit, :update, :destroy, :revoke_authorization ]
 
   def index
     @integrations = Nexo::Integration.where(discarded_at: nil)
+    @clients = Nexo::Client.where(user_integrations_allowed: true, tcp_status: :authorized)
   end
 
   def new
-    @client = Nexo::Client.find(params[:client_id])
-    @available_scopes = Nexo::AVAILABLE_SCOPES[@client.service.to_sym].keys
-    @integration =
-      Nexo::Integration.new(client_id: @client.id)
+    client = Nexo::Client.find(params[:client_id])
+    @integration = Nexo::Integration.new(client_id: client.id)
   end
 
   def create
@@ -21,8 +24,6 @@ class IntegrationsController < ApplicationController
   end
 
   def edit
-    @client = @integration.client
-    @available_scopes = Nexo::AVAILABLE_SCOPES[@client.service.to_sym].keys
   end
 
   def update
@@ -38,20 +39,14 @@ class IntegrationsController < ApplicationController
   end
 
   def show
-    manager = Nexo::GoogleService.new(@integration)
-
-    @tokens = Nexo::Token.where(integration: @integration)
-
-    if params[:check_token]
-      @token_info = manager.token_info
-    end
+    @service = Nexo::GoogleService.new(@integration)
 
     # Este get_credentials es necesario, si no, no se guarda el token
-    @credentials = manager.get_credentials(request)
-
-    if @credentials.nil?
-      @url = manager.get_authorization_url(request)
-    end
+    #
+    # Cuando vuelve del callback, guarda el token. Este token tendrá el scope
+    # con *todos* los permisos efectivos que el usuario haya otorgado aunque el
+    # client haya solicitado un subconjunto de los mismos
+    @credentials = @service.get_credentials(request)
   end
 
   def revoke_authorization
@@ -70,7 +65,7 @@ class IntegrationsController < ApplicationController
   private
 
   def integration_params
-    params.require(:integration).permit(:client_id, :name, scope: [])
+    nexo_integration_params(params)
   end
 
   def set_integration

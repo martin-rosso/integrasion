@@ -4,7 +4,9 @@ require "google-apis-calendar_v3"
 require "google-apis-oauth2_v2"
 
 module Nexo
-  class GoogleService
+  # This is actually an OAuth 2.0 flow, and that logic should be extracted to
+  # a generic OAuth2Service
+  class GoogleAuthService
     class << self
       def handle_auth_callback_deferred(request)
         target_url = Google::Auth::WebUserAuthorizer.handle_auth_callback_deferred(request)
@@ -31,8 +33,10 @@ module Nexo
       credentials = get_credentials
       if credentials.present?
         service.authorization = credentials
-        inf = service.tokeninfo
-        inf
+
+        # Si el token expiró o le restan pocos segundos para expirar, se
+        # renovará el token.
+        service.tokeninfo
       end
     rescue *EXCEPTIONS => e
       # FIXME: handle this
@@ -49,11 +53,16 @@ module Nexo
     # @request es opcional.
     # Debe estar presente en la autorización (cuando google callback redirige
     # al show)
+    #
+    # Guarda el Token
+    # Si el client tiene más permisos que los que el user solicitó
     def get_credentials(request = nil)
       if request.present? && request.session["code_verifier"].present?
         authorizer.code_verifier = request.session["code_verifier"]
       end
       authorizer.get_credentials @integration, request
+    rescue Signet::AuthorizationError
+      # FIXME: log
     end
 
     def get_authorization_url(request)

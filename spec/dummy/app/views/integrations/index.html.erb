@@ -1,7 +1,9 @@
 <h1>Integrations</h1>
-<% Nexo::Client.all.each do |client| %>
+
+<% @clients.each do |client| %>
   <%= link_to "Connect with #{client}", new_integration_path(client_id: client.id) %>
 <% end %>
+
 <table>
   <tr>
     <th>ID</th>

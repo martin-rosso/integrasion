@@ -25,12 +25,7 @@ module Nexo
     validates :scope, presence: true
 
     def external_api_scope
-      scope.map { |permission| client.external_api_scopes[permission.to_sym] }
-    end
-
-    def credentials
-      service = Nexo::GoogleService.new(self)
-      @credentials ||= service.get_credentials
+      scope.map { |permission| client.service_scopes[permission.to_sym] }
     end
 
     def expires_in
@@ -49,6 +44,13 @@ module Nexo
       else
         :no_token
       end
+    end
+
+    private
+
+    def credentials
+      service = Nexo::GoogleService.new(self)
+      @credentials ||= service.get_credentials
     end
   end
 end

@@ -2,34 +2,38 @@
 <br>
 <h1>Integration: <%= @integration.id %></h1>
 
+  <% if params[:check_token] %>
+    <% @token_info = @service.token_info.as_json %>
+  <% end %>
 
 <table>
   <%= render partial: 'integration', locals: { integration: @integration } %>
 </table>
 
 <br>
-<% if @integration.credentials.present? %>
+<% if @credentials.present? %>
   <%= form_with url: url_for([:revoke_authorization, @integration]), method: :post do %>
     <%= button_tag "Revoke" %>
   <% end %>
-  <%= link_to "Check token", integration_path(@integration, check_token: 1) %>
-<% end %>
 
-<% if @url.present? %>
-  <%= link_to "Authorize", @url %>
-<% end %>
-
-<% if @token_info %>
   <br>
-  Token info: <%= @token_info.as_json %>
+  <% if params[:check_token] %>
+    Token info: <%= @token_info %>
+    <br>
+    <%= link_to "Close", integration_path(@integration) %>
+  <% else %>
+    <%= link_to "Check token", integration_path(@integration, check_token: 1) %>
+  <% end %>
+<% else %>
+  <%= link_to "Authorize", @service.get_authorization_url(request) %>
 <% end %>
 
 
 <br>
 <br>
-<h2>Tokens (<%= @tokens.count %>)</h2>
+<h2>Tokens (<%= @integration.tokens.count %>)</h2>
 <ol>
-  <% @tokens.each do |token| %>
+  <% @integration.tokens.each do |token| %>
     <li><%= token.attributes.as_json(except: "secret") %></li>
   <% end %>
 </ol>
