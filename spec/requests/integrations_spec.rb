@@ -35,7 +35,7 @@ module Integrasion
     end
 
     describe "authorization flow" do
-      fit do
+      it do
         get "/integrations/#{integration.id}"
         result = body.match /href=\"(.*oauth2.*)\"/
         url = result[1]

@@ -33,12 +33,13 @@ module Integrasion
         service.authorization = credentials
         inf = service.tokeninfo
         inf
-      else
-        "-"
       end
     rescue *EXCEPTIONS => e
+      # FIXME: handle this
+      # :nocov:
       Integrasion::ActiveRecordGoogleTokenStore.new.delete(@integration)
       e.class.to_s
+      # :nocov:
     end
 
     def revoke_authorization!

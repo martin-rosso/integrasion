@@ -14,6 +14,11 @@ module Integrasion
   class Token < ApplicationRecord
     belongs_to :integration, class_name: "Integrasion::Integration"
 
+    after_initialize do
+      self.tpt_status = :active if tpt_status.nil?
+      self.environment = Rails.env if environment.nil?
+    end
+
     encrypts :secret
 
     enum :tpt_status, active: 0, revoked: 1, expired: 2

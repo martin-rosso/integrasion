@@ -19,7 +19,7 @@ module Integrasion
         # Maybe these should be destroyed
         integration.tokens.active.update_all(tpt_status: :expired)
 
-        Token.create!(environment: Rails.env, integration:, secret: token, tpt_status: :active)
+        Token.create!(integration:, secret: token)
       end
     end
 
@@ -30,7 +30,7 @@ module Integrasion
       if token.present?
         token.update!(tpt_status: :revoked)
       else
-        pg_warn("Couldn't find token for revocation: #{id}")
+        # FIXME: pg_warn("Couldn't find token for revocation: #{id}")
       end
     end
 
