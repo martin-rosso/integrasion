@@ -48,6 +48,7 @@ class IntegrationsController < ApplicationController
 
     # Este get_credentials es necesario, si no, no se guarda el token
     @credentials = manager.get_credentials(request)
+
     if @credentials.nil?
       @url = manager.get_authorization_url(request)
     end

@@ -29,8 +29,8 @@ module Integrasion
     end
 
     def credentials
-      manager = Integrasion::GoogleService.new(self)
-      @credentials ||= manager.get_credentials
+      service = Integrasion::GoogleService.new(self)
+      @credentials ||= service.get_credentials
     end
 
     def expires_in

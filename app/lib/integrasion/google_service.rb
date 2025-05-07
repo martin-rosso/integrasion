@@ -58,7 +58,8 @@ module Integrasion
     def get_authorization_url(request)
       request.session["code_verifier"] ||= Google::Auth::WebUserAuthorizer.generate_code_verifier
       authorizer.code_verifier = request.session["code_verifier"]
-      authorizer.get_authorization_url(request:, login_hint: "bla@gmail.com")
+      authorizer.get_authorization_url(request:)
+      # authorizer.get_authorization_url(request:, login_hint: "bla@gmail.com")
     end
 
     private

@@ -19,9 +19,5 @@ module Integrasion
     enum :tpt_status, active: 0, revoked: 1, expired: 2
 
     validates :secret, :tpt_status, :environment, presence: true
-
-    def expires_in
-      (created_at + 1.hour - Time.zone.now).to_i
-    end
   end
 end
