@@ -1,1 +1,1 @@
-Integrasion::Engine.load_seed
+Nexo::Engine.load_seed

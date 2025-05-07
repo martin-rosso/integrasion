@@ -64,7 +64,7 @@ RSpec.configure do |config|
   # config.use_active_record = false
 
   config.before(:each) do |example|
-    Integrasion::Engine.load_seed
+    Nexo::Engine.load_seed
   end
 
   # RSpec Rails uses metadata to mix in different behaviours to your tests,

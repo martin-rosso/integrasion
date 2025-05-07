@@ -1,2 +1,2 @@
-Integrasion::Engine.routes.draw do
+Nexo::Engine.routes.draw do
 end

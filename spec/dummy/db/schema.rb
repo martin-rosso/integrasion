@@ -11,7 +11,7 @@
 # It's strongly recommended that you check this file into your version control system.
 
 ActiveRecord::Schema[7.2].define(version: 2025_05_06_125057) do
-  create_table "integrasion_clients", force: :cascade do |t|
+  create_table "nexo_clients", force: :cascade do |t|
     t.integer "service"
     t.json "secret"
     t.integer "tcp_status"
@@ -21,7 +21,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_05_06_125057) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "integrasion_integrations", force: :cascade do |t|
+  create_table "nexo_integrations", force: :cascade do |t|
     t.integer "user_id", null: false
     t.integer "client_id", null: false
     t.string "name"
@@ -30,18 +30,18 @@ ActiveRecord::Schema[7.2].define(version: 2025_05_06_125057) do
     t.datetime "discarded_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["client_id"], name: "index_integrasion_integrations_on_client_id"
-    t.index ["user_id"], name: "index_integrasion_integrations_on_user_id"
+    t.index ["client_id"], name: "index_nexo_integrations_on_client_id"
+    t.index ["user_id"], name: "index_nexo_integrations_on_user_id"
   end
 
-  create_table "integrasion_tokens", force: :cascade do |t|
+  create_table "nexo_tokens", force: :cascade do |t|
     t.integer "integration_id", null: false
     t.json "secret"
     t.integer "tpt_status", null: false
     t.string "environment", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["integration_id"], name: "index_integrasion_tokens_on_integration_id"
+    t.index ["integration_id"], name: "index_nexo_tokens_on_integration_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -51,7 +51,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_05_06_125057) do
     t.datetime "updated_at", null: false
   end
 
-  add_foreign_key "integrasion_integrations", "integrasion_clients", column: "client_id"
-  add_foreign_key "integrasion_integrations", "users"
-  add_foreign_key "integrasion_tokens", "integrasion_integrations", column: "integration_id"
+  add_foreign_key "nexo_integrations", "nexo_clients", column: "client_id"
+  add_foreign_key "nexo_integrations", "users"
+  add_foreign_key "nexo_tokens", "nexo_integrations", column: "integration_id"
 end

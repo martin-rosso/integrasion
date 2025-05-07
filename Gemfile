@@ -1,6 +1,6 @@
 source "https://rubygems.org"
 
-# Specify your gem's dependencies in integrasion.gemspec.
+# Specify your gem's dependencies in nexo.gemspec.
 gemspec
 
 gem "puma"

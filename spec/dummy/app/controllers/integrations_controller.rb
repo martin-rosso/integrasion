@@ -2,18 +2,18 @@ class IntegrationsController < ApplicationController
   before_action :set_integration, only: [ :show, :edit, :update, :destroy, :revoke_authorization ]
 
   def index
-    @integrations = Integrasion::Integration.where(discarded_at: nil)
+    @integrations = Nexo::Integration.where(discarded_at: nil)
   end
 
   def new
-    @client = Integrasion::Client.find(params[:client_id])
-    @available_scopes = Integrasion::AVAILABLE_SCOPES[@client.service.to_sym].keys
+    @client = Nexo::Client.find(params[:client_id])
+    @available_scopes = Nexo::AVAILABLE_SCOPES[@client.service.to_sym].keys
     @integration =
-      Integrasion::Integration.new(client_id: @client.id)
+      Nexo::Integration.new(client_id: @client.id)
   end
 
   def create
-    @integration = Integrasion::Integration.new(integration_params)
+    @integration = Nexo::Integration.new(integration_params)
     @integration.user = Current.user
     @integration.save!
 
@@ -22,7 +22,7 @@ class IntegrationsController < ApplicationController
 
   def edit
     @client = @integration.client
-    @available_scopes = Integrasion::AVAILABLE_SCOPES[@client.service.to_sym].keys
+    @available_scopes = Nexo::AVAILABLE_SCOPES[@client.service.to_sym].keys
   end
 
   def update
@@ -38,9 +38,9 @@ class IntegrationsController < ApplicationController
   end
 
   def show
-    manager = Integrasion::GoogleService.new(@integration)
+    manager = Nexo::GoogleService.new(@integration)
 
-    @tokens = Integrasion::Token.where(integration: @integration)
+    @tokens = Nexo::Token.where(integration: @integration)
 
     if params[:check_token]
       @token_info = manager.token_info
@@ -55,14 +55,14 @@ class IntegrationsController < ApplicationController
   end
 
   def revoke_authorization
-    manager = Integrasion::GoogleService.new(@integration)
+    manager = Nexo::GoogleService.new(@integration)
     manager.revoke_authorization!
 
     redirect_to @integration
   end
 
   def callback
-    target_url = Integrasion::GoogleService.handle_auth_callback_deferred(request)
+    target_url = Nexo::GoogleService.handle_auth_callback_deferred(request)
     # Vuelve a show
     redirect_to target_url
   end
@@ -74,6 +74,6 @@ class IntegrationsController < ApplicationController
   end
 
   def set_integration
-    @integration = Integrasion::Integration.find(params[:id])
+    @integration = Nexo::Integration.find(params[:id])
   end
 end

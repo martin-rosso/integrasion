@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  mount Integrasion::Engine => "/integrasion"
+  mount Nexo::Engine => "/nexo"
 
   resources :integrations do
     member do

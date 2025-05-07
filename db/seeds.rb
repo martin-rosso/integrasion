@@ -1,4 +1,4 @@
-module Integrasion
+module Nexo
   Integration.delete_all
   User.delete_all
   Client.delete_all

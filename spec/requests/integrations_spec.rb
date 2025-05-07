@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-module Integrasion
+module Nexo
   describe "integrations requests", type: :request do
     let(:client) { Client.first }
 
