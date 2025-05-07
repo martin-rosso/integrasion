@@ -1,7 +1,7 @@
 require "rails_helper"
 
 module Nexo
-  describe GoogleService do
+  describe GoogleAuthService do
     let(:client) { Client.first }
 
     let(:integration) do
@@ -9,7 +9,7 @@ module Nexo
     end
 
     describe "token_info" do
-      let(:service) { GoogleService.new(integration) }
+      let(:service) { GoogleAuthService.new(integration) }
 
       before do
         mock_get_credentials
@@ -24,7 +24,7 @@ module Nexo
     end
 
     describe "revoke_authorization!" do
-      let(:service) { GoogleService.new(integration) }
+      let(:service) { GoogleAuthService.new(integration) }
 
       it "revokes the integration" do
         authorizer_mock = instance_double("Google::Auth::WebUserAuthorizer")

@@ -39,7 +39,7 @@ class IntegrationsController < ActionController::Base
   end
 
   def show
-    @service = Nexo::GoogleService.new(@integration)
+    @service = Nexo::GoogleAuthService.new(@integration)
 
     # Este get_credentials es necesario, si no, no se guarda el token
     #
@@ -50,14 +50,14 @@ class IntegrationsController < ActionController::Base
   end
 
   def revoke_authorization
-    manager = Nexo::GoogleService.new(@integration)
+    manager = Nexo::GoogleAuthService.new(@integration)
     manager.revoke_authorization!
 
     redirect_to @integration
   end
 
   def callback
-    target_url = Nexo::GoogleService.handle_auth_callback_deferred(request)
+    target_url = Nexo::GoogleAuthService.handle_auth_callback_deferred(request)
     # Vuelve a show
     redirect_to target_url
   end

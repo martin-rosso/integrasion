@@ -1,6 +1,4 @@
 require "googleauth"
-require "googleauth/stores/file_token_store"
-require "google-apis-calendar_v3"
 require "google-apis-oauth2_v2"
 
 module Nexo
