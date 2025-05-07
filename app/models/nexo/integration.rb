@@ -49,7 +49,7 @@ module Nexo
     private
 
     def credentials
-      service = Nexo::GoogleService.new(self)
+      service = Nexo::GoogleAuthService.new(self)
       @credentials ||= service.get_credentials
     end
   end

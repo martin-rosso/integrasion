@@ -1,10 +1,8 @@
 require "googleauth"
-require "googleauth/stores/file_token_store"
-require "google-apis-calendar_v3"
 require "google-apis-oauth2_v2"
 
 module Nexo
-  class GoogleService
+  class GoogleAuthService
     class << self
       def handle_auth_callback_deferred(request)
         target_url = Google::Auth::WebUserAuthorizer.handle_auth_callback_deferred(request)
