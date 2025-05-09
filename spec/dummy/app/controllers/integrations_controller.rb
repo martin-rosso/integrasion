@@ -42,6 +42,10 @@ class IntegrationsController < ActionController::Base
     @service = Nexo::GoogleAuthService.new(@integration)
 
     # Este get_credentials es necesario, si no, no se guarda el token
+    #
+    # Cuando vuelve del callback, guarda el token. Este token tendrá el scope
+    # con *todos* los permisos efectivos que el usuario haya otorgado aunque el
+    # client haya solicitado un subconjunto de los mismos
     @credentials = @service.get_credentials(request)
   end
 

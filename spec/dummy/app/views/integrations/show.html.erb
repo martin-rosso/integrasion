@@ -2,6 +2,9 @@
 <br>
 <h1>Integration: <%= @integration.id %></h1>
 
+  <% if params[:check_token] %>
+    <% @token_info = @service.token_info.as_json %>
+  <% end %>
 
 <table>
   <%= render partial: 'integration', locals: { integration: @integration } %>
@@ -15,7 +18,7 @@
 
   <br>
   <% if params[:check_token] %>
-    Token info: <%= @service.token_info.as_json %>
+    Token info: <%= @token_info %>
     <br>
     <%= link_to "Close", integration_path(@integration) %>
   <% else %>
