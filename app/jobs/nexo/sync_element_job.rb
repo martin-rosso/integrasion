@@ -13,64 +13,68 @@ module Nexo
   class SyncElementJob < BaseJob
     limits_concurrency key: ->(element) { element.gid }
 
-    # TODO: handle Element destroyed (igual no debería pasar porque siempre se descartarían)
+    rescue_from ActiveJob::DeserializationError do |e|
+      raise Errors::SyncElementJobError, e, "element couldnt be deserialized"
+    end
+
+    discard_on Errors::SyncElementJobError
+
+    retry_on StandardError, wait: :polynomially_longer
+
     def perform(element)
-      if element.discarded?
-        # TODO: handle, si hay un external incoming change habría que flagear el Element
-        # si no hay cambios que sincronizar, se podría loguear un "already synced element" y ya
-      end
+      validate(element)
 
       if element.marked_for_deletion?
-        if element.synchronizable.conflicted?
-          raise Errors::SynchronizableConflicted
-        end
-
-        GoogleDestroyJob.perform_async(element)
+        DeleteRemoteResourceJob.perform_async(element)
 
         element.discard!
-
-        return
-      end
-
-      if element.synchronizable.blank?
-        raise Errors::SynchronizableNotFound, "should be marked for deletion?"
-      end
-
-      if element.synchronizable.conflicted?
-        raise "sync conflicted"
-
-        return
-      end
-
-      current_sequence = element.synchronizable.sequence
-      last_synced_sequence = element.last_synced_sequence
-
-      if element.external_unsynced_change?
-        if current_sequence == last_synced_sequence
-          # sync_to_local_element(element)
-          raise "not implemented" # :nocov:
-        elsif current_sequence > last_synced_sequence
-          report_conflicted_element!(element)
-        else
-          report_sequence_bigger_than_current_one!
-        end
       else
-        if current_sequence == last_synced_sequence
-          pg_info "Element already synced: #{element.gid}"
-        elsif current_sequence > last_synced_sequence
-          export_element(element)
+        current_sequence = element.synchronizable.sequence
+        last_synced_sequence = element.last_synced_sequence
+
+        if element.external_unsynced_change?
+          raise Errors::SyncElementJobError, "not yet implemented" # :nocov:
+
+          # if current_sequence == last_synced_sequence
+          #   sync_to_local_element(element)
+          # elsif current_sequence > last_synced_sequence
+          #   element.mark_as_conflicted!
+          # else
+          #   report_sequence_bigger_than_current_one!
+          # end
         else
-          report_sequence_bigger_than_current_one!
+          if current_sequence == last_synced_sequence
+            pg_info "Element already synced: #{element.gid}"
+          elsif current_sequence > last_synced_sequence
+            UpdateRemoteResourceJob.perform_async(element)
+          else
+            report_sequence_bigger_than_current_one!
+          end
         end
       end
-    rescue StandardError => e
-      raise Errors::SynchronizationError, e
     end
 
     private
 
-    def report_conflicted_element!(element)
-      element.mark_as_conflicted!
+    def validate(element)
+      if element.discarded?
+        # TODO: handle, si hay un external incoming change habría que flagear el Element
+        # si no hay cambios que sincronizar, se podría loguear un "already synced element" y ya
+        raise Errors::ElementDiscarded, element
+      end
+
+      if element.synchronizable.blank? && !element.marked_for_deletion?
+        # should be marked for deletion?
+        raise Errors::SynchronizableNotFound, element
+      end
+
+      if element.conflicted?
+        raise Errors::ElementConflicted, element
+      end
+
+      if element.synchronizable.present? && element.synchronizable.conflicted?
+        raise Errors::SynchronizableConflicted, element
+      end
     end
 
     # def sync_to_local_element(element)
@@ -80,16 +84,11 @@ module Nexo
     # end
 
     def report_sequence_bigger_than_current_one!
-      pg_err <<~MSG
-        last_synced_sequence bigger than current_sequence. \
-        Element id: #{element.id}")
-      MSG
-    end
-
-    def export_element(element)
-      synchronizable = element.synchronizable
-
-      GooglePostJob.perform_async(element)
+      # FIXME: report
+      # pg_err <<~MSG
+      #   last_synced_sequence bigger than current_sequence. \
+      #   Element id: #{element.id}")
+      # MSG
     end
   end
 end
