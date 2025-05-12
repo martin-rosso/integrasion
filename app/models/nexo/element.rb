@@ -17,7 +17,7 @@ module Nexo
     belongs_to :synchronizable, polymorphic: true
     has_many :element_versions, dependent: :destroy, class_name: "Nexo::ElementVersion"
 
-    delegate :uuid, to: synchronizable
+    delegate :uuid, to: :synchronizable
 
     enum :deletion_reason, no_longer_included_in_folder: 0, synchronizable_destroyed: 1
 

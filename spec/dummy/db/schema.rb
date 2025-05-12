@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_05_12_025950) do
+ActiveRecord::Schema[7.2].define(version: 2025_05_12_030530) do
   create_table "nexo_clients", force: :cascade do |t|
     t.integer "service"
     t.json "secret"
@@ -19,6 +19,17 @@ ActiveRecord::Schema[7.2].define(version: 2025_05_12_025950) do
     t.boolean "user_integrations_allowed"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "nexo_element_versions", force: :cascade do |t|
+    t.integer "element_id", null: false
+    t.json "payload"
+    t.string "etag"
+    t.integer "sequence"
+    t.integer "origin", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["element_id"], name: "index_nexo_element_versions_on_element_id"
   end
 
   create_table "nexo_elements", force: :cascade do |t|
@@ -74,6 +85,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_05_12_025950) do
     t.datetime "updated_at", null: false
   end
 
+  add_foreign_key "nexo_element_versions", "nexo_elements", column: "element_id"
   add_foreign_key "nexo_elements", "nexo_folders", column: "folder_id"
   add_foreign_key "nexo_folders", "nexo_integrations", column: "integration_id"
   add_foreign_key "nexo_integrations", "nexo_clients", column: "client_id"
