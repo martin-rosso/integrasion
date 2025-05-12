@@ -5,12 +5,11 @@ module Nexo
   #
   # Responsabilities:
   #   - Triggering the GoogleCallerJob
-  #   - Removing Element's
+  #   - Removing/discarding Element's
   #   - Flagging Synchronizable's as conflicted
-  #   - Creation of ElementVersion's
   #   - Updating Synchronizable's on external incoming changes
   #
-  # TODO: implement external ElementVersion creation
+  # TODO: implement external ElementVersion creation, not here, on another place
   class SyncElementJob < BaseJob
     limits_concurrency key: ->(element) { element.gid }
 
@@ -22,17 +21,9 @@ module Nexo
       end
 
       if element.marked_for_deletion?
-        # possible reasons:
-        #   - no_longer_included_in_folder
-        #   - synchronizable_destroyed
-
-
-        # esto debería realizarse asincronicamente con una queue de menor prioridad y
-        # con un polling_interval alto, para no saturar la API externa
-        # El problema es que ya deja de ser transaccional!
-        # Igualmente la transacción no incluye lo que haga Google, así que no sé.
-
-        # FIXME: qué pasa si el synchronizable.marked_as_conficted?
+        if element.synchronizable.conflicted?
+          raise Errors::SynchronizableConflicted
+        end
 
         GoogleDestroyJob.perform_async(element)
 
@@ -45,7 +36,7 @@ module Nexo
         raise Errors::SynchronizableNotFound, "should be marked for deletion?"
       end
 
-      if element.synchronizable.marked_as_conficted?
+      if element.synchronizable.conflicted?
         raise "sync conflicted"
 
         return
@@ -56,7 +47,8 @@ module Nexo
 
       if element.external_unsynced_change?
         if current_sequence == last_synced_sequence
-          sync_to_local_element(element)
+          # sync_to_local_element(element)
+          raise "not implemented" # :nocov:
         elsif current_sequence > last_synced_sequence
           report_conflicted_element!(element)
         else
@@ -78,14 +70,14 @@ module Nexo
     private
 
     def report_conflicted_element!(element)
-      element.synchronizable.mark_as_conflicted!
+      element.mark_as_conflicted!
     end
 
-    def sync_to_local_element(element)
-      last_external_unsynced_version = element.last_external_unsynced_version
+    # def sync_to_local_element(element)
+    #   last_external_unsynced_version = element.last_external_unsynced_version
 
-      element.synchronizable.update_from!(last_external_unsynced_version)
-    end
+    #   element.synchronizable.update_from!(last_external_unsynced_version)
+    # end
 
     def report_sequence_bigger_than_current_one!
       pg_err <<~MSG

@@ -21,6 +21,8 @@ module Nexo
 
     enum :deletion_reason, no_longer_included_in_folder: 0, synchronizable_destroyed: 1
 
+    scope :conflicted, -> { where(conflicted: true) }
+
     def last_synced_sequence
       element_versions.pluck(:sequence).max || -1
     end
@@ -35,6 +37,12 @@ module Nexo
 
     def mark_for_deletion!(deletion_reason)
       update!(flag_deletion: true, deletion_reason:)
+    end
+
+    def mark_as_conflicted!
+      update!(conflicted: true)
+
+      # TODO: log "Conflicted Element: #{element.gid}"
     end
   end
 end

@@ -19,7 +19,7 @@ module Nexo
     private
 
     def validate
-      if element.synchronizable.marked_as_conficted?
+      if element.synchronizable.conflicted?
         raise :conflict
       end
 

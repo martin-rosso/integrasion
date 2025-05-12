@@ -6,6 +6,7 @@ class CreateNexoElements < ActiveRecord::Migration[7.2]
       t.string :synchronizable_type, null: false, index: true
       t.boolean :flag_deletion, null: false
       t.integer :deletion_reason
+      t.boolean :conflicted, null: false, default: false
 
       t.timestamps
     end

@@ -9,7 +9,6 @@ class CreateEvents < ActiveRecord::Migration[7.2]
       t.string :description
       t.string :uuid
       t.integer :sequence
-      t.boolean :conflicted, null: false, default: false
 
       t.timestamps
     end

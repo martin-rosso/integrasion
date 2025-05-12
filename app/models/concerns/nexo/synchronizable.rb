@@ -6,8 +6,6 @@ module Nexo
       %i[
         uuid
         sequence
-        conflicted?
-        conflicted=
       ]
     end
 
@@ -47,6 +45,10 @@ module Nexo
       end
     end
 
+    def conflicted?
+      nexo_elements.conflicted.any?
+    end
+
     def update_from!(element_version)
       transaction do
         # TODO: parse the element_version.payload
@@ -64,12 +66,6 @@ module Nexo
       #
       # https://api.rubyonrails.org/v7.2/classes/ActiveRecord/Persistence.html#method-i-increment-21
       increment!(:sequence)
-    end
-
-    def mark_as_conflicted!
-      update!(conflicted: true)
-
-      # TODO: log "Conflicted Element: #{element.gid}"
     end
   end
 end

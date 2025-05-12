@@ -8,6 +8,7 @@ module Nexo
   class FolderService
     def find_element_and_sync(folder, synchronizable)
       element = folder.find_element!(synchronizable)
+
       if element.present?
         sync_element(element)
       else
@@ -17,6 +18,7 @@ module Nexo
 
     def create_and_sync_element(folder, synchronizable)
       must_be_included = folder.rules_match?(synchronizable)
+
       if must_be_included
         element = Element.create!(
           synchronizable:,
@@ -30,7 +32,7 @@ module Nexo
     def sync_element(element)
       synchronizable = element.synchronizable
 
-      if synchronizable.marked_as_conficted?
+      if synchronizable.conflicted?
         pg_warn("sync conflicted")
 
         return

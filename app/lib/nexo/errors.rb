@@ -11,5 +11,8 @@ module Nexo
 
     class InvalidSynchronizableState < Error
     end
+
+    class SynchronizableConflicted < Error
+    end
   end
 end
