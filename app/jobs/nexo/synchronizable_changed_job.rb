@@ -1,0 +1,16 @@
+module Nexo
+  class SynchronizableChangedJob < ApplicationJob
+    limits_concurrency key: ->(synchronizable) { synchronizable.gid }
+    # TODO: chequear tema integridad https://github.com/rails/solid_queue?tab=readme-ov-file#jobs-and-transactional-integrity
+
+    def perform(synchronizable)
+      # Maybe restrict this query to a more specific scope
+      scope = Folder.all
+      service = FolderService.new
+
+      scope.each do |folder|
+        folder_service.find_element_and_sync(folder, synchronizable)
+      end
+    end
+  end
+end
