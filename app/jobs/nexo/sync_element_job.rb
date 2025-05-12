@@ -11,7 +11,7 @@ module Nexo
   #   - Updating Synchronizable's on external incoming changes
   #
   # TODO: implement external ElementVersion creation
-  class SyncElementJob < ApplicationJob
+  class SyncElementJob < BaseJob
     limits_concurrency key: ->(element) { element.gid }
 
     # TODO: handle Element destroyed (igual no debería pasar porque siempre se descartarían)

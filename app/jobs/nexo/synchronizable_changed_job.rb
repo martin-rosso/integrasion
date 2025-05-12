@@ -1,5 +1,5 @@
 module Nexo
-  class SynchronizableChangedJob < ApplicationJob
+  class SynchronizableChangedJob < BaseJob
     limits_concurrency key: ->(synchronizable) { synchronizable.gid }
     # TODO: chequear tema integridad https://github.com/rails/solid_queue?tab=readme-ov-file#jobs-and-transactional-integrity
 

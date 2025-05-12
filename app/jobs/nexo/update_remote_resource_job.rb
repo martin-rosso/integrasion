@@ -1,5 +1,5 @@
 module Nexo
-  class UpdateRemoteResourceJob < ApplicationJob
+  class UpdateRemoteResourceJob < BaseJob
     limits_concurrency key: ->(element) { element.gid }, group: "RemoteResources"
     # FIXME: set polling interval 10 secs or so
 
