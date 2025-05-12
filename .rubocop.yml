@@ -7,6 +7,9 @@ inherit_gem: { rubocop-rails-omakase: rubocop.yml }
 # Layout/SpaceInsideArrayLiteralBrackets:
 #   Enabled: false
 
+inherit_from:
+  - .rubocop.rspec.yml
+
 AllCops:
   NewCops: enable
   Exclude:

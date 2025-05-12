@@ -11,7 +11,7 @@ module Nexo
     let(:store) { described_class.new }
 
     describe "load" do
-      let!(:token) do
+      before do
         Token.create!(secret: "secret-token", integration:)
       end
 

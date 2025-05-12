@@ -18,11 +18,11 @@ module Nexo
   describe Integration do
     subject do
       client = Client.first
-      Integration.create!(user: User.first, client: client, scope: [ "auth_calendar_app_created" ])
+      described_class.create!(user: User.first, client: client, scope: [ "auth_calendar_app_created" ])
     end
 
     it do
-      expect { subject }.to change(Integration, :count).by(1)
+      expect { subject }.to change(described_class, :count).by(1)
     end
 
     describe "token_status" do
@@ -33,11 +33,11 @@ module Nexo
       let(:client) { Client.first }
 
       let(:integration) do
-        Integration.create!(user: User.first, client: client, scope: [ "auth_calendar_app_created" ])
+        described_class.create!(user: User.first, client: client, scope: [ "auth_calendar_app_created" ])
       end
 
-      fit do
-        credentials_mock = instance_double("Google::Auth::UserRefreshCredentials")
+      it do
+        credentials_mock = instance_double(Google::Auth::UserRefreshCredentials)
         allow(credentials_mock).to receive(:expires_at).and_return(1.minute.ago)
         allow(integration).to receive(:credentials).and_return(credentials_mock)
         expect(subject).to eq :expired_token

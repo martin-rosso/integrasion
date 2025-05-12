@@ -16,7 +16,7 @@ require 'rails_helper'
 module Nexo
   describe Client do
     it 'secret is serialized' do
-      client = Client.first
+      client = described_class.first
       expect(client.secret).to be_a Hash
     end
   end

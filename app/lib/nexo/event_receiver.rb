@@ -3,33 +3,50 @@ module Nexo
     # Synchronizable created locally, must not be called when the system
     # is notified of an external element creation
     def synchronizable_created(synchronizable)
-      validate_null_sequence_and_uuid!
+      validate_null_sequence_and_uuid!(synchronizable)
 
       # Y si es un external element?
-      synchronizable.update!(sequence: 0, uuid: UUID.generate)
+      synchronizable.update!(sequence: 0, uuid: SecureRandom.uuid)
 
-      SynchronizableChangedJob.perform_async(synchronizable)
+      SynchronizableChangedJob.perform_later(synchronizable)
     end
 
     # Synchronizable updated locally, must not be called when the system
     # is notified of an external element update
     def synchronizable_updated(synchronizable)
-      # FIXME: revisar
-      if change_is_significative_to_ical?
+      if synchronizable.change_is_significative_to_sequence?
         synchronizable.increment_sequence!
       end
 
-      SynchronizableChangedJob.perform_async(synchronizable)
+      # always enqueue the job, because, even if sequence remains the same
+      # the synchronizable may be removed from some Folder
+      SynchronizableChangedJob.perform_later(synchronizable)
     end
 
     # Synchronizable destroyed locally, must not be called when the system
     # is notified of an external element destroy
     def synchronizable_destroyed(synchronizable)
-      FolderService.destroy_elements(synchronizable, :synchronizable_destroyed)
+      folder_service.destroy_elements(synchronizable, :synchronizable_destroyed)
     end
 
     def folder_rule_changed(folder_rule)
       FolderSyncJob.perform_async(folder_rule.folder)
+    end
+
+    private
+
+    def folder_service
+      @folder_service ||= FolderService.new
+    end
+
+    def validate_null_sequence_and_uuid!(synchronizable)
+      unless synchronizable.sequence.nil?
+        raise Errors::InvalidSynchronizableState, "sequence is present: #{synchronizable.sequence}"
+      end
+
+      unless synchronizable.uuid.nil?
+        raise Errors::InvalidSynchronizableState, "uuid is present: #{synchronizable.uuid}"
+      end
     end
   end
 end

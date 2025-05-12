@@ -20,11 +20,11 @@ module Nexo
     end
 
     describe "method_missing" do
-      class DummyEvent
-        include Nexo::CalendarEvent
+      let(:dummy_event) do
+        aux = Class.new
+        aux.include Nexo::CalendarEvent
+        aux.new
       end
-
-      let(:dummy_event) { DummyEvent.new }
 
       it "when calling date_from raises InterfaceMethodNotImplemented" do
         expect { dummy_event.date_from }.to raise_error(Errors::InterfaceMethodNotImplemented)

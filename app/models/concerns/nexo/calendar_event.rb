@@ -1,6 +1,5 @@
 module Nexo
   module CalendarEvent
-    # extend ActiveSupport::Concern
     include Synchronizable
 
     define_protocol(:nexo_calendar_event, %i[
@@ -11,5 +10,10 @@ module Nexo
       summary
       description
     ])
+
+    def change_is_significative_to_sequence?
+      # FIXME: implementar
+      true
+    end
   end
 end

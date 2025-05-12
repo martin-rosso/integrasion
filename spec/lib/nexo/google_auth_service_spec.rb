@@ -9,7 +9,7 @@ module Nexo
     end
 
     describe "token_info" do
-      let(:service) { GoogleAuthService.new(integration) }
+      let(:service) { described_class.new(integration) }
 
       before do
         mock_get_credentials
@@ -24,13 +24,15 @@ module Nexo
     end
 
     describe "revoke_authorization!" do
-      let(:service) { GoogleAuthService.new(integration) }
+      let(:service) { described_class.new(integration) }
 
       it "revokes the integration" do
-        authorizer_mock = instance_double("Google::Auth::WebUserAuthorizer")
+        authorizer_mock = instance_double(Google::Auth::WebUserAuthorizer, revoke_authorization: nil)
         allow(service).to receive(:authorizer).and_return(authorizer_mock)
-        expect(authorizer_mock).to receive(:revoke_authorization).with(integration)
+
         service.revoke_authorization!
+
+        expect(authorizer_mock).to have_received(:revoke_authorization).with(integration)
       end
     end
   end

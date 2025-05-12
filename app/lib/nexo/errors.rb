@@ -8,5 +8,8 @@ module Nexo
 
     class InterfaceMethodNotImplemented < Error
     end
+
+    class InvalidSynchronizableState < Error
+    end
   end
 end
