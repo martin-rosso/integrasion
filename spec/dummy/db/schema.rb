@@ -10,7 +10,21 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_05_12_030530) do
+ActiveRecord::Schema[7.2].define(version: 2025_05_12_120945) do
+  create_table "events", force: :cascade do |t|
+    t.date "date_from"
+    t.date "date_to"
+    t.time "time_from"
+    t.time "time_to"
+    t.string "summary"
+    t.string "description"
+    t.string "uuid"
+    t.integer "sequence"
+    t.boolean "conflicted", default: false, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "nexo_clients", force: :cascade do |t|
     t.integer "service"
     t.json "secret"

@@ -5,5 +5,8 @@ module Nexo
 
     class InvalidParamsError < Error
     end
+
+    class InterfaceMethodNotImplemented < Error
+    end
   end
 end
