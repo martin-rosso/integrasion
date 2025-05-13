@@ -27,7 +27,13 @@ module Nexo
     # :nocov:
 
     def find_element(synchronizable:)
-      elements.where(synchronizable:).first
+      ary = elements.where(synchronizable:).to_a
+
+      if ary.count > 1
+        raise Errors::MoreThanOneElementInFolderForSynchronizable
+      end
+
+      ary.first
     end
   end
 end

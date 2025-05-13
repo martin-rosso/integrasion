@@ -15,54 +15,48 @@
 #
 DEFAULTS: &DEFAULTS
   flag_deletion: false
+  folder: default
 
 flagged_for_deletion_synchronizable_present:
+  <<: *DEFAULTS
   flag_deletion: true
   deletion_reason: synchronizable_destroyed
   synchronizable: initialized (Event)
-  folder: default
 
 flagged_for_deletion_ghost_synchronizable:
+  <<: *DEFAULTS
   flag_deletion: true
   deletion_reason: synchronizable_destroyed
   synchronizable_id: 1
   synchronizable_type: "Event"
-  folder: default
 
 unsynced_local_change:
-  synchronizable: initialized (Event)
-  folder: default
   <<: *DEFAULTS
+  synchronizable: initialized (Event)
 
 discarded:
-  synchronizable: initialized (Event)
-  folder: default
-  discarded_at: "2025-05-05"
   <<: *DEFAULTS
+  synchronizable: initialized (Event)
+  discarded_at: "2025-05-05"
 
 synced:
-  synchronizable: initialized (Event)
-  folder: default
   <<: *DEFAULTS
+  synchronizable: initialized (Event)
 
 conflicted:
+  <<: *DEFAULTS
   conflicted: true
   synchronizable: conflicted (Event)
-  folder: default
-  <<: *DEFAULTS
 
 conflicted_indirectly:
-  synchronizable: conflicted (Event)
-  folder: default
   <<: *DEFAULTS
+  synchronizable: conflicted (Event)
 
 with_ghost_synchronizable:
+  <<: *DEFAULTS
   synchronizable_id: 1
   synchronizable_type: "Event"
-  folder: default
-  <<: *DEFAULTS
 
 with_nil_sequence:
-  synchronizable: with_nil_sequence (Event)
-  folder: default
   <<: *DEFAULTS
+  synchronizable: with_nil_sequence (Event)

@@ -14,15 +14,8 @@ module Nexo
   class SyncElementJob < BaseJob
     limits_concurrency key: ->(element) { element.gid }
 
-    rescue_from ActiveJob::DeserializationError do |e|
-      # :nocov: borderline
-      raise Errors::SyncElementJobError, e, "element couldnt be deserialized"
-      # :nocov:
-    end
-
-    discard_on Errors::SyncElementJobError
-
-    retry_on StandardError, wait: :polynomially_longer
+    # discard_on Errors::SyncElementJobError
+    # retry_on StandardError, wait: :polynomially_longer
 
     def perform(element)
       validate_element_state!(element)

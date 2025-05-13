@@ -1,5 +1,7 @@
 require "rails_helper"
 
+RSpec::Matchers.define_negated_matcher :not_change, :change
+
 module Nexo
   describe FolderService do
     include ActiveJob::TestHelper
@@ -57,10 +59,13 @@ module Nexo
 
         context "when event is conflicted" do
           let(:event) { events(:conflicted) }
+          let(:element) { nexo_elements(:conflicted) }
 
-          it "does nothing" do
+          it "raises exception" do
+            allow(folder_service).to receive(:find_element).and_return(element)
             assert_no_enqueued_jobs do
-              expect { subject }.not_to change(element, :flagged_for_deletion?)
+              expect { subject }.to raise_error(Nexo::Errors::ElementConflicted)
+                                      .and(not_change(element, :flagged_for_deletion?))
             end
           end
         end

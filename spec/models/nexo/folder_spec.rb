@@ -14,6 +14,18 @@ require 'rails_helper'
 
 module Nexo
   RSpec.describe Folder, type: :model do
-    pending "add some examples to (or delete) #{__FILE__}"
+    let(:folder) { nexo_folders(:default) }
+
+    describe "find_element" do
+      subject do
+        folder.find_element(synchronizable: event)
+      end
+
+      let(:event) { events(:initialized) }
+
+      it do
+        expect { subject }.to raise_error(Errors::MoreThanOneElementInFolderForSynchronizable)
+      end
+    end
   end
 end
