@@ -36,7 +36,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_05_12_120945) do
 
   create_table "nexo_element_versions", force: :cascade do |t|
     t.integer "element_id", null: false
-    t.json "payload"
+    t.string "payload"
     t.string "etag"
     t.integer "sequence"
     t.integer "origin", null: false
@@ -86,7 +86,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_05_12_120945) do
 
   create_table "nexo_tokens", force: :cascade do |t|
     t.integer "integration_id", null: false
-    t.json "secret"
+    t.string "secret"
     t.integer "tpt_status", null: false
     t.string "environment", null: false
     t.datetime "created_at", null: false

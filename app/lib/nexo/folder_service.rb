@@ -7,6 +7,7 @@ module Nexo
   #   - Triggering the SyncElementJob
   class FolderService
     def find_element_and_sync(folder, synchronizable)
+      # TODO: handle conflicted synchronizable
       element = find_element(folder, synchronizable)
 
       if element.present?
@@ -48,6 +49,7 @@ module Nexo
 
       if synchronizable.conflicted?
         # FIXME: pg_warn("sync conflicted")
+        # FIXME: raise sth
 
         return
       end

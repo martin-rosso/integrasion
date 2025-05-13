@@ -4,7 +4,7 @@
 #
 #  id         :integer          not null, primary key
 #  element_id :integer          not null
-#  payload    :json
+#  payload    :string
 #  etag       :string
 #  sequence   :integer
 #  origin     :integer          not null

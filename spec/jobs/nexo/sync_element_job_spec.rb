@@ -13,11 +13,17 @@ module Nexo
     end
 
     context "when flagged for deletion" do
-      let(:element) { nexo_elements(:flagged_for_deletion) }
-
-      it do
+      it "when synchronizable is present, enqueues the job" do
+        element = nexo_elements(:flagged_for_deletion_synchronizable_present)
         assert_enqueued_jobs(1, only: DeleteRemoteResourceJob) do
-          subject
+          described_class.perform_now(element)
+        end
+      end
+
+      it "when synchronizable is ghosted, enqueues the job" do
+        element = nexo_elements(:flagged_for_deletion_ghost_synchronizable)
+        assert_enqueued_jobs(1, only: DeleteRemoteResourceJob) do
+          described_class.perform_now(element)
         end
       end
     end

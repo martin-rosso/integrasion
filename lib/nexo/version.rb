@@ -1,4 +1,4 @@
-# :nocov:
+# :nocov: non-viable
 module Nexo
   VERSION = "0.1.0"
 end

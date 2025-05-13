@@ -20,9 +20,11 @@ module Nexo
     has_many :element_versions, dependent: :destroy, class_name: "Nexo::ElementVersion"
 
     after_initialize do
+      # TODO: https://api.rubyonrails.org/classes/ActiveRecord/Attributes/ClassMethods.html#method-i-attribute
       self.flag_deletion = false if flag_deletion.nil?
     end
 
+    # FIXME: uuid must be replicated here, because of ghosted synchronizables
     delegate :uuid, to: :synchronizable
 
     enum :deletion_reason, no_longer_included_in_folder: 0, synchronizable_destroyed: 1
@@ -54,7 +56,7 @@ module Nexo
       flag_deletion?
     end
 
-    # :nocov: fixme, not yet being called
+    # :nocov: FIXME, not yet being called
     def flag_as_conflicted!
       update!(conflicted: true)
 

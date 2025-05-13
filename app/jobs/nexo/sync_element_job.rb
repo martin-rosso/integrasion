@@ -25,19 +25,18 @@ module Nexo
     retry_on StandardError, wait: :polynomially_longer
 
     def perform(element)
-      validate(element)
+      validate_element_state!(element)
 
       if element.flagged_for_deletion?
         DeleteRemoteResourceJob.perform_later(element)
 
-        # maybe shoud be discarded on DeleteRemoteResourceJob
         element.discard!
       else
         current_sequence = element.synchronizable.sequence
         last_synced_sequence = element.last_synced_sequence
 
         if element.external_unsynced_change?
-          # :nocov: fixme
+          # :nocov: FIXME
           raise Errors::SyncElementJobError, "not yet implemented"
           # :nocov:
 
@@ -57,7 +56,7 @@ module Nexo
             UpdateRemoteResourceJob.perform_later(element)
           else
             # :nocov: borderline
-            report_sequence_bigger_than_current_one!
+            raise Errors::LastSyncedSequenceBiggerThanCurrentOne, element
             # :nocov:
           end
         end
@@ -66,15 +65,14 @@ module Nexo
 
     private
 
-    def validate(element)
+    def validate_element_state!(element)
       if element.discarded?
-        # TODO: handle, si hay un external incoming change habría que flagear el Element
-        # si no hay cambios que sincronizar, se podría loguear un "already synced element" y ya
+        # TODO: maybe check the case of external incoming changes to flag the element as conflicted
         raise Errors::ElementDiscarded, element
       end
 
       if element.synchronizable.blank? && !element.flagged_for_deletion?
-        # should be flagged for deletion
+        # element should have been flagged for deletion
         raise Errors::SynchronizableNotFound, element
       end
 
@@ -86,7 +84,7 @@ module Nexo
         raise Errors::SynchronizableConflicted, element
       end
 
-      if element.synchronizable.sequence.nil?
+      if element.synchronizable.present? && element.synchronizable.sequence.nil?
         raise Errors::SynchronizableSequenceIsNull, element
       end
     end
@@ -96,13 +94,5 @@ module Nexo
 
     #   element.synchronizable.update_from!(last_external_unsynced_version)
     # end
-
-    def report_sequence_bigger_than_current_one!
-      # FIXME: report
-      # pg_err <<~MSG
-      #   last_synced_sequence bigger than current_sequence. \
-      #   Element id: #{element.id}")
-      # MSG
-    end
   end
 end

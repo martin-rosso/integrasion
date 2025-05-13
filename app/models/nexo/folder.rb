@@ -19,7 +19,7 @@ module Nexo
 
     validates :protocol, presence: true
 
-    # :nocov: fixme, not yet being called
+    # :nocov: FIXME, not yet being called
     def rules_match?(synchronizable)
       # FIXME: implement
       true

@@ -21,8 +21,10 @@ module Nexo
 
     describe "method_missing" do
       let(:dummy_event) do
-        aux = Class.new
-        aux.include Nexo::CalendarEvent
+        aux = Class.new do
+          def self.has_many(*, **); end
+          include Nexo::CalendarEvent
+        end
         aux.new
       end
 
