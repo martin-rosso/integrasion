@@ -36,7 +36,7 @@ module Nexo
         last_synced_sequence = element.last_synced_sequence
 
         if element.external_unsynced_change?
-          # :nocov: FIXME
+          # :nocov: TODO
           raise Errors::SyncElementJobError, "not yet implemented"
           # :nocov:
 
@@ -51,7 +51,7 @@ module Nexo
           # end
         else
           if current_sequence == last_synced_sequence
-            # FIXME: log "Element already synced: #{element.to_gid}"
+            # TODO: log "Element already synced: #{element.to_gid}"
           elsif current_sequence > last_synced_sequence
             UpdateRemoteResourceJob.perform_later(element)
           else

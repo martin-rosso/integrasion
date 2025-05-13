@@ -56,7 +56,7 @@ module Nexo
       flag_deletion?
     end
 
-    # :nocov: FIXME, not yet being called
+    # :nocov: TODO, not yet being called
     def flag_as_conflicted!
       update!(conflicted: true)
 

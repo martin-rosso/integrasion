@@ -48,7 +48,7 @@ module Nexo
       synchronizable = element.synchronizable
 
       if synchronizable.conflicted?
-        # FIXME: pg_warn("sync conflicted")
+        # TODO: pg_warn("sync conflicted")
         # FIXME: raise sth
 
         return

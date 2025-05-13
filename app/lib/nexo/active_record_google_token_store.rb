@@ -30,7 +30,7 @@ module Nexo
       if token.present?
         token.update!(tpt_status: :revoked)
       else
-        # FIXME: pg_warn("Couldn't find token for revocation: #{id}")
+        # TODO: pg_warn("Couldn't find token for revocation: #{id}")
       end
     end
 

@@ -37,8 +37,8 @@ module Nexo
         service.tokeninfo
       end
     rescue *EXCEPTIONS => e
-      # FIXME: handle this
-      # :nocov: FIXME
+      # TODO: handle this
+      # :nocov: TODO
       Nexo::ActiveRecordGoogleTokenStore.new.delete(@integration)
       e.class.to_s
       # :nocov:
@@ -62,7 +62,7 @@ module Nexo
       end
       authorizer.get_credentials @integration, request
     rescue Signet::AuthorizationError
-      # FIXME: log
+      # TODO: log
     end
 
     def get_authorization_url(request)

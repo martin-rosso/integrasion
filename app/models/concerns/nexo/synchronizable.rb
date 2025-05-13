@@ -13,7 +13,7 @@ module Nexo
       def define_protocol(name, methods)
         define_method(:protocols) do
           if defined? super
-            # :nocov: FIXME, not yet implemented
+            # :nocov: TODO, not yet implemented
             super << name
             # :nocov:
           else
@@ -54,7 +54,7 @@ module Nexo
       nexo_elements.conflicted.any?
     end
 
-    # :nocov: FIXME, not yet implemented
+    # :nocov: TODO, not yet implemented
     def update_from!(element_version)
       transaction do
         # TODO: parse the element_version.payload
