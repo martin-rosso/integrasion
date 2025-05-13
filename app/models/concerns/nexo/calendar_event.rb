@@ -13,10 +13,11 @@ module Nexo
       description
     ])
 
+    # :nocov: FIXME
     def change_is_significative_to_sequence?
-      # FIXME: implementar
       true
     end
+    # :nocov:
 
     # TODO: refactor https://api.rubyonrails.org/classes/ActiveSupport/Concern.html
     included do
