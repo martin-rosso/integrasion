@@ -10,15 +10,65 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_05_06_125057) do
+ActiveRecord::Schema[7.2].define(version: 2025_05_12_120945) do
+  create_table "events", force: :cascade do |t|
+    t.date "date_from"
+    t.date "date_to"
+    t.time "time_from"
+    t.time "time_to"
+    t.string "summary"
+    t.string "description"
+    t.string "uuid"
+    t.integer "sequence"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "nexo_clients", force: :cascade do |t|
     t.integer "service"
-    t.json "secret"
+    t.string "secret"
     t.integer "tcp_status"
     t.integer "brand_name"
     t.boolean "user_integrations_allowed"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "nexo_element_versions", force: :cascade do |t|
+    t.integer "element_id", null: false
+    t.string "payload"
+    t.string "etag"
+    t.integer "sequence"
+    t.integer "origin", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["element_id"], name: "index_nexo_element_versions_on_element_id"
+  end
+
+  create_table "nexo_elements", force: :cascade do |t|
+    t.integer "folder_id", null: false
+    t.integer "synchronizable_id", null: false
+    t.string "synchronizable_type", null: false
+    t.boolean "flag_deletion", null: false
+    t.integer "deletion_reason"
+    t.boolean "conflicted", default: false, null: false
+    t.datetime "discarded_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["discarded_at"], name: "index_nexo_elements_on_discarded_at"
+    t.index ["folder_id"], name: "index_nexo_elements_on_folder_id"
+    t.index ["synchronizable_id"], name: "index_nexo_elements_on_synchronizable_id"
+    t.index ["synchronizable_type"], name: "index_nexo_elements_on_synchronizable_type"
+  end
+
+  create_table "nexo_folders", force: :cascade do |t|
+    t.integer "integration_id", null: false
+    t.integer "protocol", null: false
+    t.string "external_identifier"
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["integration_id"], name: "index_nexo_folders_on_integration_id"
   end
 
   create_table "nexo_integrations", force: :cascade do |t|
@@ -36,7 +86,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_05_06_125057) do
 
   create_table "nexo_tokens", force: :cascade do |t|
     t.integer "integration_id", null: false
-    t.json "secret"
+    t.string "secret"
     t.integer "tpt_status", null: false
     t.string "environment", null: false
     t.datetime "created_at", null: false
@@ -51,6 +101,9 @@ ActiveRecord::Schema[7.2].define(version: 2025_05_06_125057) do
     t.datetime "updated_at", null: false
   end
 
+  add_foreign_key "nexo_element_versions", "nexo_elements", column: "element_id"
+  add_foreign_key "nexo_elements", "nexo_folders", column: "folder_id"
+  add_foreign_key "nexo_folders", "nexo_integrations", column: "integration_id"
   add_foreign_key "nexo_integrations", "nexo_clients", column: "client_id"
   add_foreign_key "nexo_integrations", "users"
   add_foreign_key "nexo_tokens", "nexo_integrations", column: "integration_id"

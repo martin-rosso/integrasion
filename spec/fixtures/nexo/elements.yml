@@ -1,0 +1,68 @@
+# == Schema Information
+#
+# Table name: nexo_elements
+#
+#  id                  :integer          not null, primary key
+#  folder_id           :integer          not null
+#  synchronizable_id   :integer          not null
+#  synchronizable_type :string           not null
+#  flag_deletion       :boolean          not null
+#  deletion_reason     :integer
+#  conflicted          :boolean          default(FALSE), not null
+#  discarded_at        :datetime
+#  created_at          :datetime         not null
+#  updated_at          :datetime         not null
+#
+DEFAULTS: &DEFAULTS
+  flag_deletion: false
+
+flagged_for_deletion_synchronizable_present:
+  flag_deletion: true
+  deletion_reason: synchronizable_destroyed
+  synchronizable: initialized (Event)
+  folder: default
+
+flagged_for_deletion_ghost_synchronizable:
+  flag_deletion: true
+  deletion_reason: synchronizable_destroyed
+  synchronizable_id: 1
+  synchronizable_type: "Event"
+  folder: default
+
+unsynced_local_change:
+  synchronizable: initialized (Event)
+  folder: default
+  <<: *DEFAULTS
+
+discarded:
+  synchronizable: initialized (Event)
+  folder: default
+  discarded_at: "2025-05-05"
+  <<: *DEFAULTS
+
+synced:
+  synchronizable: initialized (Event)
+  folder: default
+  <<: *DEFAULTS
+
+conflicted:
+  conflicted: true
+  synchronizable: conflicted (Event)
+  folder: default
+  <<: *DEFAULTS
+
+conflicted_indirectly:
+  synchronizable: conflicted (Event)
+  folder: default
+  <<: *DEFAULTS
+
+with_ghost_synchronizable:
+  synchronizable_id: 1
+  synchronizable_type: "Event"
+  folder: default
+  <<: *DEFAULTS
+
+with_nil_sequence:
+  synchronizable: with_nil_sequence (Event)
+  folder: default
+  <<: *DEFAULTS

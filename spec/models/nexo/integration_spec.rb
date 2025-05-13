@@ -16,13 +16,29 @@ require 'rails_helper'
 
 module Nexo
   describe Integration do
-    subject do
-      client = Client.first
-      Integration.create!(user: User.first, client: client, scope: [ "auth_calendar_app_created" ])
+    let(:client) { nexo_clients(:default) }
+    let(:user) { users(:default) }
+
+    let(:integration) do
+      described_class.create!(user:, client:, scope: [ "auth_calendar_app_created" ])
     end
 
-    it do
-      expect { subject }.to change(Integration, :count).by(1)
+    describe "expires_in" do
+      subject do
+        integration.expires_in
+      end
+
+      it do
+        allow(integration).to receive(:credentials).and_return(nil)
+        expect(subject).to be_nil
+      end
+
+      it do
+        expires_at = 1.minute.from_now
+        credentials_mock = instance_double(Google::Auth::UserRefreshCredentials, expires_at:)
+        allow(integration).to receive(:credentials).and_return(credentials_mock)
+        expect(subject).to be_a Integer
+      end
     end
 
     describe "token_status" do
@@ -30,17 +46,36 @@ module Nexo
         integration.token_status
       end
 
-      let(:client) { Client.first }
-
       let(:integration) do
-        Integration.create!(user: User.first, client: client, scope: [ "auth_calendar_app_created" ])
+        aux = described_class.create!(user: User.first, client: client, scope: [ "auth_calendar_app_created" ])
+        credentials_mock = instance_double(Google::Auth::UserRefreshCredentials, expires_at:)
+        allow(aux).to receive(:credentials).and_return(credentials_mock)
+        aux
       end
 
-      fit do
-        credentials_mock = instance_double("Google::Auth::UserRefreshCredentials")
-        allow(credentials_mock).to receive(:expires_at).and_return(1.minute.ago)
-        allow(integration).to receive(:credentials).and_return(credentials_mock)
-        expect(subject).to eq :expired_token
+      context "when no token" do
+        let(:expires_at) { 1.minute.ago }
+
+        it do
+          allow(integration).to receive(:credentials).and_return(nil)
+          expect(subject).to eq :no_token
+        end
+      end
+
+      context "when expired" do
+        let(:expires_at) { 1.minute.ago }
+
+        it do
+          expect(subject).to eq :expired_token
+        end
+      end
+
+      context "when not expired" do
+        let(:expires_at) { 1.minute.from_now }
+
+        it do
+          expect(subject).to eq :active_token
+        end
       end
     end
   end

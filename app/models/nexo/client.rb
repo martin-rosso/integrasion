@@ -4,7 +4,7 @@
 #
 #  id                        :integer          not null, primary key
 #  service                   :integer
-#  secret                    :json
+#  secret                    :string
 #  tcp_status                :integer
 #  brand_name                :integer
 #  user_integrations_allowed :boolean
@@ -31,6 +31,8 @@ module Nexo
 
     validates :service, :user_integrations_allowed,
               :tcp_status, :secret, presence: true
+
+    serialize :secret, coder: JSON
 
     def to_s
       service.titleize

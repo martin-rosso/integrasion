@@ -38,7 +38,7 @@ module Nexo
       end
     rescue *EXCEPTIONS => e
       # FIXME: handle this
-      # :nocov:
+      # :nocov: FIXME
       Nexo::ActiveRecordGoogleTokenStore.new.delete(@integration)
       e.class.to_s
       # :nocov:
@@ -56,7 +56,9 @@ module Nexo
     # Si el client tiene más permisos que los que el user solicitó
     def get_credentials(request = nil)
       if request.present? && request.session["code_verifier"].present?
+        # :nocov: tricky
         authorizer.code_verifier = request.session["code_verifier"]
+        # :nocov:
       end
       authorizer.get_credentials @integration, request
     rescue Signet::AuthorizationError

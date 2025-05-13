@@ -54,18 +54,19 @@ rescue ActiveRecord::PendingMigrationError => e
 end
 RSpec.configure do |config|
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
+  config.fixture_paths = ["#{::Rails.root}/../fixtures"]
 
   # If you're not using ActiveRecord, or you'd prefer not to run each of your
   # examples within a transaction, remove the following line or assign false
   # instead of true.
   config.use_transactional_fixtures = true
 
+  config.include ActiveJob::TestHelper, type: :job
+
+  config.global_fixtures = :all
+
   # You can uncomment this line to turn off ActiveRecord support entirely.
   # config.use_active_record = false
-
-  config.before(:each) do |example|
-    Nexo::Engine.load_seed
-  end
 
   # RSpec Rails uses metadata to mix in different behaviours to your tests,
   # for example enabling you to call `get` and `post` in request specs. e.g.:
