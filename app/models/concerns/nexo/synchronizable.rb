@@ -40,8 +40,9 @@ module Nexo
     # ----------------------------------------------------
 
     module Relations
-      def included(base)
-        base.has_many :nexo_elements, class_name: "Nexo::Element", as: :synchronizable
+      extend ActiveSupport::Concern
+      included do
+        has_many :nexo_elements, class_name: "Nexo::Element", as: :synchronizable
       end
     end
 

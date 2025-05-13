@@ -1,4 +1,16 @@
-default:
+with_nil_sequence:
   date_from: "2025-02-01"
   date_to: "2025-02-02"
   summary: "Some event"
+
+initialized:
+  date_from: "2025-02-01"
+  date_to: "2025-02-02"
+  summary: "Some event"
+  sequence: 0
+
+conflicted:
+  date_from: "2025-02-01"
+  date_to: "2025-02-02"
+  summary: "Some event"
+  sequence: 0

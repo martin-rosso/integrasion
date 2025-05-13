@@ -6,7 +6,7 @@ module Nexo
     include ActiveJob::TestHelper
 
     let(:event_receiver) { described_class.new }
-    let(:event) { events(:default) }
+    let(:event) { events(:with_nil_sequence) }
 
     describe "synchronizable_created" do
       subject do

@@ -8,6 +8,8 @@
 #  synchronizable_type :string           not null
 #  flag_deletion       :boolean          not null
 #  deletion_reason     :integer
+#  conflicted          :boolean          default(FALSE), not null
+#  discarded_at        :datetime
 #  created_at          :datetime         not null
 #  updated_at          :datetime         not null
 #
@@ -35,14 +37,26 @@ module Nexo
       element_versions.where(sequence: nil).order(created_at: :desc).first
     end
 
-    def mark_for_deletion!(deletion_reason)
+    def flag_for_deletion!(deletion_reason)
       update!(flag_deletion: true, deletion_reason:)
     end
 
-    def mark_as_conflicted!
+    def flagged_for_deletion?
+      flag_deletion?
+    end
+
+    def flag_as_conflicted!
       update!(conflicted: true)
 
       # TODO: log "Conflicted Element: #{element.gid}"
+    end
+
+    def discarded?
+      discarded_at.present?
+    end
+
+    def discard!
+      update!(discarded_at: Time.current)
     end
   end
 end

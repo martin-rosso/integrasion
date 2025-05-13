@@ -8,6 +8,8 @@
 #  synchronizable_type :string           not null
 #  flag_deletion       :boolean          not null
 #  deletion_reason     :integer
+#  conflicted          :boolean          default(FALSE), not null
+#  discarded_at        :datetime
 #  created_at          :datetime         not null
 #  updated_at          :datetime         not null
 #

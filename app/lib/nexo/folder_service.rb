@@ -25,7 +25,7 @@ module Nexo
           folder:
         )
 
-        SyncElementJob.perform_async(element)
+        SyncElementJob.perform_later(element)
       end
     end
 
@@ -42,17 +42,17 @@ module Nexo
       must_be_included = folder.rules_match?(synchronizable)
 
       if !must_be_included
-        element.mark_for_deletion!(:no_longer_included_in_folder)
+        element.flag_for_deletion!(:no_longer_included_in_folder)
       end
 
-      SyncElementJob.perform_async(element)
+      SyncElementJob.perform_later(element)
     end
 
     def destroy_elements(synchronizable, reason)
       synchronizable.elements.each do |element|
-        element.mark_for_deletion!(reason)
+        element.flag_for_deletion!(reason)
 
-        SyncElementJob.perform_async(element)
+        SyncElementJob.perform_later(element)
       end
     end
   end

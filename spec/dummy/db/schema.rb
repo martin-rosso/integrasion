@@ -20,14 +20,13 @@ ActiveRecord::Schema[7.2].define(version: 2025_05_12_120945) do
     t.string "description"
     t.string "uuid"
     t.integer "sequence"
-    t.boolean "conflicted", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
   create_table "nexo_clients", force: :cascade do |t|
     t.integer "service"
-    t.json "secret"
+    t.string "secret"
     t.integer "tcp_status"
     t.integer "brand_name"
     t.boolean "user_integrations_allowed"
@@ -52,8 +51,11 @@ ActiveRecord::Schema[7.2].define(version: 2025_05_12_120945) do
     t.string "synchronizable_type", null: false
     t.boolean "flag_deletion", null: false
     t.integer "deletion_reason"
+    t.boolean "conflicted", default: false, null: false
+    t.datetime "discarded_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["discarded_at"], name: "index_nexo_elements_on_discarded_at"
     t.index ["folder_id"], name: "index_nexo_elements_on_folder_id"
     t.index ["synchronizable_id"], name: "index_nexo_elements_on_synchronizable_id"
     t.index ["synchronizable_type"], name: "index_nexo_elements_on_synchronizable_type"

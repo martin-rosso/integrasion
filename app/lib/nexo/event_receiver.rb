@@ -30,7 +30,7 @@ module Nexo
     end
 
     def folder_rule_changed(folder_rule)
-      FolderSyncJob.perform_async(folder_rule.folder)
+      FolderSyncJob.perform_later(folder_rule.folder)
     end
 
     private

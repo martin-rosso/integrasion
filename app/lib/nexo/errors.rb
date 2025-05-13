@@ -13,5 +13,6 @@ module Nexo
     class ElementConflicted < SyncElementJobError; end
     class ElementDiscarded < SyncElementJobError; end
     class SynchronizableNotFound < SyncElementJobError; end
+    class SynchronizableSequenceIsNull < SyncElementJobError; end
   end
 end

@@ -7,6 +7,7 @@ class CreateNexoElements < ActiveRecord::Migration[7.2]
       t.boolean :flag_deletion, null: false
       t.integer :deletion_reason
       t.boolean :conflicted, null: false, default: false
+      t.datetime :discarded_at, index: true
 
       t.timestamps
     end
