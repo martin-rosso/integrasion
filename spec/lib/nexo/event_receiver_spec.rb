@@ -2,7 +2,6 @@ require "rails_helper"
 
 module Nexo
   describe EventReceiver do
-    fixtures :events
     include ActiveJob::TestHelper
 
     let(:event_receiver) { described_class.new }
@@ -18,7 +17,7 @@ module Nexo
       end
 
       it "enqueues the synchronizable changed job" do
-        assert_enqueued_with(job: SynchronizableChangedJob) do
+        assert_enqueued_jobs(1, only: SynchronizableChangedJob) do
           subject
         end
       end
@@ -43,7 +42,7 @@ module Nexo
         allow(event).to receive(:change_is_significative_to_sequence?).and_return(false)
         allow(event).to receive(:increment_sequence!)
 
-        assert_enqueued_with(job: SynchronizableChangedJob) do
+        assert_enqueued_jobs(1, only: SynchronizableChangedJob) do
           subject
         end
 
@@ -55,7 +54,7 @@ module Nexo
         allow(event).to receive(:change_is_significative_to_sequence?).and_return(true)
         allow(event).to receive(:increment_sequence!)
 
-        assert_enqueued_with(job: SynchronizableChangedJob) do
+        assert_enqueued_jobs(1, only: SynchronizableChangedJob) do
           subject
         end
 
@@ -87,7 +86,7 @@ module Nexo
       let(:folder_rule) { }
 
       pending "when change is not significative" do
-        assert_enqueued_with(job: FolderSyncJob) do
+        assert_enqueued_jobs(1, only: FolderSyncJob) do
           subject
         end
       end

@@ -1,16 +1,20 @@
-with_nil_sequence:
+DEFAULTS: &DEFAULTS
   date_from: "2025-02-01"
   date_to: "2025-02-02"
-  summary: "Some event"
+  summary: $LABEL
+
+with_nil_sequence:
+  <<: *DEFAULTS
 
 initialized:
-  date_from: "2025-02-01"
-  date_to: "2025-02-02"
-  summary: "Some event"
   sequence: 0
+  <<: *DEFAULTS
 
 conflicted:
-  date_from: "2025-02-01"
-  date_to: "2025-02-02"
-  summary: "Some event"
   sequence: 0
+  <<: *DEFAULTS
+
+not_yet_synced:
+  sequence: 0
+  <<: *DEFAULTS
+

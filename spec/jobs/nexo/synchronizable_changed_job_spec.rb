@@ -2,8 +2,6 @@ require "rails_helper"
 
 module Nexo
   describe SynchronizableChangedJob, type: :job do
-    fixtures :all
-
     subject do
       described_class.perform_now(event)
     end

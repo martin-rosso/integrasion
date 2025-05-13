@@ -38,5 +38,10 @@ module Nexo
         expect { subject.call }.to raise_error(NoMethodError)
       end
     end
+
+    pending "increment_sequence!"
+    pending "update_from!"
+    pending "conflicted?"
+    pending "conflicted?"
   end
 end

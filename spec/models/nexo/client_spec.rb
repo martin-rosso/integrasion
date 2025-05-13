@@ -15,8 +15,6 @@ require 'rails_helper'
 
 module Nexo
   describe Client do
-    fixtures "users", "events", "nexo/clients", "nexo/integrations", "nexo/folders", "nexo/elements"
-
     it 'secret is serialized' do
       client = nexo_clients(:default)
       expect(client.secret).to be_a Hash

@@ -19,11 +19,19 @@ module Nexo
     belongs_to :synchronizable, polymorphic: true
     has_many :element_versions, dependent: :destroy, class_name: "Nexo::ElementVersion"
 
+    after_initialize do
+      self.flag_deletion = false if flag_deletion.nil?
+    end
+
     delegate :uuid, to: :synchronizable
 
     enum :deletion_reason, no_longer_included_in_folder: 0, synchronizable_destroyed: 1
 
     scope :conflicted, -> { where(conflicted: true) }
+
+    def rules_still_match?
+      folder.rules_match?(synchronizable)
+    end
 
     def last_synced_sequence
       element_versions.pluck(:sequence).max || -1

@@ -2,8 +2,6 @@ require "rails_helper"
 
 module Nexo
   describe SyncElementJob, type: :job do
-    fixtures :all
-
     subject do
       described_class.perform_now(element)
     end
@@ -18,7 +16,7 @@ module Nexo
       let(:element) { nexo_elements(:flagged_for_deletion) }
 
       it do
-        assert_enqueued_with(job: DeleteRemoteResourceJob) do
+        assert_enqueued_jobs(1, only: DeleteRemoteResourceJob) do
           subject
         end
       end
@@ -38,7 +36,7 @@ module Nexo
       let(:element) { nexo_elements(:unsynced_local_change) }
 
       it do
-        assert_enqueued_with(job: UpdateRemoteResourceJob) do
+        assert_enqueued_jobs(1, only: UpdateRemoteResourceJob) do
           subject
         end
       end

@@ -13,6 +13,7 @@
 module Nexo
   class Folder < ApplicationRecord
     belongs_to :integration, class_name: "Nexo::Integration"
+    has_many :elements, class_name: "Nexo::Element"
 
     enum :protocol, calendar: 0
 
@@ -20,7 +21,11 @@ module Nexo
 
     def rules_match?(synchronizable)
       # FIXME: implement
-      raise "implementar"
+      true
+    end
+
+    def find_element(synchronizable:)
+      elements.where(synchronizable:).first
     end
   end
 end

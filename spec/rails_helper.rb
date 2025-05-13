@@ -62,6 +62,9 @@ RSpec.configure do |config|
   config.use_transactional_fixtures = true
 
   config.include ActiveJob::TestHelper, type: :job
+
+  config.global_fixtures = :all
+
   # You can uncomment this line to turn off ActiveRecord support entirely.
   # config.use_active_record = false
 
