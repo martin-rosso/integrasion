@@ -37,7 +37,8 @@ module Nexo
       if must_be_included
         element = Element.create!(
           synchronizable:,
-          folder:
+          folder:,
+          uuid: synchronizable.uuid,
         )
 
         SyncElementJob.perform_later(element)
@@ -49,8 +50,6 @@ module Nexo
 
       if synchronizable.conflicted?
         raise Nexo::Errors::ElementConflicted, element
-
-        return
       end
 
       # Check if Synchronizable still must be included in folder

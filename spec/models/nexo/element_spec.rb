@@ -6,6 +6,7 @@
 #  folder_id           :integer          not null
 #  synchronizable_id   :integer          not null
 #  synchronizable_type :string           not null
+#  uuid                :string
 #  flag_deletion       :boolean          not null
 #  deletion_reason     :integer
 #  conflicted          :boolean          default(FALSE), not null

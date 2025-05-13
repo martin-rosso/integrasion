@@ -49,6 +49,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_05_12_120945) do
     t.integer "folder_id", null: false
     t.integer "synchronizable_id", null: false
     t.string "synchronizable_type", null: false
+    t.string "uuid"
     t.boolean "flag_deletion", null: false
     t.integer "deletion_reason"
     t.boolean "conflicted", default: false, null: false

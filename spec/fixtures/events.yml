@@ -2,19 +2,19 @@ DEFAULTS: &DEFAULTS
   date_from: "2025-02-01"
   date_to: "2025-02-02"
   summary: $LABEL
+  uuid: uuid_$LABEL
+  sequence: 0
 
 with_nil_sequence:
   <<: *DEFAULTS
+  uuid:
+  sequence:
 
 initialized:
-  sequence: 0
   <<: *DEFAULTS
 
 conflicted:
-  sequence: 0
   <<: *DEFAULTS
 
 not_yet_synced:
-  sequence: 0
   <<: *DEFAULTS
-

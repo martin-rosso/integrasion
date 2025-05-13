@@ -6,6 +6,7 @@
 #  folder_id           :integer          not null
 #  synchronizable_id   :integer          not null
 #  synchronizable_type :string           not null
+#  uuid                :string
 #  flag_deletion       :boolean          not null
 #  deletion_reason     :integer
 #  conflicted          :boolean          default(FALSE), not null
@@ -16,6 +17,7 @@
 DEFAULTS: &DEFAULTS
   flag_deletion: false
   folder: default
+  uuid: uuid_$LABEL
 
 flagged_for_deletion_synchronizable_present:
   <<: *DEFAULTS

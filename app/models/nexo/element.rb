@@ -6,6 +6,7 @@
 #  folder_id           :integer          not null
 #  synchronizable_id   :integer          not null
 #  synchronizable_type :string           not null
+#  uuid                :string
 #  flag_deletion       :boolean          not null
 #  deletion_reason     :integer
 #  conflicted          :boolean          default(FALSE), not null
@@ -24,8 +25,7 @@ module Nexo
       self.flag_deletion = false if flag_deletion.nil?
     end
 
-    # FIXME: uuid must be replicated here, because of ghosted synchronizables
-    delegate :uuid, to: :synchronizable
+    validates :uuid, presence: true
 
     enum :deletion_reason, no_longer_included_in_folder: 0, synchronizable_destroyed: 1
 

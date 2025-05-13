@@ -4,6 +4,7 @@ class CreateNexoElements < ActiveRecord::Migration[7.2]
       t.references :folder, null: false, foreign_key: { to_table: :nexo_folders }
       t.integer :synchronizable_id, null: false, index: true
       t.string :synchronizable_type, null: false, index: true
+      t.string :uuid
       t.boolean :flag_deletion, null: false
       t.integer :deletion_reason
       t.boolean :conflicted, null: false, default: false
