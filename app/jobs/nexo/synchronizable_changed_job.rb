@@ -6,11 +6,16 @@ module Nexo
     def perform(synchronizable)
       # Maybe restrict this query to a more specific scope
       scope = Folder.all
-      service = FolderService.new
 
       scope.each do |folder|
         folder_service.find_element_and_sync(folder, synchronizable)
       end
+    end
+
+    private
+
+    def folder_service
+      @folder_service ||= FolderService.new
     end
   end
 end

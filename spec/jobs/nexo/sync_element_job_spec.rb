@@ -2,8 +2,7 @@ require "rails_helper"
 
 module Nexo
   describe SyncElementJob, type: :job do
-    include ActiveJob::TestHelper
-    fixtures "users", "events", "nexo/clients", "nexo/integrations", "nexo/folders", "nexo/elements", "nexo/element_versions"
+    fixtures :all
 
     subject do
       described_class.perform_now(element)
