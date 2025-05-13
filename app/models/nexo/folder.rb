@@ -19,10 +19,12 @@ module Nexo
 
     validates :protocol, presence: true
 
+    # :nocov: fixme, not yet being called
     def rules_match?(synchronizable)
       # FIXME: implement
       true
     end
+    # :nocov:
 
     def find_element(synchronizable:)
       elements.where(synchronizable:).first

@@ -30,7 +30,8 @@ module Nexo
     scope :conflicted, -> { where(conflicted: true) }
 
     def rules_still_match?
-      folder.rules_match?(synchronizable)
+      # TODO: implement
+      # folder.rules_match?(synchronizable)
     end
 
     def last_synced_sequence
@@ -53,11 +54,13 @@ module Nexo
       flag_deletion?
     end
 
+    # :nocov: fixme, not yet being called
     def flag_as_conflicted!
       update!(conflicted: true)
 
       # TODO: log "Conflicted Element: #{element.gid}"
     end
+    # :nocov:
 
     def discarded?
       discarded_at.present?

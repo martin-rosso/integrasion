@@ -13,7 +13,9 @@ module Nexo
       def define_protocol(name, methods)
         define_method(:protocols) do
           if defined? super
+            # :nocov: fixme, not yet implemented
             super << name
+            # :nocov:
           else
             [ name ]
           end
@@ -23,7 +25,9 @@ module Nexo
           if defined? super
             [ super(), methods ].flatten
           else
-            methods
+            # :nocov: borderline
+            raise "protocol_methods should be defined"
+            # :nocov:
           end
         end
       end
@@ -50,6 +54,7 @@ module Nexo
       nexo_elements.conflicted.any?
     end
 
+    # :nocov: fixme, not yet implemented
     def update_from!(element_version)
       transaction do
         # TODO: parse the element_version.payload
@@ -59,11 +64,14 @@ module Nexo
         element_version.update_sequence!(new_sequence)
       end
     end
+    # :nocov:
 
     def increment_sequence!
       # This operation is performed directly in the database without the need
       # to read the current value first. So, it is atomic at a database level,
       # though the in-memory object consitency is subject to race conditions.
+      #
+      # increment(:sequence), without the bang, is not atomic
       #
       # https://api.rubyonrails.org/v7.2/classes/ActiveRecord/Persistence.html#method-i-increment-21
       increment!(:sequence)

@@ -29,15 +29,18 @@ module Nexo
       folder_service.destroy_elements(synchronizable, :synchronizable_destroyed)
     end
 
-    def folder_rule_changed(folder_rule)
-      FolderSyncJob.perform_later(folder_rule.folder)
-    end
+    # TODO: implement
+    # def folder_rule_changed(folder_rule)
+    #   FolderSyncJob.perform_later(folder_rule.folder)
+    # end
 
     private
 
+    # :nocov: mocked
     def folder_service
       @folder_service ||= FolderService.new
     end
+    # :nocov:
 
     def validate_null_sequence_and_uuid!(synchronizable)
       unless synchronizable.sequence.nil?

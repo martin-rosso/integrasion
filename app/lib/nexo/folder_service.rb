@@ -17,7 +17,7 @@ module Nexo
     end
 
     def destroy_elements(synchronizable, reason)
-      synchronizable.elements.each do |element|
+      synchronizable.nexo_elements.each do |element|
         element.flag_for_deletion!(reason)
 
         SyncElementJob.perform_later(element)

@@ -78,18 +78,19 @@ module Nexo
       end
     end
 
-    describe "folder_rule_changed" do
-      subject do
-        event_receiver.folder_rule_changed(folder_rule)
-      end
+    # describe "folder_rule_changed" do
+    #   subject do
+    #     event_receiver.folder_rule_changed(folder_rule)
+    #   end
 
-      let(:folder_rule) { }
+    #   let(:folder_rule) { double("folder_rule", folder: folder) }
+    #   let(:folder) { nexo_folders(:default) }
 
-      pending "when change is not significative" do
-        assert_enqueued_jobs(1, only: FolderSyncJob) do
-          subject
-        end
-      end
-    end
+    #   pending "when change is not significative" do
+    #     assert_enqueued_jobs(1, only: FolderSyncJob) do
+    #       subject
+    #     end
+    #   end
+    # end
   end
 end

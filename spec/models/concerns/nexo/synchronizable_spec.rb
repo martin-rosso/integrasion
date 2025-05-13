@@ -39,7 +39,20 @@ module Nexo
       end
     end
 
-    pending "increment_sequence!"
+    describe "increment_sequence!" do
+      let(:event) { events(:initialized) }
+
+      it "increments the sequence atomicly" do
+        event2 = Event.find(event.id)
+        event2.increment_sequence!
+        new_value = event2.sequence
+        expect { event.increment_sequence! }.to change { Event.find(event.id).sequence }.to(new_value + 1)
+
+        # the in-memory value is inconsistent, this is a known issue
+        expect(event.sequence).to eq new_value
+      end
+    end
+
     pending "update_from!"
     pending "conflicted?"
     pending "conflicted?"

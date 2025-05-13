@@ -67,19 +67,19 @@ module Nexo
       end
     end
 
-    # describe "sync_element" do
-    #   subject do
-    #     folder_service.send(:sync_element, element)
-    #   end
+    describe "destroy_elements" do
+      subject do
+        folder_service.destroy_elements(event, :no_longer_included_in_folder)
+      end
 
-    #   let(:element) { nexo_elements(:unsynced_local_change) }
+      let(:event) { events(:initialized) }
+      let(:elements) { event.nexo_elements }
 
-    #   it do
-    #     allow(element).to receive(:rules_still_match?).and_return(true)
-    #     assert_enqueued_jobs(1, only: SyncElementJob) do
-    #       subject
-    #     end
-    #   end
-    # end
+      it "marks all elements as flagged for deletion and enqueues a job for each" do
+        assert_enqueued_jobs(elements.count, only: SyncElementJob) do
+          expect { subject }.to change { elements.pluck(:flag_deletion).uniq }.to([ true ])
+        end
+      end
+    end
   end
 end
