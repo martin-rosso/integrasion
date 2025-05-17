@@ -22,13 +22,22 @@ module Nexo
         end
       end
 
-      it "with present sequence it raises exception" do
-        event.sequence = 0
-        expect { subject }.to raise_error(Errors::InvalidSynchronizableState)
+
+      it "when performing the jobs" do
+        response = ApiResponse.new(etag: "bla", payload: "payload", status: :ok)
+        service_mock = instance_double(GoogleCalendarService, insert: response)
+        allow(ServiceBuilder.instance).to receive(:build_remote_service).and_return(service_mock)
+
+        perform_enqueued_jobs do
+          subject
+        end
+
+        expect(ServiceBuilder.instance).to have_received(:build_remote_service).twice
+        expect(service_mock).to have_received(:insert).twice
       end
 
-      it "with present uuid it raises exception" do
-        event.uuid = "123"
+      it "with present sequence it raises exception" do
+        event.sequence = 0
         expect { subject }.to raise_error(Errors::InvalidSynchronizableState)
       end
     end

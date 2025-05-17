@@ -7,7 +7,6 @@ class CreateEvents < ActiveRecord::Migration[7.2]
       t.time :time_to
       t.string :summary
       t.string :description
-      t.string :uuid
       t.integer :sequence
 
       t.timestamps

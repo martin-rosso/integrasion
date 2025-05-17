@@ -14,3 +14,5 @@ coverage
 .byebug_history
 
 .env*.local
+
+.yardoc

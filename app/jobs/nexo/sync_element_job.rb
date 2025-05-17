@@ -4,11 +4,11 @@ module Nexo
   # Always must be executed asynchronously to ensure the concurrency limit applies
   #
   # Responsabilities:
-  #   - Triggering the DeleteRemoteResourceJob
-  #   - Triggering the UpdateRemoteResourceJob
-  #   - Removing/discarding Element's
-  #   - Flagging Synchronizable's as conflicted
-  #   - Updating Synchronizable's on external incoming changes
+  # - Triggering the DeleteRemoteResourceJob
+  # - Triggering the UpdateRemoteResourceJob
+  # - Removing/discarding Element's
+  # - Flagging Synchronizable's as conflicted
+  # - Updating Synchronizable's on external incoming changes
   #
   # TODO: implement external ElementVersion creation, not here, on another place
   class SyncElementJob < BaseJob

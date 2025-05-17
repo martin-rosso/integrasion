@@ -7,15 +7,20 @@
 #  protocol            :integer          not null
 #  external_identifier :string
 #  name                :string
+#  description         :string
 #  created_at          :datetime         not null
 #  updated_at          :datetime         not null
 #
 default:
-  name: "Default folder"
+  name: "Test calendar"
   protocol: "calendar"
   integration: default
+  description: Created automatically with Nexo
+  external_identifier: <%= ENV.fetch('TEST_GOOGLE_CALENDAR_ID', nil) %>
 
 other:
   name: "Other folder"
   protocol: "calendar"
   integration: default
+  description: Created automatically with Nexo
+  external_identifier: <%= ENV.fetch('TEST_GOOGLE_CALENDAR_ID_2', nil) %>

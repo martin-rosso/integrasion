@@ -3,8 +3,12 @@ module Nexo
     extend ActiveSupport::Concern
 
     def protocol_methods
+      # uuid (deprecated)
+      #   hay un problema con generar un uuid por synchronizable y es que si se
+      #   inserta en un google calendar y luego se elimina, luego ya no se
+      #   puede volver a insertar con el mismo uuid, sería mejor que el id se
+      #   genere automáticamente por google y guardarlo en Element
       %i[
-        uuid
         sequence
       ]
     end

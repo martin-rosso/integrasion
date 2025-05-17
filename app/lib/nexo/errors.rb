@@ -3,6 +3,8 @@ module Nexo
     class Error < StandardError; end
 
     class ElementConflicted < Error; end
+    class ExternalUnsyncedChange < Error; end
+    class ElementAlreadySynced < Error; end
     class MoreThanOneElementInFolderForSynchronizable < Error; end
 
     # on ControllerHelper

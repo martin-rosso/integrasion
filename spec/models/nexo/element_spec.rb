@@ -18,6 +18,11 @@ require 'rails_helper'
 
 module Nexo
   RSpec.describe Element, type: :model do
-    pending "add some examples to (or delete) #{__FILE__}"
+    describe "build_remote_service", pending: "moved to ServiceBuilder" do
+      it do
+        element = nexo_elements(:initialized)
+        expect(element.build_remote_service).to be_a GoogleCalendarService
+      end
+    end
   end
 end

@@ -16,3 +16,5 @@ default:
   user: default
   client: default
   name: "Default integration"
+  scope: >
+    [ "auth_calendar_app_created" ]

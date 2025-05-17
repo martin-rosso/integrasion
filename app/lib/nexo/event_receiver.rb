@@ -3,9 +3,9 @@ module Nexo
   # be called when the system is notified of an external element change
   class EventReceiver
     def synchronizable_created(synchronizable)
-      validate_null_sequence_and_uuid!(synchronizable)
+      validate_synchronizable_state!(synchronizable)
 
-      synchronizable.update!(sequence: 0, uuid: SecureRandom.uuid)
+      synchronizable.update!(sequence: 0)
 
       SynchronizableChangedJob.perform_later(synchronizable)
     end
@@ -37,13 +37,9 @@ module Nexo
     end
     # :nocov:
 
-    def validate_null_sequence_and_uuid!(synchronizable)
+    def validate_synchronizable_state!(synchronizable)
       unless synchronizable.sequence.nil?
         raise Errors::InvalidSynchronizableState, "sequence is present: #{synchronizable.sequence}"
-      end
-
-      unless synchronizable.uuid.nil?
-        raise Errors::InvalidSynchronizableState, "uuid is present: #{synchronizable.uuid}"
       end
     end
   end

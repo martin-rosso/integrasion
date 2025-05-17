@@ -17,7 +17,7 @@
 DEFAULTS: &DEFAULTS
   flag_deletion: false
   folder: default
-  uuid: uuid_$LABEL
+  uuid: <%= Digest::MD5.hexdigest("seed_2_$LABEL") %>
 
 flagged_for_deletion_synchronizable_present:
   <<: *DEFAULTS
@@ -33,6 +33,10 @@ flagged_for_deletion_ghost_synchronizable:
   synchronizable_type: "Event"
 
 unsynced_local_change:
+  <<: *DEFAULTS
+  synchronizable: initialized (Event)
+
+unsynced_external_change:
   <<: *DEFAULTS
   synchronizable: initialized (Event)
 
@@ -59,6 +63,6 @@ with_ghost_synchronizable:
   synchronizable_id: 1
   synchronizable_type: "Event"
 
-with_nil_sequence:
+all_day_event:
   <<: *DEFAULTS
-  synchronizable: with_nil_sequence (Event)
+  synchronizable: all_day_event (Event)

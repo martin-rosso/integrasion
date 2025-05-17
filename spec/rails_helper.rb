@@ -1,7 +1,7 @@
 # This file is copied to spec/ when you run 'rails generate rspec:install'
 require 'simplecov'
 
-if ENV.fetch('LCOV', true)
+if ENV.fetch('LCOV', "1") == "1"
   require 'simplecov-lcov'
   require 'undercover'
 

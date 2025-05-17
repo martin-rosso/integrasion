@@ -20,7 +20,7 @@ module Nexo
     EXCEPTIONS = [
       Signet::AuthorizationError,
 
-      # El usuario revocó los permisos
+      # user revoked access
       Google::Apis::ClientError,
 
       Google::Apis::AuthorizationError
@@ -48,7 +48,8 @@ module Nexo
       authorizer.revoke_authorization(@integration)
     end
 
-    # @request es opcional.
+    # @param [Rack::Request] request
+    #
     # Debe estar presente en la autorización (cuando google callback redirige
     # al show)
     #
