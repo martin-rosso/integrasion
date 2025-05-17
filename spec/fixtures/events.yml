@@ -1,14 +1,19 @@
 DEFAULTS: &DEFAULTS
-  date_from: "2025-02-01"
-  date_to: "2025-02-02"
-  summary: $LABEL
-  uuid: uuid_$LABEL
+  date_from: "2025-05-16"
+  date_to: "2025-05-16"
+  time_from: "14:00-03:00"
+  time_to: "16:22-03:00"
+  summary: $LABEL <%= rand(1..100) %>
   sequence: 0
 
 with_nil_sequence:
   <<: *DEFAULTS
-  uuid:
   sequence:
+
+all_day_event:
+  <<: *DEFAULTS
+  time_from:
+  time_to:
 
 initialized:
   <<: *DEFAULTS

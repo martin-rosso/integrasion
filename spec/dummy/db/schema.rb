@@ -18,7 +18,6 @@ ActiveRecord::Schema[7.2].define(version: 2025_05_12_120945) do
     t.time "time_to"
     t.string "summary"
     t.string "description"
-    t.string "uuid"
     t.integer "sequence"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -67,6 +66,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_05_12_120945) do
     t.integer "protocol", null: false
     t.string "external_identifier"
     t.string "name"
+    t.string "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["integration_id"], name: "index_nexo_folders_on_integration_id"

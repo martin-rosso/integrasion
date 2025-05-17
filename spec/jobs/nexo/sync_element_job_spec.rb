@@ -81,9 +81,10 @@ module Nexo
     end
 
     context "when synchronizable sequence is nil" do
-      let(:element) { nexo_elements(:with_nil_sequence) }
+      let(:element) { nexo_elements(:synced) }
 
       it do
+        element.synchronizable.update(sequence: nil)
         expect { subject }.to raise_error(Errors::SynchronizableSequenceIsNull)
       end
     end

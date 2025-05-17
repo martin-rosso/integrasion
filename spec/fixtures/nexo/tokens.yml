@@ -1,0 +1,17 @@
+# == Schema Information
+#
+# Table name: nexo_tokens
+#
+#  id             :integer          not null, primary key
+#  integration_id :integer          not null
+#  secret         :string
+#  tpt_status     :integer          not null
+#  environment    :string           not null
+#  created_at     :datetime         not null
+#  updated_at     :datetime         not null
+#
+default:
+  integration: default
+  secret: '<%= ENV.fetch('TEST_GOOGLE_API_TOKEN') %>'
+  tpt_status: active
+  environment: test

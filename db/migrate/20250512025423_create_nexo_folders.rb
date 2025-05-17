@@ -5,6 +5,7 @@ class CreateNexoFolders < ActiveRecord::Migration[7.2]
       t.integer :protocol, null: false
       t.string :external_identifier
       t.string :name
+      t.string :description
 
       t.timestamps
     end

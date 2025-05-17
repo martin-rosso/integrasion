@@ -21,7 +21,6 @@ module Nexo
     end
 
     encrypts :secret
-    serialize :secret, coder: JSON
 
     enum :tpt_status, active: 0, revoked: 1, expired: 2
 

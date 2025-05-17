@@ -14,7 +14,7 @@ module Nexo
     describe "protocol_methods" do
       it "includes the methos from Synchronizable and CalendarEvent" do
         event = Event.new
-        expect(event.protocol_methods).to include :uuid
+        expect(event.protocol_methods).to include :sequence
         expect(event.protocol_methods).to include :date_from
       end
     end

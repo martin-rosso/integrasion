@@ -25,14 +25,14 @@ module Nexo
       self.flag_deletion = false if flag_deletion.nil?
     end
 
-    validates :uuid, presence: true
-
     enum :deletion_reason, no_longer_included_in_folder: 0, synchronizable_destroyed: 1
 
     scope :conflicted, -> { where(conflicted: true) }
 
     def rules_still_match?
-      # TODO: implement
+      # :nocov: FIXME
+      true
+      # :nocov:
       # folder.rules_match?(synchronizable)
     end
 

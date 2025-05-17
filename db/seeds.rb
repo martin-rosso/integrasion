@@ -1,13 +1,5 @@
 module Nexo
-  Integration.delete_all
-  User.delete_all
-  Client.delete_all
+  ActiveRecord::FixtureSet.create_fixtures(["#{::Rails.root}/../fixtures"], ["events", "users", "nexo/clients" , "nexo/integrations" , "nexo/tokens" , "nexo/folders" , "nexo/elements" , "nexo/element_versions"])
 
-  secret = JSON.parse(ENV.fetch('SEEDS_GOOGLE_APIS_SECRET'))
-  Client.create!(
-    service: :google, user_integrations_allowed: true,
-    tcp_status: :authorized, secret:
-  )
-
-  User.create!(email: 'user@test.com', password: '123456')
+  Nexo::Token.first.update(environment: "development")
 end

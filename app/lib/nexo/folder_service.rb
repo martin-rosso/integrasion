@@ -2,9 +2,9 @@ module Nexo
   # Handles the composition of folders
   #
   # Responsabilities:
-  #   - Creation of Element's
-  #   - Flagging Element's for deletion
-  #   - Triggering the SyncElementJob
+  # - Creation of Element's
+  # - Flagging Element's for deletion
+  # - Triggering the SyncElementJob
   class FolderService
     def find_element_and_sync(folder, synchronizable)
       # TODO: handle conflicted synchronizable
@@ -37,8 +37,7 @@ module Nexo
       if must_be_included
         element = Element.create!(
           synchronizable:,
-          folder:,
-          uuid: synchronizable.uuid,
+          folder:
         )
 
         SyncElementJob.perform_later(element)

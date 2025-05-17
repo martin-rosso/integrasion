@@ -25,6 +25,12 @@ module Nexo
     validates :scope, presence: true
 
     def external_api_scope
+      if scope.blank?
+        # :nocov: borderline
+        raise "scope must be present"
+        # :nocov:
+      end
+
       scope.map { |permission| client.service_scopes[permission.to_sym] }
     end
 
@@ -46,10 +52,8 @@ module Nexo
       end
     end
 
-    private
-
     def credentials
-      service = Nexo::GoogleAuthService.new(self)
+      service = ServiceBuilder.instance.build_auth_service(self)
       @credentials ||= service.get_credentials
     end
   end

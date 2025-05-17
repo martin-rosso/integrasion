@@ -15,3 +15,7 @@ first:
   element: synced
   origin: internal
   sequence: 0
+
+unsynced_external_change:
+  element: unsynced_external_change
+  origin: external
