@@ -22,17 +22,16 @@ module Nexo
         end
       end
 
-
       it "when performing the jobs" do
         response = ApiResponse.new(etag: "bla", payload: "payload", status: :ok)
         service_mock = instance_double(GoogleCalendarService, insert: response)
-        allow(ServiceBuilder.instance).to receive(:build_remote_service).and_return(service_mock)
+        allow(ServiceBuilder.instance).to receive(:build_protocol_service).and_return(service_mock)
 
         perform_enqueued_jobs do
           subject
         end
 
-        expect(ServiceBuilder.instance).to have_received(:build_remote_service).twice
+        expect(ServiceBuilder.instance).to have_received(:build_protocol_service).twice
         expect(service_mock).to have_received(:insert).twice
       end
 

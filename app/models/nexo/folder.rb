@@ -22,7 +22,6 @@ module Nexo
 
     # :nocov: TODO!, not yet being called
     def rules_match?(synchronizable)
-      # TODO!: implement
       true
     end
     # :nocov:

@@ -19,7 +19,7 @@ module Nexo
       it do
         response = instance_double(ApiResponse, etag: "abc123", payload: { "status" => "ok" })
         service_mock = instance_double(GoogleCalendarService, remove: response)
-        allow(ServiceBuilder.instance).to receive(:build_remote_service).and_return(service_mock)
+        allow(ServiceBuilder.instance).to receive(:build_protocol_service).and_return(service_mock)
 
         subject
 

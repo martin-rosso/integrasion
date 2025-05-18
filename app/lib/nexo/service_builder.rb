@@ -1,4 +1,5 @@
 module Nexo
+  # Centralizes the creation of API service objects
   class ServiceBuilder
     @instance = new
 
@@ -8,22 +9,22 @@ module Nexo
       @instance
     end
 
-    # @todo FIXME: find a better name
-    def build_remote_service(folder)
+    def build_protocol_service(folder)
       service_klass_name = "#{folder.integration.client.service}_#{folder.protocol}_service".camelcase
-      service_klass = Nexo.const_get(service_klass_name)
-
-      if service_klass.nil?
-        # :nocov: borderline
-        raise "service not found: #{service_klass_name}"
-        # :nocov:
-      end
-
-      service_klass.new(folder.integration)
+      build_service(service_klass_name, folder.integration)
     end
 
     def build_auth_service(integration)
-      GoogleAuthService.new(integration)
+      service_klass_name = "#{integration.client.service}_auth_service".camelcase
+      build_service(service_klass_name, integration)
+    end
+
+    private
+
+    def build_service(klass_name, integration)
+      service_klass = Nexo.const_get(klass_name)
+
+      service_klass.new(integration)
     end
   end
 end

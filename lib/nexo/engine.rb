@@ -4,7 +4,7 @@ module Nexo
     isolate_namespace Nexo
 
     initializer "nexo.collapse_dirs" do
-      dir = "#{root}/app/lib/nexo/calendar"
+      dir = "#{root}/app/lib/nexo/api_client"
       Rails.autoloaders.main.collapse(dir)
     end
 

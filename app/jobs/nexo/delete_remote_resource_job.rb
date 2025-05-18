@@ -5,7 +5,7 @@ module Nexo
     # TODO: set polling interval 10 secs or so
 
     def perform(element)
-      ServiceBuilder.instance.build_remote_service(element.folder).remove(element)
+      ServiceBuilder.instance.build_protocol_service(element.folder).remove(element)
     end
   end
 end

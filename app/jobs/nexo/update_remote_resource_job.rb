@@ -11,7 +11,7 @@ module Nexo
 
       validate_element_state!
 
-      remote_service = ServiceBuilder.instance.build_remote_service(element.folder)
+      remote_service = ServiceBuilder.instance.build_protocol_service(element.folder)
 
       response =
         if element.element_versions.any?
