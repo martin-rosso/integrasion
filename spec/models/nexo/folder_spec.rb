@@ -27,6 +27,14 @@ module Nexo
       it do
         expect { subject }.to raise_error(Errors::MoreThanOneElementInFolderForSynchronizable)
       end
+
+      context "when there is a discarded element" do
+        let(:event) { events(:event_with_discarded_element) }
+
+        it "returns an element" do
+          expect(subject).to be_a Element
+        end
+      end
     end
   end
 end

@@ -66,3 +66,12 @@ with_ghost_synchronizable:
 all_day_event:
   <<: *DEFAULTS
   synchronizable: all_day_event (Event)
+
+event_with_discarded_element_discarded:
+  <<: *DEFAULTS
+  synchronizable: event_with_discarded_element (Event)
+  discarded_at: "2025-05-05"
+
+event_with_discarded_element_not_discarded:
+  <<: *DEFAULTS
+  synchronizable: event_with_discarded_element (Event)

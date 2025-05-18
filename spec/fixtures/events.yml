@@ -23,3 +23,6 @@ conflicted:
 
 not_yet_synced:
   <<: *DEFAULTS
+
+event_with_discarded_element:
+  <<: *DEFAULTS

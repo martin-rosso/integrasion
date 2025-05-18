@@ -27,8 +27,7 @@ module Nexo
     # :nocov:
 
     def find_element(synchronizable:)
-      # FIXME: filter discarded
-      ary = elements.where(synchronizable:).to_a
+      ary = elements.where(synchronizable:, discarded_at: nil).to_a
 
       if ary.count > 1
         raise Errors::MoreThanOneElementInFolderForSynchronizable
