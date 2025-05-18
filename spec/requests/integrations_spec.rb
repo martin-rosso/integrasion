@@ -18,12 +18,6 @@ module Nexo
 
         expect(response).to be_successful
       end
-
-      pending "without client_id" do
-        get "/integrations/new"
-
-        expect(response).to be_successful
-      end
     end
 
     describe "show" do

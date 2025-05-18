@@ -18,10 +18,16 @@ require 'rails_helper'
 
 module Nexo
   RSpec.describe Element, type: :model do
-    describe "build_protocol_service", pending: "moved to ServiceBuilder" do
+    describe "flag_for_deletion!" do
+      subject do
+        element.flag_for_deletion!(reason)
+      end
+
+      let(:element) { nexo_elements(:synced) }
+      let(:reason) { :no_longer_included_in_folder }
+
       it do
-        element = nexo_elements(:initialized)
-        expect(element.build_protocol_service).to be_a GoogleCalendarService
+        expect { subject }.to change(element, :flagged_for_deletion?)
       end
     end
   end

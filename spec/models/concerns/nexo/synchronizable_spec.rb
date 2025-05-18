@@ -8,7 +8,7 @@ module Nexo
         expect(event.protocols).to eq [ :nexo_calendar_event ]
       end
 
-      pending "with more than one protocol"
+      # pending "with more than one protocol"
     end
 
     describe "protocol_methods" do
@@ -55,8 +55,7 @@ module Nexo
       end
     end
 
-    pending "update_from!"
-    pending "conflicted?"
-    pending "conflicted?"
+    # pending "update_from!"
+    # pending "conflicted?"
   end
 end
