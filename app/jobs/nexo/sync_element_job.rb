@@ -12,7 +12,7 @@ module Nexo
   #
   # TODO: implement external ElementVersion creation, not here, on another place
   class SyncElementJob < BaseJob
-    limits_concurrency key: ->(element) { element.gid }
+    limits_concurrency key: ->(element) { element.to_gid }
 
     # discard_on Errors::SyncElementJobError
     # retry_on StandardError, wait: :polynomially_longer

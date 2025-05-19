@@ -17,6 +17,8 @@ module Nexo
       @finders << block
     end
 
+    attr_reader :finders
+
     def match?(folder, synchronizable)
       rules = rules_for(folder)
       matching_rules = rules.select { |rule| rule.match?(synchronizable) }
@@ -29,9 +31,11 @@ module Nexo
     end
 
     def rules_for(folder)
-      @finders.map do |finder|
+      aux = @finders.map do |finder|
         finder.call(folder)
       end
+
+      aux.flatten.compact
     end
   end
 end

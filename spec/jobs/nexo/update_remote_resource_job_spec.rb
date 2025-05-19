@@ -16,13 +16,14 @@ module Nexo
       let(:element) { nexo_elements(:unsynced_local_change) }
 
       it do
-        response = instance_double(ApiResponse, etag: "abc123", payload: { "status" => "ok" })
+        response = instance_double(ApiResponse, etag: "abc123", payload: { "status" => "ok" }, id: "fooid")
         remote_service_mock = instance_double(GoogleCalendarService, insert: response)
         allow(ServiceBuilder.instance).to receive(:build_protocol_service).and_return(remote_service_mock)
 
         expect { subject }.to change(ElementVersion, :count).by(1)
+                              .and(change(element, :uuid).to("fooid"))
 
-        expect(remote_service_mock).to have_received(:insert)
+        expect(remote_service_mock).to have_received(:insert).with(element.folder, element.synchronizable)
         expect(ElementVersion.last.etag).to eq "abc123"
         expect(ElementVersion.last.payload).to eq({ "status" => "ok" })
       end

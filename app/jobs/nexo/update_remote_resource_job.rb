@@ -1,7 +1,7 @@
 module Nexo
   class UpdateRemoteResourceJob < BaseJob
     # TODO: limit by integration, instead of element
-    limits_concurrency key: ->(element) { element.gid }, group: "IntegrationApiCall"
+    limits_concurrency key: ->(element) { element.to_gid }, group: "IntegrationApiCall"
     # TODO: set polling interval 10 secs or so
 
     attr_reader :element
@@ -17,9 +17,10 @@ module Nexo
         if element.element_versions.any?
           remote_service.update(element)
         else
-          remote_service.insert(element.folder, element.synchronizable)
-          # FIXME: set element uuid
-          # FIXME: guardar el token y setup tests contra google
+          remote_service.insert(element.folder, element.synchronizable).tap do |response|
+            element.update(uuid: response.id)
+          end
+          # FIXME: setup tests contra google
         end
 
       save_element_version(response)

@@ -48,10 +48,19 @@ module Dummy
 
     config.to_prepare do
       Nexo.rules.register_finder do |folder|
-        if folder.name.include?("Other")
+        if folder.name == "Other folder"
           DummyFolderRule.new("with_nil_sequence", :include, 1)
-        else
+        end
+
+        if folder.name == "Test calendar"
           DummyFolderRule.new("initialized", :include, 1)
+        end
+      end
+      Nexo.rules.register_finder do |folder|
+        if folder.name == "Nexo Automated Test"
+          DummyFolderRule.new("Test event", :include, 1)
+        else
+          nil
         end
       end
     end

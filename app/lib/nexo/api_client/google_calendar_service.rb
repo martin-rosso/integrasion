@@ -17,7 +17,7 @@ module Nexo
       event = build_event(calendar_event)
       # FIXME: if external_identifier nil raise
       response = client.insert_event(folder.external_identifier, event)
-      ApiResponse.new(payload: response.to_json, status: :ok, etag: response.etag)
+      ApiResponse.new(payload: response.to_json, status: :ok, etag: response.etag, id: response.id)
     end
 
     # Update an event in a Google Calendar
@@ -38,7 +38,13 @@ module Nexo
     # Create a Google calendar
     def insert_calendar(folder)
       cal = build_calendar(folder)
-      client.insert_calendar(cal)
+      response = client.insert_calendar(cal)
+      ApiResponse.new(payload: response.to_json, status: :ok, etag: response.etag, id: response.id)
+    end
+
+    def remove_calendar(folder)
+      client.delete_calendar(folder.external_identifier)
+      ApiResponse.new(status: :ok)
     end
 
     # @!visibility private

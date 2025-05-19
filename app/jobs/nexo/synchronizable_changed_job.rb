@@ -1,6 +1,7 @@
 module Nexo
   class SynchronizableChangedJob < BaseJob
-    limits_concurrency key: ->(synchronizable) { synchronizable.gid }
+    limits_concurrency key: ->(synchronizable) { synchronizable.to_gid }
+
     # TODO: check
     # https://github.com/rails/solid_queue?tab=readme-ov-file#jobs-and-transactional-integrity
     #

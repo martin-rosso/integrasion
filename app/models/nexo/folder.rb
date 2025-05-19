@@ -16,7 +16,7 @@ module Nexo
     belongs_to :integration, class_name: "Nexo::Integration"
     has_many :elements, class_name: "Nexo::Element"
 
-    enum :protocol, calendar: 0
+    enum :protocol, calendar: 0, dummy_calendar: 1
 
     validates :protocol, :name, presence: true
 

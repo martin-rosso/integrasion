@@ -57,7 +57,7 @@ module Nexo
     def flag_as_conflicted!
       update!(conflicted: true)
 
-      # TODO: log "Conflicted Element: #{element.gid}"
+      # TODO: log "Conflicted Element: #{element.to_gid}"
     end
     # :nocov:
 
