@@ -17,7 +17,9 @@ module Nexo
         if element.element_versions.any?
           remote_service.update(element)
         else
-          remote_service.insert(element.folder, element)
+          remote_service.insert(element.folder, element.synchronizable)
+          # FIXME: set element uuid
+          # FIXME: guardar el token y setup tests contra google
         end
 
       save_element_version(response)
