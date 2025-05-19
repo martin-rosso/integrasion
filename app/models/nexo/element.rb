@@ -30,10 +30,7 @@ module Nexo
     scope :conflicted, -> { where(conflicted: true) }
 
     def rules_still_match?
-      # :nocov: FIXME
-      true
-      # :nocov:
-      # folder.rules_match?(synchronizable)
+      folder.rules_match?(synchronizable)
     end
 
     def last_synced_sequence

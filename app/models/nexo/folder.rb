@@ -20,11 +20,9 @@ module Nexo
 
     validates :protocol, :name, presence: true
 
-    # :nocov: TODO!, not yet being called
     def rules_match?(synchronizable)
-      true
+      RulesService.instance.match?(self, synchronizable)
     end
-    # :nocov:
 
     def find_element(synchronizable:)
       ary = elements.where(synchronizable:, discarded_at: nil).to_a

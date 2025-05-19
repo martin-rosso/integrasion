@@ -45,5 +45,15 @@ module Dummy
     config.generators.system_tests = nil
 
     config.i18n.default_locale = :es
+
+    config.to_prepare do
+      Nexo.rules.register_finder do |folder|
+        if folder.name.include?("Other")
+          DummyFolderRule.new("with_nil_sequence", :include, 1)
+        else
+          DummyFolderRule.new("initialized", :include, 1)
+        end
+      end
+    end
   end
 end

@@ -25,5 +25,8 @@ RSpec/PendingWithoutReason:
 RSpec/NamedSubject:
   Enabled: false
 
+RSpec/PredicateMatcher:
+  Enabled: false
+
 RSpec/NestedGroups:
   Max: 4

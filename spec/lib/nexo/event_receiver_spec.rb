@@ -31,8 +31,8 @@ module Nexo
           subject
         end
 
-        expect(ServiceBuilder.instance).to have_received(:build_protocol_service).twice
-        expect(service_mock).to have_received(:insert).twice
+        expect(ServiceBuilder.instance).to have_received(:build_protocol_service).once
+        expect(service_mock).to have_received(:insert).once
       end
 
       it "with present sequence it raises exception" do

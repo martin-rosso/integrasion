@@ -1,4 +1,8 @@
 module Nexo
+  def self.rules
+    ::Nexo::RulesService.instance
+  end
+
   # @!visibility private
   class Engine < ::Rails::Engine
     isolate_namespace Nexo
