@@ -5,7 +5,7 @@ module Nexo
     include ActiveModel::Validations
 
     # validates_inclusion_of :sync_policy, in: %w( include exclude )
-    # FIXME: check if this is being used
+    # TODO!: check if this is being used
     included do
       validates :sync_policy, inclusion: { in: %w[ bla ] }
       validates :priority, numericality: true
