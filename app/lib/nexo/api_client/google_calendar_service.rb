@@ -14,14 +14,17 @@ module Nexo
     #
     # @todo Debería recibir un {Element}?
     def insert(folder, calendar_event)
+      validate_folder_state!(folder)
+
       event = build_event(calendar_event)
-      # FIXME: if external_identifier nil raise
       response = client.insert_event(folder.external_identifier, event)
       ApiResponse.new(payload: response.to_json, status: :ok, etag: response.etag, id: response.id)
     end
 
     # Update an event in a Google Calendar
     def update(element)
+      validate_folder_state!(element.folder)
+
       event = build_event(element.synchronizable)
       response = client.update_event(element.folder.external_identifier, element.uuid, event)
       ApiResponse.new(payload: response.to_json, status: :ok, etag: response.etag)
@@ -29,6 +32,8 @@ module Nexo
 
     # Delete an event in a Google Calendar
     def remove(element)
+      validate_folder_state!(element.folder)
+
       # TODO: try with cancelled
       # FIXME: if external_identifier nil raise
       client.delete_event(element.folder.external_identifier, element.uuid)
@@ -61,6 +66,12 @@ module Nexo
     # :nocov:
 
     private
+
+    def validate_folder_state!(folder)
+      if folder.external_identifier.blank?
+        raise Errors::InvalidFolderState, folder
+      end
+    end
 
     def build_event(calendar_event)
       estart = build_event_date_time(calendar_event.datetime_from)

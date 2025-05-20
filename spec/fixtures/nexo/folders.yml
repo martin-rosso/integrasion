@@ -16,11 +16,11 @@ default:
   protocol: "calendar"
   integration: default
   description: Created automatically with Nexo
-  external_identifier: <%= ENV.fetch('TEST_GOOGLE_CALENDAR_ID', nil) %>
+  external_identifier: <%= ENV.fetch('TEST_GOOGLE_CALENDAR_ID', "folder-id-default") %>
 
 other:
   name: "Other folder"
   protocol: "calendar"
   integration: default
   description: Created automatically with Nexo
-  external_identifier: <%= ENV.fetch('TEST_GOOGLE_CALENDAR_ID_2', nil) %>
+  external_identifier: <%= ENV.fetch('TEST_GOOGLE_CALENDAR_ID_2', "folder-id-other") %>
