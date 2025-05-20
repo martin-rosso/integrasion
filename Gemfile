@@ -7,7 +7,7 @@ gem "puma"
 
 gem "sqlite3"
 
-# gem "sprockets-rails"
+gem "sprockets-rails"
 
 # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
 gem "rubocop-rails-omakase", require: false
@@ -29,3 +29,7 @@ group :development, :test do
 
   gem "byebug"
 end
+
+gem "good_job", "~> 4.10"
+
+gem "pg", "~> 1.5"

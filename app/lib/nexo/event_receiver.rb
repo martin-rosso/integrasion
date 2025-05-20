@@ -25,8 +25,8 @@ module Nexo
     end
 
     # TODO: implement
-    # def folder_rule_changed(folder_rule)
-    #   FolderSyncJob.perform_later(folder_rule.folder)
+    # def folder_policy_changed(folder_policy)
+    #   FolderSyncJob.perform_later(folder_policy.folder)
     # end
 
     private

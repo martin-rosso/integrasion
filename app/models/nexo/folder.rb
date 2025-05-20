@@ -16,15 +16,15 @@ module Nexo
     belongs_to :integration, class_name: "Nexo::Integration"
     has_many :elements, class_name: "Nexo::Element"
 
-    enum :protocol, calendar: 0
+    enum :protocol, calendar: 0, dummy_calendar: 1
 
     validates :protocol, :name, presence: true
 
-    # :nocov: TODO!, not yet being called
-    def rules_match?(synchronizable)
-      true
+    # FIXME: find better name
+    # maybe policy_applies?
+    def policy_match?(synchronizable)
+      PolicyService.instance.match?(self, synchronizable)
     end
-    # :nocov:
 
     def find_element(synchronizable:)
       ary = elements.where(synchronizable:, discarded_at: nil).to_a

@@ -31,8 +31,8 @@ module Nexo
           subject
         end
 
-        expect(ServiceBuilder.instance).to have_received(:build_protocol_service).twice
-        expect(service_mock).to have_received(:insert).twice
+        expect(ServiceBuilder.instance).to have_received(:build_protocol_service).once
+        expect(service_mock).to have_received(:insert).once
       end
 
       it "with present sequence it raises exception" do
@@ -86,12 +86,12 @@ module Nexo
       end
     end
 
-    # describe "folder_rule_changed" do
+    # describe "folder_policy_changed" do
     #   subject do
-    #     event_receiver.folder_rule_changed(folder_rule)
+    #     event_receiver.folder_policy_changed(folder_policy)
     #   end
 
-    #   let(:folder_rule) { double("folder_rule", folder: folder) }
+    #   let(:folder_policy) { double("folder_policy", folder: folder) }
     #   let(:folder) { nexo_folders(:default) }
 
     #   pending "when change is not significative" do

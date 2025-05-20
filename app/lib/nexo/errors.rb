@@ -6,6 +6,7 @@ module Nexo
     class ExternalUnsyncedChange < Error; end
     class ElementAlreadySynced < Error; end
     class MoreThanOneElementInFolderForSynchronizable < Error; end
+    class InvalidFolderState < Error; end
 
     # on ControllerHelper
     class InvalidParamsError < Error; end

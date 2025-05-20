@@ -45,5 +45,23 @@ module Dummy
     config.generators.system_tests = nil
 
     config.i18n.default_locale = :es
+
+    config.to_prepare do
+      Nexo.folder_policies.register_folder_policy_finder do |folder|
+        if folder.name == "Other folder"
+          DummyFolderPolicy.new("with_nil_sequence", :include, 1)
+        elsif folder.name == "Test calendar"
+          DummyFolderPolicy.new("initialized", :include, 1)
+        end
+      end
+      Nexo.folder_policies.register_folder_policy_finder do |folder|
+        if folder.name == "Nexo Automated Test"
+          DummyFolderPolicy.new("Test event", :include, 1)
+        else
+          nil
+        end
+      end
+      Nexo.api_jobs_throttle = [ 2, 30.seconds ]
+    end
   end
 end

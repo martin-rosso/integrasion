@@ -1,4 +1,5 @@
 en:
   google:
+    auth_email: "See your main Google email address"
     auth_calendar_app_created: "Make secondary Google calendars, and see, create, change, and delete events on them"
     auth_calendar_calendarlist: "See, add, and remove Google calendars you’re subscribed to"

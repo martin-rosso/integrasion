@@ -1,4 +1,10 @@
 module Nexo
+  def self.folder_policies
+    ::Nexo::PolicyService.instance
+  end
+
+  mattr_accessor :api_jobs_throttle
+
   # @!visibility private
   class Engine < ::Rails::Engine
     isolate_namespace Nexo

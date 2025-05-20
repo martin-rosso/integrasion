@@ -17,6 +17,18 @@ module Nexo
       allow(ServiceBuilder.instance).to receive(:build_auth_service).and_return(auth_service_mock)
     end
 
+    shared_examples "folder operation" do
+      context "when folder identifier is nil" do
+        before do
+          element.folder.update(external_identifier: nil)
+        end
+
+        it "raises error" do
+          expect { subject }.to raise_error(Errors::InvalidFolderState)
+        end
+      end
+    end
+
     describe "insert" do
       subject do
         google_calendar_service.insert(element.folder, element.synchronizable)
@@ -39,6 +51,8 @@ module Nexo
           expect(subject).to be_a ApiResponse
         end
       end
+
+      it_behaves_like "folder operation"
     end
 
     describe "update" do
@@ -55,6 +69,8 @@ module Nexo
       it do
         expect(subject).to be_a ApiResponse
       end
+
+      it_behaves_like "folder operation"
     end
 
     describe "remove" do
@@ -71,6 +87,8 @@ module Nexo
       it do
         expect(subject).to be_a ApiResponse
       end
+
+      it_behaves_like "folder operation"
     end
 
     describe "insert_calendar" do

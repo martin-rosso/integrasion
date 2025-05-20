@@ -25,15 +25,14 @@ module Nexo
       self.flag_deletion = false if flag_deletion.nil?
     end
 
+    scope :kept, -> { where(discarded_at: nil) }
+
     enum :deletion_reason, no_longer_included_in_folder: 0, synchronizable_destroyed: 1
 
     scope :conflicted, -> { where(conflicted: true) }
 
-    def rules_still_match?
-      # :nocov: FIXME
-      true
-      # :nocov:
-      # folder.rules_match?(synchronizable)
+    def policy_still_match?
+      folder.policy_match?(synchronizable)
     end
 
     def last_synced_sequence
@@ -60,7 +59,7 @@ module Nexo
     def flag_as_conflicted!
       update!(conflicted: true)
 
-      # TODO: log "Conflicted Element: #{element.gid}"
+      # TODO: log "Conflicted Element: #{element.to_gid}"
     end
     # :nocov:
 
