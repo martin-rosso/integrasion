@@ -12,7 +12,7 @@ module Nexo
 
   # Element.destroy_all
   # Folder.destroy_all
-  
+
   integration = Integration.first
   folder = Folder.first
   unless folder.present?
@@ -25,7 +25,7 @@ module Nexo
   end
 
   folder.elements.kept.each do |el|
-    event = el.synchronizable  
+    event = el.synchronizable
     aux = event.date_from
     event.date_from = aux - 1.week
     event.date_to = aux - 1.week
@@ -34,7 +34,6 @@ module Nexo
     sleep 2
     event.update(summary: "Test event 7 #{rand(20..99)}")
     EventReceiver.new.synchronizable_updated(event)
-
   end
   # create_calendar(folder)
 
@@ -44,7 +43,7 @@ module Nexo
 
   #   offset = index % 5
   #   date = today + offset.days
-  #   
+  #
   #   event = Event.create(date_from: date, date_to: date, summary: "Test event #{index}")
   #   EventReceiver.new.synchronizable_created(event)
   # end

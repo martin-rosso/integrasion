@@ -22,6 +22,7 @@ module Nexo
       policy = policy_for(folder)
       matching_policy = policy.select { |policy| policy.match?(synchronizable) }
       if matching_policy.any?
+        # TODO: find better name
         best_policy = matching_policy.sort_by { |policy| policy.priority }.last
         best_policy.sync_policy == :include
       else
