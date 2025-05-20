@@ -1,3 +1,4 @@
+# :nocov: tricky
 module Nexo
   # Dummy calendar service
   class GoogleDummyCalendarService < CalendarService
@@ -27,3 +28,4 @@ module Nexo
     end
   end
 end
+# :nocov:
