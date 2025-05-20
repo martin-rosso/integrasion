@@ -10,4 +10,8 @@ class DummyFolderPolicy
   def match?(synchronizable)
     synchronizable.summary.match?(@search)
   end
+
+  def synchronizable_queries
+    [ Event.all ]
+  end
 end

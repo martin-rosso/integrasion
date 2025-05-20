@@ -86,19 +86,19 @@ module Nexo
       end
     end
 
-    # describe "folder_policy_changed" do
-    #   subject do
-    #     event_receiver.folder_policy_changed(folder_policy)
-    #   end
+    describe "folder_policy_changed" do
+      subject do
+        event_receiver.folder_policy_changed(folder_policy)
+      end
 
-    #   let(:folder_policy) { double("folder_policy", folder: folder) }
-    #   let(:folder) { nexo_folders(:default) }
+      let(:folder_policy) { double("folder_policy", folder: folder) }
+      let(:folder) { nexo_folders(:default) }
 
-    #   pending "when change is not significative" do
-    #     assert_enqueued_jobs(1, only: FolderSyncJob) do
-    #       subject
-    #     end
-    #   end
-    # end
+      it "enqueues the job" do
+        assert_enqueued_jobs(1, only: FolderSyncJob) do
+          subject
+        end
+      end
+    end
   end
 end
