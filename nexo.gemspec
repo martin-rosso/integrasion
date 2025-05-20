@@ -6,8 +6,7 @@ Gem::Specification.new do |spec|
   spec.authors     = [ "Martín Rosso" ]
   spec.email       = [ "mrosso10@gmail.com" ]
   spec.homepage    = "https://github.com/martin-rosso/nexo"
-  spec.summary     = "A tool for integrating a Rails app with external services"
-  # spec.description = "Google integra"
+  spec.summary     = "Integrate a Rails app with external services"
   spec.license     = "MIT"
 
   # Prevent pushing this gem to RubyGems.org. To allow pushes either set the "allowed_push_host"
