@@ -70,6 +70,10 @@ module Nexo
     end
     # :nocov:
 
+    def initialize_values!
+      update!(sequence: 0)
+    end
+
     def increment_sequence!
       # This operation is performed directly in the database without the need
       # to read the current value first. So, it is atomic at a database level,

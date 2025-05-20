@@ -10,16 +10,16 @@ module Nexo
     response = service.remove_calendar(folder)
   end
 
-  Element.destroy_all
-  Folder.destroy_all
-  Event.destroy_all
+  # Element.destroy_all
+  # Folder.destroy_all
+  # Event.destroy_all
 
   integration = Integration.first
   folder = Folder.first
   unless folder.present?
     folder = Folder.create!(
       integration:,
-      protocol: :dummy_calendar,
+      protocol: :calendar,
       name: "Nexo Automated Test",
       description: "Automatically created calendar for Nexo Automated Test"
     )
@@ -32,24 +32,34 @@ module Nexo
   #   event.date_to = aux - 1.week
   #   event.save
   #   EventReceiver.new.synchronizable_updated(event)
-  #   sleep 2
-  #   event.update(summary: "Test event 7 #{rand(20..99)}")
+  # end
+
+  # sleep 2
+  # folder.elements.kept.each do |el|
+  #   event = el.synchronizable
+  #   event.update(summary: "Test event 2 #{rand(20..99)}")
   #   EventReceiver.new.synchronizable_updated(event)
   # end
 
-  create_calendar(folder)
 
-  today = Time.zone.today
-  10.times.each do |i|
-    index = i + 1
+  # create_calendar(folder)
 
-    offset = index % 5
-    date = today + offset.days
+  # today = Time.zone.today
+  # 10.times.each do |i|
+  #   index = i + 1
 
-    event = Event.create(date_from: date, date_to: date, summary: "Test event #{index}")
-    EventReceiver.new.synchronizable_created(event)
-  end
+  #   offset = index % 5
+  #   date = today + offset.days
 
-  # delete_calendar(folder)
+  #   event = Event.create(date_from: date, date_to: date, summary: "Test event #{index}")
+  #   # EventReceiver.new.synchronizable_created(event)
+  # end
+
+
+  # EventReceiver.new.synchronizable_created(event)
+  # FolderSyncJob.perform_later(folder)
+
+  delete_calendar(folder)
+
   # Nexo::ServiceBuilder.instance.build_protocol_service( Nexo::Folder.first).remove_calendar(Nexo::Folder.first)
 end

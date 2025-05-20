@@ -10,4 +10,12 @@ class DummyFolderPolicy
   def match?(synchronizable)
     synchronizable.summary.match?(@search)
   end
+
+  def synchronizable_queries
+    [ Event.all ]
+  end
+
+  def folder
+    raise "not implemented"
+  end
 end

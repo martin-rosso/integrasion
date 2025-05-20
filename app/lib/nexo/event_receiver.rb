@@ -5,7 +5,7 @@ module Nexo
     def synchronizable_created(synchronizable)
       validate_synchronizable_state!(synchronizable)
 
-      synchronizable.update!(sequence: 0)
+      synchronizable.initialize_values!
 
       SynchronizableChangedJob.perform_later(synchronizable)
     end
@@ -24,10 +24,9 @@ module Nexo
       folder_service.destroy_elements(synchronizable, :synchronizable_destroyed)
     end
 
-    # TODO: implement
-    # def folder_policy_changed(folder_policy)
-    #   FolderSyncJob.perform_later(folder_policy.folder)
-    # end
+    def folder_policy_changed(folder_policy)
+      FolderSyncJob.perform_later(folder_policy.folder)
+    end
 
     private
 
