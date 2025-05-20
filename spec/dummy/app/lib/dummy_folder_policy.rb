@@ -1,5 +1,5 @@
-class DummyFolderRule
-  include Nexo::FolderRule
+class DummyFolderPolicy
+  include Nexo::FolderPolicy
 
   def initialize(search, sync_policy, priority)
     @search = search

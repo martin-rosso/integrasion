@@ -1,17 +1,17 @@
 require "rails_helper"
 
 module Nexo
-  describe RulesService do
+  describe PolicyService do
     subject do
       described_class.instance
     end
 
     # before do
-    #   Nexo.rules.register_finder do |folder|
+    #   Nexo.policy.register_folder_policy_finder do |folder|
     #     if folder.name.include?("Other")
-    #       DummyFolderRule.new("with_nil_sequence", :always, 1)
+    #       DummyFolderPolicy.new("with_nil_sequence", :always, 1)
     #     else
-    #       DummyFolderRule.new("initialized", :always, 1)
+    #       DummyFolderPolicy.new("initialized", :always, 1)
     #     end
     #   end
     # end

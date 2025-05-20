@@ -20,8 +20,8 @@ module Nexo
 
     validates :protocol, :name, presence: true
 
-    def rules_match?(synchronizable)
-      RulesService.instance.match?(self, synchronizable)
+    def policy_match?(synchronizable)
+      PolicyService.instance.match?(self, synchronizable)
     end
 
     def find_element(synchronizable:)

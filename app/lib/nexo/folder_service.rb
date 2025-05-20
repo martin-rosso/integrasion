@@ -32,7 +32,7 @@ module Nexo
     end
 
     def create_and_sync_element(folder, synchronizable)
-      must_be_included = folder.rules_match?(synchronizable)
+      must_be_included = folder.policy_match?(synchronizable)
 
       if must_be_included
         element = Element.create!(
@@ -52,7 +52,7 @@ module Nexo
       end
 
       # Check if Synchronizable still must be included in folder
-      if !element.rules_still_match?
+      if !element.policy_still_match?
         element.flag_for_deletion!(:no_longer_included_in_folder)
       end
 

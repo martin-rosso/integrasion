@@ -1,6 +1,6 @@
 module Nexo
-  def self.rules
-    ::Nexo::RulesService.instance
+  def self.policy
+    ::Nexo::PolicyService.instance
   end
 
   # @!visibility private

@@ -31,8 +31,8 @@ module Nexo
 
     scope :conflicted, -> { where(conflicted: true) }
 
-    def rules_still_match?
-      folder.rules_match?(synchronizable)
+    def policy_still_match?
+      folder.policy_match?(synchronizable)
     end
 
     def last_synced_sequence

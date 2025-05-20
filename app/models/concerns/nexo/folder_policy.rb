@@ -1,5 +1,5 @@
 module Nexo
-  module FolderRule
+  module FolderPolicy
     extend ActiveSupport::Concern
     # include ActiveModel::Model
     include ActiveModel::Validations
