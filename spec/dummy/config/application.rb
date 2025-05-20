@@ -61,6 +61,7 @@ module Dummy
           nil
         end
       end
+      Nexo.api_jobs_throttle = [ 2, 30.seconds ]
     end
   end
 end
