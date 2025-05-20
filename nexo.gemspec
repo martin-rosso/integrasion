@@ -21,7 +21,7 @@ Gem::Specification.new do |spec|
     Dir["{app,config,db,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.md"]
   end
 
-  spec.add_dependency "rails", ">= 7.2.2.1"
+  spec.add_dependency "rails", ">= 7.1"
   spec.add_dependency "google-apis-calendar_v3", "~> 0.46.0"
   spec.add_dependency "google-apis-oauth2_v2", "~> 0.19.0"
   spec.add_dependency "googleauth", "~> 1.14"

@@ -1,11 +1,11 @@
 PATH
   remote: .
   specs:
-    nexo (0.1.0)
+    nexo (0.1.1)
       google-apis-calendar_v3 (~> 0.46.0)
       google-apis-oauth2_v2 (~> 0.19.0)
       googleauth (~> 1.14)
-      rails (>= 7.2.2.1)
+      rails (>= 7.1)
 
 GEM
   remote: https://rubygems.org/
