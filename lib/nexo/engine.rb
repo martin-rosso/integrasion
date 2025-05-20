@@ -1,5 +1,5 @@
 module Nexo
-  def self.policy
+  def self.folder_policies
     ::Nexo::PolicyService.instance
   end
 

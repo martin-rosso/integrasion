@@ -47,14 +47,14 @@ module Dummy
     config.i18n.default_locale = :es
 
     config.to_prepare do
-      Nexo.policy.register_folder_policy_finder do |folder|
+      Nexo.folder_policies.register_folder_policy_finder do |folder|
         if folder.name == "Other folder"
           DummyFolderPolicy.new("with_nil_sequence", :include, 1)
         elsif folder.name == "Test calendar"
           DummyFolderPolicy.new("initialized", :include, 1)
         end
       end
-      Nexo.policy.register_folder_policy_finder do |folder|
+      Nexo.folder_policies.register_folder_policy_finder do |folder|
         if folder.name == "Nexo Automated Test"
           DummyFolderPolicy.new("Test event", :include, 1)
         else

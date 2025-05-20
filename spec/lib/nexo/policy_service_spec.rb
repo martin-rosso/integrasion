@@ -7,7 +7,7 @@ module Nexo
     end
 
     # before do
-    #   Nexo.policy.register_folder_policy_finder do |folder|
+    #   Nexo.folder_policies.register_folder_policy_finder do |folder|
     #     if folder.name.include?("Other")
     #       DummyFolderPolicy.new("with_nil_sequence", :always, 1)
     #     else

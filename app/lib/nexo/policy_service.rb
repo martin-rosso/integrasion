@@ -19,18 +19,17 @@ module Nexo
     attr_reader :finders
 
     def match?(folder, synchronizable)
-      policy = policy_for(folder)
-      matching_policy = policy.select { |policy| policy.match?(synchronizable) }
-      if matching_policy.any?
-        # TODO: find better name
-        best_policy = matching_policy.sort_by { |policy| policy.priority }.last
-        best_policy.sync_policy == :include
+      policies = policies_for(folder)
+      matching_policies = policies.select { |policy| policy.match?(synchronizable) }
+      if matching_policies.any?
+        aplicable_policy = matching_policies.sort_by { |policy| policy.priority }.last
+        aplicable_policy.sync_policy == :include
       else
         false
       end
     end
 
-    def policy_for(folder)
+    def policies_for(folder)
       aux = @finders.map do |finder|
         finder.call(folder)
       end
