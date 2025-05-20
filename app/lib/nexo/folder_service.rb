@@ -40,6 +40,11 @@ module Nexo
           folder:
         )
 
+        if synchronizable.sequence.nil?
+          # TODO: whats the use of having this and also in EventReceiver?
+          synchronizable.initialize_values!
+        end
+
         SyncElementJob.perform_later(element)
       end
     end

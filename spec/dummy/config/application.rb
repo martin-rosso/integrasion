@@ -57,11 +57,12 @@ module Dummy
       Nexo.folder_policies.register_folder_policy_finder do |folder|
         if folder.name == "Nexo Automated Test"
           DummyFolderPolicy.new("Test event", :include, 1)
+          # DummyFolderPolicy.new("25|20|67", :include, 1)
         else
           nil
         end
       end
-      Nexo.api_jobs_throttle = [ 2, 30.seconds ]
+      Nexo.api_jobs_throttle = [ 200, 1.minute ]
     end
   end
 end

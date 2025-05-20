@@ -5,7 +5,7 @@ module Nexo
     def synchronizable_created(synchronizable)
       validate_synchronizable_state!(synchronizable)
 
-      synchronizable.update!(sequence: 0)
+      synchronizable.initialize_values!
 
       SynchronizableChangedJob.perform_later(synchronizable)
     end

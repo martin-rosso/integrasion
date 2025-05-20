@@ -14,4 +14,8 @@ class DummyFolderPolicy
   def synchronizable_queries
     [ Event.all ]
   end
+
+  def folder
+    raise "not implemented"
+  end
 end

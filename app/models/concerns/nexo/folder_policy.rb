@@ -4,6 +4,8 @@ module Nexo
     # include ActiveModel::Model
     include ActiveModel::Validations
 
+    # TODO: add belongs_to :folder ?
+
     # validates_inclusion_of :sync_policy, in: %w( include exclude )
     # TODO!: check if this is being used
     included do
