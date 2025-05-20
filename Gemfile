@@ -29,3 +29,7 @@ group :development, :test do
 
   gem "byebug"
 end
+
+gem "good_job", "~> 4.10"
+
+gem "pg", "~> 1.5"

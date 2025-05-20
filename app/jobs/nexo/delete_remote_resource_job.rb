@@ -1,8 +1,21 @@
 module Nexo
   class DeleteRemoteResourceJob < BaseJob
-    # TODO: limit by integration, instead of element
-    limits_concurrency key: ->(element) { element.to_gid }, group: "IntegrationApiCall"
-    # TODO: set polling interval 10 secs or so
+    include GoodJob::ActiveJobExtensions::Concurrency
+
+    good_job_control_concurrency_with(
+      perform_limit: 1,
+      perform_throttle: [ 100, 5.minute ],
+      key: -> { "#{queue_name}" }
+    )
+
+    retry_on(
+      GoodJob::ActiveJobExtensions::Concurrency::ConcurrencyExceededError,
+      attempts: Float::INFINITY,
+      wait: ->(executions) { ((executions**3) + (Kernel.rand * (executions**3) * 0.5)) + 2 }
+      # wait: -> (executions) { 30.seconds + (200 * Kernel.rand) }
+    )
+
+    queue_as :api_clients
 
     def perform(element)
       ServiceBuilder.instance.build_protocol_service(element.folder).remove(element)
