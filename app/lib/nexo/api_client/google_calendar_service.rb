@@ -35,7 +35,6 @@ module Nexo
       validate_folder_state!(element.folder)
 
       # TODO: try with cancelled
-      # FIXME: if external_identifier nil raise
       client.delete_event(element.folder.external_identifier, element.uuid)
       ApiResponse.new(payload: nil, status: :ok, etag: nil)
     end

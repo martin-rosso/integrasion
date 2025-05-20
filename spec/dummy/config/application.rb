@@ -50,9 +50,7 @@ module Dummy
       Nexo.policy.register_folder_policy_finder do |folder|
         if folder.name == "Other folder"
           DummyFolderPolicy.new("with_nil_sequence", :include, 1)
-        end
-
-        if folder.name == "Test calendar"
+        elsif folder.name == "Test calendar"
           DummyFolderPolicy.new("initialized", :include, 1)
         end
       end

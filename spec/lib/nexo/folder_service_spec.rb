@@ -42,6 +42,7 @@ module Nexo
         let(:element) { nexo_elements(:unsynced_local_change) }
 
         it "when still matches, it doesnt flag for deletion" do
+          # FIXME: remove mocks to policy_still_match?
           allow(element).to receive(:policy_still_match?).and_return(true)
           allow(folder_service).to receive(:find_element).and_return(element)
           assert_enqueued_jobs(1, only: SyncElementJob) do
