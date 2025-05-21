@@ -10,9 +10,11 @@ module Nexo
     def perform(synchronizable)
       # Maybe restrict this query to a more specific scope
       scope = Folder.all
-
-      scope.each do |folder|
-        folder_service.find_element_and_sync(folder, synchronizable)
+      # TODO: test
+      GoodJob::Bulk.enqueue do
+        scope.each do |folder|
+          folder_service.find_element_and_sync(folder, synchronizable)
+        end
       end
     end
 
