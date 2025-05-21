@@ -14,4 +14,4 @@
 default:
   tcp_status: 0
   service: "google"
-  secret: <%= ENV.fetch('SEEDS_GOOGLE_APIS_SECRET') %>
+  secret: <%= ENV.fetch('SEED_GOOGLE_APIS_CLIENT_SECRET') %>
