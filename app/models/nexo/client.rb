@@ -29,8 +29,7 @@ module Nexo
     enum :service, google: 0
     enum :tcp_status, authorized: 0, disabled: 1, expired: 2
 
-    validates :service, :user_integrations_allowed,
-              :tcp_status, :secret, presence: true
+    validates :service, :tcp_status, :secret, presence: true
 
     serialize :secret, coder: JSON
 

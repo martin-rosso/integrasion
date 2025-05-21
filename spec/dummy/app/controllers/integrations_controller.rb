@@ -7,7 +7,7 @@ class IntegrationsController < ActionController::Base
 
   def index
     @integrations = Nexo::Integration.where(discarded_at: nil)
-    @clients = Nexo::Client.where(user_integrations_allowed: true, tcp_status: :authorized)
+    @clients = Nexo::Client.where(tcp_status: :authorized)
   end
 
   def new
