@@ -12,7 +12,6 @@
 #  updated_at          :datetime         not null
 #
 module Nexo
-  # FIXME: add discarded_at
   class Folder < ApplicationRecord
     belongs_to :integration, class_name: "Nexo::Integration"
     has_many :elements, class_name: "Nexo::Element"
@@ -22,6 +21,8 @@ module Nexo
     else
       enum :protocol, calendar: 0, dummy_calendar: 1
     end
+
+    scope :kept, -> { where(discarded_at: nil) }
 
     validates :protocol, :name, presence: true
 
@@ -43,6 +44,14 @@ module Nexo
 
     def time_zone
       Rails.application.config.time_zone
+    end
+
+    def discarded?
+      discarded_at.present?
+    end
+
+    def discard!
+      update!(discarded_at: Time.current)
     end
   end
 end

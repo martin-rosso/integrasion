@@ -9,7 +9,7 @@ module Nexo
 
     def perform(synchronizable)
       # Maybe restrict this query to a more specific scope
-      scope = Folder.all
+      scope = Folder.kept
       # TODO: test
       GoodJob::Bulk.enqueue do
         scope.each do |folder|

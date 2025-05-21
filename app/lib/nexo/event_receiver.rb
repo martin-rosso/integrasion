@@ -25,6 +25,9 @@ module Nexo
     end
 
     def folder_changed(folder)
+      if folder.discarded?
+        raise "folder discarded"
+      end
       FolderSyncJob.perform_later(folder)
     end
 
