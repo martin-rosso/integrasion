@@ -27,7 +27,7 @@ module Nexo
       FolderSyncJob.perform_later(folder)
     end
 
-    def folder_destroyed(folder)
+    def folder_discarded(folder)
       FolderDestroyJob.perform_later(folder)
     end
 

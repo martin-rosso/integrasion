@@ -46,4 +46,4 @@ end
 
 
 # folder.discard!
-# EventReceiver.new.folder_destroyed(folder)
+# EventReceiver.new.folder_discarded(folder)
