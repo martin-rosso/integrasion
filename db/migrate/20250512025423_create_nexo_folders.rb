@@ -6,6 +6,7 @@ class CreateNexoFolders < ActiveRecord::Migration[7.2]
       t.string :external_identifier
       t.string :name
       t.string :description
+      t.datetime :discarded_at, index: true
 
       t.timestamps
     end

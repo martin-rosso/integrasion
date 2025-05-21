@@ -1,6 +1,3 @@
-require "googleauth"
-require "google-apis-oauth2_v2"
-
 module Nexo
   # This is actually an OAuth 2.0 flow, and that logic should be extracted to
   # a generic OAuth2Service

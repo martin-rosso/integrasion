@@ -12,10 +12,6 @@ module Nexo
         event_receiver.synchronizable_created(event)
       end
 
-      it "initializes the sequence" do
-        expect { subject }.to change(event, :sequence).to 0
-      end
-
       it "enqueues the synchronizable changed job" do
         assert_enqueued_jobs(1, only: SynchronizableChangedJob) do
           subject
@@ -33,11 +29,6 @@ module Nexo
 
         expect(ServiceBuilder.instance).to have_received(:build_protocol_service).once
         expect(service_mock).to have_received(:insert).once
-      end
-
-      it "with present sequence it raises exception" do
-        event.sequence = 0
-        expect { subject }.to raise_error(Errors::InvalidSynchronizableState)
       end
     end
 
@@ -86,12 +77,11 @@ module Nexo
       end
     end
 
-    describe "folder_policy_changed" do
+    describe "folder_changed" do
       subject do
-        event_receiver.folder_policy_changed(folder_policy)
+        event_receiver.folder_changed(folder)
       end
 
-      let(:folder_policy) { instance_double(DummyFolderPolicy, folder:) }
       let(:folder) { nexo_folders(:default) }
 
       it "enqueues the job" do

@@ -2,8 +2,8 @@
 #
 # Table name: nexo_element_versions
 #
-#  id         :integer          not null, primary key
-#  element_id :integer          not null
+#  id         :bigint           not null, primary key
+#  element_id :bigint           not null
 #  payload    :string
 #  etag       :string
 #  sequence   :integer

@@ -2,12 +2,13 @@
 #
 # Table name: nexo_folders
 #
-#  id                  :integer          not null, primary key
-#  integration_id      :integer          not null
+#  id                  :bigint           not null, primary key
+#  integration_id      :bigint           not null
 #  protocol            :integer          not null
 #  external_identifier :string
 #  name                :string
 #  description         :string
+#  discarded_at        :datetime
 #  created_at          :datetime         not null
 #  updated_at          :datetime         not null
 #
@@ -16,7 +17,13 @@ module Nexo
     belongs_to :integration, class_name: "Nexo::Integration"
     has_many :elements, class_name: "Nexo::Element"
 
-    enum :protocol, calendar: 0, dummy_calendar: 1
+    if respond_to?(:enumerize)
+      enumerize :protocol, in: { calendar: 0, dummy_calendar: 1 }
+    else
+      enum :protocol, calendar: 0, dummy_calendar: 1
+    end
+
+    scope :kept, -> { where(discarded_at: nil) }
 
     validates :protocol, :name, presence: true
 
@@ -38,6 +45,14 @@ module Nexo
 
     def time_zone
       Rails.application.config.time_zone
+    end
+
+    def discarded?
+      discarded_at.present?
+    end
+
+    def discard!
+      update!(discarded_at: Time.current)
     end
   end
 end

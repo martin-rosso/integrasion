@@ -2,8 +2,8 @@
 #
 # Table name: nexo_tokens
 #
-#  id             :integer          not null, primary key
-#  integration_id :integer          not null
+#  id             :bigint           not null, primary key
+#  integration_id :bigint           not null
 #  secret         :string
 #  tpt_status     :integer          not null
 #  environment    :string           not null

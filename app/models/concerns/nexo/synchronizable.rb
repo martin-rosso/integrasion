@@ -70,11 +70,11 @@ module Nexo
     end
     # :nocov:
 
-    def initialize_values!
-      update!(sequence: 0)
-    end
-
     def increment_sequence!
+      if sequence.nil?
+        Rails.logger.warn("Synchronizable sequence is nil on increment_sequence!: #{self.to_gid}")
+      end
+
       # This operation is performed directly in the database without the need
       # to read the current value first. So, it is atomic at a database level,
       # though the in-memory object consitency is subject to race conditions.
