@@ -2,12 +2,7 @@ module Nexo
   # This callbacks must be called when synchronizables change locally, must not
   # be called when the system is notified of an external element change
   class EventReceiver
-    # FIXME: maybe unify to synchronizable_changed
     def synchronizable_created(synchronizable)
-      validate_synchronizable_state!(synchronizable)
-
-      synchronizable.initialize_values!
-
       SynchronizableChangedJob.perform_later(synchronizable)
     end
 
@@ -43,11 +38,5 @@ module Nexo
       @folder_service ||= FolderService.new
     end
     # :nocov:
-
-    def validate_synchronizable_state!(synchronizable)
-      unless synchronizable.sequence.nil?
-        raise Errors::InvalidSynchronizableState, "sequence is present: #{synchronizable.sequence}"
-      end
-    end
   end
 end
