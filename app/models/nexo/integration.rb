@@ -2,9 +2,9 @@
 #
 # Table name: nexo_integrations
 #
-#  id           :integer          not null, primary key
-#  user_id      :integer          not null
-#  client_id    :integer          not null
+#  id           :bigint           not null, primary key
+#  user_id      :bigint           not null
+#  client_id    :bigint           not null
 #  name         :string
 #  scope        :string
 #  expires_at   :datetime

@@ -2,7 +2,7 @@
 #
 # Table name: nexo_clients
 #
-#  id                        :integer          not null, primary key
+#  id                        :bigint           not null, primary key
 #  service                   :integer
 #  secret                    :string
 #  tcp_status                :integer

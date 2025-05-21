@@ -2,8 +2,8 @@
 #
 # Table name: nexo_elements
 #
-#  id                  :integer          not null, primary key
-#  folder_id           :integer          not null
+#  id                  :bigint           not null, primary key
+#  folder_id           :bigint           not null
 #  synchronizable_id   :integer          not null
 #  synchronizable_type :string           not null
 #  uuid                :string

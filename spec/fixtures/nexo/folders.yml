@@ -2,12 +2,13 @@
 #
 # Table name: nexo_folders
 #
-#  id                  :integer          not null, primary key
-#  integration_id      :integer          not null
+#  id                  :bigint           not null, primary key
+#  integration_id      :bigint           not null
 #  protocol            :integer          not null
 #  external_identifier :string
 #  name                :string
 #  description         :string
+#  discarded_at        :datetime
 #  created_at          :datetime         not null
 #  updated_at          :datetime         not null
 #
