@@ -14,6 +14,7 @@ module Nexo
     ])
 
     def change_is_significative_to_sequence?
+      # FIXME: define an alternative array of methods to compare
       previous_changes.keys.map(&:to_sym).intersection(protocol_methods).any?
     end
 

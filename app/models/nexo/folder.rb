@@ -12,11 +12,16 @@
 #  updated_at          :datetime         not null
 #
 module Nexo
+  # FIXME: add discarded_at
   class Folder < ApplicationRecord
     belongs_to :integration, class_name: "Nexo::Integration"
     has_many :elements, class_name: "Nexo::Element"
 
-    enum :protocol, calendar: 0, dummy_calendar: 1
+    if respond_to?(:enumerize)
+      enumerize :protocol, in: { calendar: 0, dummy_calendar: 1 }
+    else
+      enum :protocol, calendar: 0, dummy_calendar: 1
+    end
 
     validates :protocol, :name, presence: true
 
