@@ -7,6 +7,7 @@ module Nexo
 
       queue_as :api_clients
 
+      # TODO: make this configurable, so other job backends are allowed
       good_job_control_concurrency_with(
         perform_limit: 1,
 
