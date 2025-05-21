@@ -24,8 +24,8 @@ module Nexo
       folder_service.destroy_elements(synchronizable, :synchronizable_destroyed)
     end
 
-    def folder_policy_changed(folder_policy)
-      FolderSyncJob.perform_later(folder_policy.folder)
+    def folder_changed(folder)
+      FolderSyncJob.perform_later(folder)
     end
 
     private

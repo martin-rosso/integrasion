@@ -86,12 +86,11 @@ module Nexo
       end
     end
 
-    describe "folder_policy_changed" do
+    describe "folder_changed" do
       subject do
-        event_receiver.folder_policy_changed(folder_policy)
+        event_receiver.folder_changed(folder)
       end
 
-      let(:folder_policy) { instance_double(DummyFolderPolicy, folder:) }
       let(:folder) { nexo_folders(:default) }
 
       it "enqueues the job" do
