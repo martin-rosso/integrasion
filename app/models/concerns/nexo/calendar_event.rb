@@ -14,8 +14,15 @@ module Nexo
     ])
 
     def change_is_significative_to_sequence?
-      # FIXME: define an alternative array of methods to compare
-      previous_changes.keys.map(&:to_sym).intersection(protocol_methods).any?
+      previous_changes.keys.map(&:to_sym).intersection(significative_columns).any?
+    end
+
+    # Model columns relevant to the sequence
+    #
+    # By default is equal to protocol_methods, but each concrete model class
+    # could have its own specific column names
+    def significative_columns
+      protocol_methods
     end
 
     def datetime_from
