@@ -7,6 +7,8 @@ module Nexo
     class ElementAlreadySynced < Error; end
     class MoreThanOneElementInFolderForSynchronizable < Error; end
     class InvalidFolderState < Error; end
+    class FolderDiscarded < Error; end
+    class SynchronizableDiscarded < Error; end
 
     # on ControllerHelper
     class InvalidParamsError < Error; end
