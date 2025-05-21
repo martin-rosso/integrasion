@@ -1,3 +1,7 @@
+require "googleauth"
+require "google-apis-oauth2_v2"
+require "google-apis-calendar_v3"
+
 module Nexo
   def self.folder_policies
     ::Nexo::PolicyService.instance
@@ -12,6 +16,13 @@ module Nexo
     initializer "nexo.collapse_dirs" do
       dir = "#{root}/app/lib/nexo/api_client"
       Rails.autoloaders.main.collapse(dir)
+    end
+
+    initializer "nexo.setup_google_logger" do
+      Google::Apis.logger = ActiveSupport::Logger.new(Rails.root.join("log/google_apis.log"))
+        .tap  { |logger| logger.formatter = ::Logger::Formatter.new }
+        .then { |logger| ActiveSupport::TaggedLogging.new(logger) }
+      # .tap  { |logger| logger.push_tags("FOO") }
     end
 
     initializer "configurar_generators" do

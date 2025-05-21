@@ -1,5 +1,3 @@
-require "google-apis-calendar_v3"
-
 module Nexo
   # Wrapper around +Google::Apis::CalendarV3+
   #
