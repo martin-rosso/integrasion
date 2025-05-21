@@ -2,6 +2,7 @@ module Nexo
   # This callbacks must be called when synchronizables change locally, must not
   # be called when the system is notified of an external element change
   class EventReceiver
+    # FIXME: maybe unify to synchronizable_changed
     def synchronizable_created(synchronizable)
       validate_synchronizable_state!(synchronizable)
 
@@ -29,6 +30,10 @@ module Nexo
         raise "folder discarded"
       end
       FolderSyncJob.perform_later(folder)
+    end
+
+    def folder_destroyed(folder)
+      FolderDestroyJob.perform_later(folder)
     end
 
     private

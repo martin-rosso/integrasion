@@ -1,6 +1,12 @@
 module Nexo
   class FolderSyncJob < BaseJob
     def perform(folder)
+      if folder.external_identifier.blank?
+        protocol_service = ServiceBuilder.build_protocol_service(folder)
+        response = protocol_service.insert_calendar(folder)
+        folder.update(external_identifier: response.id)
+      end
+
       policies = PolicyService.instance.policies_for(folder)
       # flat_map should be equivalent to:
       #   policies.map(&:synchronizable_queries).flatten(1)
