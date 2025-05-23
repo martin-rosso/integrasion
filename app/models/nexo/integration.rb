@@ -21,6 +21,11 @@ module Nexo
     belongs_to :user
     belongs_to :client, class_name: "Nexo::Client"
     has_many :tokens, class_name: "Nexo::Token"
+    has_many :folders, class_name: "Nexo::Folder"
+
+    before_validation do
+      self.scope = scope.select(&:present?)
+    end
 
     validates :scope, presence: true
 
