@@ -10,7 +10,7 @@ module Nexo
     end
 
     def build_protocol_service(folder)
-      service_klass_name = "#{folder.integration.client.service}_#{folder.protocol}_service".camelcase
+      service_klass_name = "#{folder.integration.client.service}_#{folder.nexo_protocol}_service".camelcase
       build_service(service_klass_name, folder.integration)
     end
 

@@ -19,7 +19,7 @@ folder = Nexo::Folder.kept.first
 unless folder.present?
   folder = Nexo::Folder.create!(
     integration:,
-    protocol: :calendar,
+    nexo_protocol: :calendar,
     name: "Nexo Automated Test",
     description: "Automatically created calendar for Nexo Automated Test"
   )
