@@ -1,10 +1,12 @@
 module Nexo
   class FolderSyncJob < BaseJob
     def perform(folder)
+      protocol_service = ServiceBuilder.instance.build_protocol_service(folder)
       if folder.external_identifier.blank?
-        protocol_service = ServiceBuilder.instance.build_protocol_service(folder)
         response = protocol_service.insert_calendar(folder)
         folder.update(external_identifier: response.id)
+      else
+        protocol_service.update_calendar(folder)
       end
 
       policies = PolicyService.instance.policies_for(folder)

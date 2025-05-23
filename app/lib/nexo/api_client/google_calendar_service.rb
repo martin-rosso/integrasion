@@ -3,8 +3,10 @@ module Nexo
   #
   # @raise [Google::Apis::ClientError] possible messages:
   #   - duplicate: The requested identifier already exists.
-  #   - notFound: Not Found
-  #   - forbidden: Forbidden (cuando se intenta updatear un evento que ya fue borrado)
+  #   - notFound: Not Found (calendar not exists or was deleted)
+  #   - forbidden: Forbidden (event to update was deleted)
+  #
+  # TODO! when event to update was deleted, create a new one and warn
   class GoogleCalendarService < CalendarService
     # Create an event in a Google Calendar
     #
@@ -41,6 +43,13 @@ module Nexo
     def insert_calendar(folder)
       cal = build_calendar(folder)
       response = client.insert_calendar(cal)
+      ApiResponse.new(payload: response.to_json, status: :ok, etag: response.etag, id: response.id)
+    end
+
+    # Create a Google calendar
+    def update_calendar(folder)
+      cal = build_calendar(folder)
+      response = client.update_calendar(cal)
       ApiResponse.new(payload: response.to_json, status: :ok, etag: response.etag, id: response.id)
     end
 
