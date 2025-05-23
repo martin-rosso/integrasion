@@ -4,7 +4,7 @@
 #
 #  id                  :bigint           not null, primary key
 #  integration_id      :bigint           not null
-#  protocol            :integer          not null
+#  nexo_protocol       :integer          not null
 #  external_identifier :string
 #  name                :string
 #  description         :string
