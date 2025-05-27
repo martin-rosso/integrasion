@@ -83,7 +83,7 @@ module Nexo
 
       it "marks all elements as flagged for deletion and enqueues a job for each" do
         assert_enqueued_jobs(elements.count, only: SyncElementJob) do
-          expect { subject }.to change { elements.pluck(:flag_deletion).uniq }.to([ true ])
+          expect { subject }.to change { elements.pluck(:flagged_for_removal).uniq }.to([ true ])
         end
       end
     end

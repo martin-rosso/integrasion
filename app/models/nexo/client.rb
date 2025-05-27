@@ -5,7 +5,7 @@
 #  id         :bigint           not null, primary key
 #  service    :integer
 #  secret     :string
-#  tcp_status :integer
+#  nc_status  :integer
 #  brand_name :integer
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
@@ -26,9 +26,9 @@ module Nexo
     encrypts :secret
 
     enum :service, google: 0
-    enum :tcp_status, authorized: 0, disabled: 1, expired: 2
+    enum :nc_status, authorized: 0, disabled: 1, expired: 2
 
-    validates :service, :tcp_status, :secret, presence: true
+    validates :service, :nc_status, :secret, presence: true
 
     serialize :secret, coder: JSON
 

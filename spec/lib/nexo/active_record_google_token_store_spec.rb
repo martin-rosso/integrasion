@@ -27,7 +27,7 @@ module Nexo
       end
 
       it do
-        expect { store.delete(integration) }.to change { token.reload.tpt_status }.to("revoked")
+        expect { store.delete(integration) }.to change { token.reload.nt_status }.to("revoked")
       end
     end
 

@@ -7,8 +7,8 @@
 #  synchronizable_id   :integer          not null
 #  synchronizable_type :string           not null
 #  uuid                :string
-#  flag_deletion       :boolean          not null
-#  deletion_reason     :integer
+#  flagged_for_removal :boolean          not null
+#  removal_reason      :integer
 #  conflicted          :boolean          default(FALSE), not null
 #  discarded_at        :datetime
 #  created_at          :datetime         not null

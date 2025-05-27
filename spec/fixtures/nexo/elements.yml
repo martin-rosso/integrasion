@@ -7,28 +7,28 @@
 #  synchronizable_id   :integer          not null
 #  synchronizable_type :string           not null
 #  uuid                :string
-#  flag_deletion       :boolean          not null
-#  deletion_reason     :integer
+#  flagged_for_removal :boolean          not null
+#  removal_reason      :integer
 #  conflicted          :boolean          default(FALSE), not null
 #  discarded_at        :datetime
 #  created_at          :datetime         not null
 #  updated_at          :datetime         not null
 #
 DEFAULTS: &DEFAULTS
-  flag_deletion: false
+  flagged_for_removal: false
   folder: default
   uuid: <%= Digest::MD5.hexdigest("seed_2_$LABEL") %>
 
 flagged_for_deletion_synchronizable_present:
   <<: *DEFAULTS
-  flag_deletion: true
-  deletion_reason: synchronizable_destroyed
+  flagged_for_removal: true
+  removal_reason: synchronizable_destroyed
   synchronizable: initialized (Event)
 
 flagged_for_deletion_ghost_synchronizable:
   <<: *DEFAULTS
-  flag_deletion: true
-  deletion_reason: synchronizable_destroyed
+  flagged_for_removal: true
+  removal_reason: synchronizable_destroyed
   synchronizable_id: 1
   synchronizable_type: "Event"
 

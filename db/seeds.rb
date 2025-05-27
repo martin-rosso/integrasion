@@ -4,7 +4,7 @@ module Nexo
 
   if ENV.fetch('SEED_GOOGLE_APIS_CLIENT_SECRET', nil)
     client = Client.create!(
-      tcp_status: 0,
+      nc_status: 0,
       service: "google",
       secret: JSON.parse(ENV.fetch('SEED_GOOGLE_APIS_CLIENT_SECRET'))
     )
@@ -20,7 +20,7 @@ module Nexo
       Nexo::Token.create!(
         integration:,
         secret: ENV.fetch('SEED_GOOGLE_APIS_TOKEN'),
-        tpt_status: :active,
+        nt_status: :active,
         environment: "development"
       )
     end

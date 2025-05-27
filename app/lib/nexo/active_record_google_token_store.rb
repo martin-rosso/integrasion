@@ -17,7 +17,7 @@ module Nexo
     def store(integration, token)
       ActiveRecord::Base.transaction do
         # Maybe these should be destroyed
-        integration.tokens.active.update_all(tpt_status: :expired)
+        integration.tokens.active.update_all(nt_status: :expired)
 
         Token.create!(integration:, secret: token)
       end
@@ -28,7 +28,7 @@ module Nexo
       token = find_by_id(id)
 
       if token.present?
-        token.update!(tpt_status: :revoked)
+        token.update!(nt_status: :revoked)
       else
         # TODO: pg_warn("Couldn't find token for revocation: #{id}")
       end
@@ -37,7 +37,7 @@ module Nexo
     private
 
     def find_by_id(id)
-      Token.where(environment: Rails.env, integration: id, tpt_status: :active).last
+      Token.where(environment: Rails.env, integration: id, nt_status: :active).last
     end
   end
 end

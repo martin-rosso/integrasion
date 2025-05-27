@@ -3,7 +3,7 @@ class CreateNexoClients < ActiveRecord::Migration[7.2]
     create_table :nexo_clients do |t|
       t.integer :service
       t.string :secret
-      t.integer :tcp_status
+      t.integer :nc_status
       t.integer :brand_name
 
       t.timestamps

@@ -120,7 +120,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_05_19_210346) do
   create_table "nexo_clients", force: :cascade do |t|
     t.integer "service"
     t.string "secret"
-    t.integer "tcp_status"
+    t.integer "nc_status"
     t.integer "brand_name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -142,8 +142,8 @@ ActiveRecord::Schema[7.2].define(version: 2025_05_19_210346) do
     t.integer "synchronizable_id", null: false
     t.string "synchronizable_type", null: false
     t.string "uuid"
-    t.boolean "flag_deletion", null: false
-    t.integer "deletion_reason"
+    t.boolean "flagged_for_removal", null: false
+    t.integer "removal_reason"
     t.boolean "conflicted", default: false, null: false
     t.datetime "discarded_at"
     t.datetime "created_at", null: false
@@ -183,7 +183,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_05_19_210346) do
   create_table "nexo_tokens", force: :cascade do |t|
     t.bigint "integration_id", null: false
     t.string "secret"
-    t.integer "tpt_status", null: false
+    t.integer "nt_status", null: false
     t.string "environment", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

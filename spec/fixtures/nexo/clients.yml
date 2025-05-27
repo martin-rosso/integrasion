@@ -5,12 +5,12 @@
 #  id         :bigint           not null, primary key
 #  service    :integer
 #  secret     :string
-#  tcp_status :integer
+#  nc_status  :integer
 #  brand_name :integer
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
 #
 default:
-  tcp_status: 0
+  nc_status: 0
   service: "google"
   secret: <%= ENV.fetch('SEED_GOOGLE_APIS_CLIENT_SECRET') %>

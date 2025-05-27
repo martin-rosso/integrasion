@@ -7,8 +7,8 @@
 #  synchronizable_id   :integer          not null
 #  synchronizable_type :string           not null
 #  uuid                :string
-#  flag_deletion       :boolean          not null
-#  deletion_reason     :integer
+#  flagged_for_removal :boolean          not null
+#  removal_reason      :integer
 #  conflicted          :boolean          default(FALSE), not null
 #  discarded_at        :datetime
 #  created_at          :datetime         not null
@@ -22,12 +22,12 @@ module Nexo
 
     after_initialize do
       # TODO: https://api.rubyonrails.org/classes/ActiveRecord/Attributes/ClassMethods.html#method-i-attribute
-      self.flag_deletion = false if flag_deletion.nil?
+      self.flagged_for_removal = false if flagged_for_removal.nil?
     end
 
     scope :kept, -> { where(discarded_at: nil) }
 
-    enum :deletion_reason, no_longer_included_in_folder: 0, synchronizable_destroyed: 1
+    enum :removal_reason, no_longer_included_in_folder: 0, synchronizable_destroyed: 1
 
     scope :conflicted, -> { where(conflicted: true) }
 
@@ -47,12 +47,12 @@ module Nexo
       element_versions.where(sequence: nil).order(created_at: :desc).first
     end
 
-    def flag_for_deletion!(deletion_reason)
-      update!(flag_deletion: true, deletion_reason:)
+    def flag_for_deletion!(removal_reason)
+      update!(flagged_for_removal: true, removal_reason:)
     end
 
     def flagged_for_deletion?
-      flag_deletion?
+      flagged_for_removal?
     end
 
     # :nocov: TODO, not yet being called

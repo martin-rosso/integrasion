@@ -5,7 +5,7 @@
 #  id         :bigint           not null, primary key
 #  service    :integer
 #  secret     :string
-#  tcp_status :integer
+#  nc_status  :integer
 #  brand_name :integer
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
