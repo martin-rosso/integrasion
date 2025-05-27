@@ -41,6 +41,10 @@ module Nexo
 
     # Create a Google calendar
     def insert_calendar(folder)
+      unless folder.integration.token?
+        raise Errors::Error, "folder has no token"
+      end
+
       cal = build_calendar(folder)
       response = client.insert_calendar(cal)
       ApiResponse.new(payload: response.to_json, status: :ok, etag: response.etag, id: response.id)
@@ -48,8 +52,12 @@ module Nexo
 
     # Create a Google calendar
     def update_calendar(folder)
+      unless folder.integration.token?
+        raise Errors::Error, "folder has no token"
+      end
+
       cal = build_calendar(folder)
-      response = client.update_calendar(cal)
+      response = client.update_calendar(folder.external_identifier, cal)
       ApiResponse.new(payload: response.to_json, status: :ok, etag: response.etag, id: response.id)
     end
 
@@ -74,6 +82,10 @@ module Nexo
     private
 
     def validate_folder_state!(folder)
+      unless folder.integration.token?
+        raise Errors::Error, "folder has no token"
+      end
+
       if folder.external_identifier.blank?
         raise Errors::InvalidFolderState, folder
       end

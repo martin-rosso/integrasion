@@ -57,6 +57,10 @@ module Nexo
       end
     end
 
+    def token?
+      token_status.in? [ :active_token, :expired_token ]
+    end
+
     def credentials
       service = ServiceBuilder.instance.build_auth_service(self)
       @credentials ||= service.get_credentials

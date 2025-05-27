@@ -3,6 +3,11 @@ require "rails_helper"
 module Nexo
   describe FolderSyncJob, type: :job do
     let(:folder) { nexo_folders(:default) }
+    let(:folder_service_mock) { instance_double(FolderService, find_element_and_sync: nil) }
+    let(:calendar_service_mock) do
+      response = ApiResponse.new(id: "folder-id")
+      instance_double(GoogleCalendarService, insert_calendar: response, update_calendar: response)
+    end
 
     around do |example|
       perform_enqueued_jobs(only: described_class) do
@@ -10,12 +15,7 @@ module Nexo
       end
     end
 
-    let(:folder_service_mock) { instance_double(FolderService, find_element_and_sync: nil) }
 
-    let(:calendar_service_mock) do
-      response = ApiResponse.new(id: "folder-id")
-      instance_double(GoogleCalendarService, insert_calendar: response, update_calendar: response)
-    end
 
     before do
       allow(ServiceBuilder.instance).to receive(:build_protocol_service).and_return(calendar_service_mock)
