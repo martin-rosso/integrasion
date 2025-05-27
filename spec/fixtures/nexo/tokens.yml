@@ -12,6 +12,6 @@
 #
 default:
   integration: default
-  secret: '<%= ENV.fetch('TEST_GOOGLE_API_TOKEN') %>'
+  secret: '<%= ENV.fetch('SEED_GOOGLE_APIS_TOKEN') %>'
   tpt_status: active
   environment: test

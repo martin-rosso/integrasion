@@ -62,7 +62,7 @@ module Nexo
     def update_from!(element_version)
       transaction do
         # TODO: parse the element_version.payload
-        # and set the Synchronizable fields according to the Folder#protocol
+        # and set the Synchronizable fields according to the Folder#nexo_protocol
 
         new_sequence = increment_sequence!
         element_version.update_sequence!(new_sequence)

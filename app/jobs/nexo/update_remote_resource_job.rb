@@ -26,6 +26,18 @@ module Nexo
     private
 
     def validate_element_state!
+      if element.synchronizable.blank?
+        raise Errors::SynchronizableNotFound
+      end
+
+      if element.synchronizable.respond_to?(:discarded?) && element.synchronizable.discarded?
+        raise Errors::SynchronizableDiscarded
+      end
+
+      if element.folder.discarded?
+        raise Errors::FolderDiscarded
+      end
+
       if element.synchronizable.conflicted?
         raise Errors::ElementConflicted
       end

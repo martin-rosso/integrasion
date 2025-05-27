@@ -13,7 +13,8 @@ module Nexo
       client_mock = instance_double(Google::Apis::CalendarV3::CalendarService, mocks)
       allow(google_calendar_service).to receive(:client).and_return(client_mock)
 
-      auth_service_mock = instance_double(GoogleAuthService, get_credentials: nil)
+      credentials_mock = instance_double(Google::Auth::UserRefreshCredentials, expires_at: 10.minutes.from_now)
+      auth_service_mock = instance_double(GoogleAuthService, get_credentials: credentials_mock)
       allow(ServiceBuilder.instance).to receive(:build_auth_service).and_return(auth_service_mock)
     end
 

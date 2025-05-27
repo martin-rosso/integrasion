@@ -4,7 +4,7 @@
 #
 #  id                  :bigint           not null, primary key
 #  integration_id      :bigint           not null
-#  protocol            :integer          not null
+#  nexo_protocol       :integer          not null
 #  external_identifier :string
 #  name                :string
 #  description         :string
@@ -18,14 +18,14 @@ module Nexo
     has_many :elements, class_name: "Nexo::Element"
 
     if respond_to?(:enumerize)
-      enumerize :protocol, in: { calendar: 0, dummy_calendar: 1 }
+      enumerize :nexo_protocol, in: { calendar: 0, dummy_calendar: 1 }
     else
-      enum :protocol, calendar: 0, dummy_calendar: 1
+      enum :nexo_protocol, calendar: 0, dummy_calendar: 1
     end
 
     scope :kept, -> { where(discarded_at: nil) }
 
-    validates :protocol, :name, presence: true
+    validates :nexo_protocol, :name, presence: true
 
     # TODO!: find better name
     # maybe policy_applies?

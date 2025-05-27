@@ -5,7 +5,6 @@ class CreateNexoClients < ActiveRecord::Migration[7.2]
       t.string :secret
       t.integer :tcp_status
       t.integer :brand_name
-      t.boolean :user_integrations_allowed
 
       t.timestamps
     end

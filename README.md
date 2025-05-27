@@ -21,6 +21,11 @@ Or install it yourself as:
 $ gem install nexo
 ```
 
+Install good_job
+Configure good_job
+    max_threads:
+    queues:
+
 ## Contributing
 Contribution directions go here.
 

@@ -122,7 +122,6 @@ ActiveRecord::Schema[7.2].define(version: 2025_05_19_210346) do
     t.string "secret"
     t.integer "tcp_status"
     t.integer "brand_name"
-    t.boolean "user_integrations_allowed"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -157,7 +156,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_05_19_210346) do
 
   create_table "nexo_folders", force: :cascade do |t|
     t.bigint "integration_id", null: false
-    t.integer "protocol", null: false
+    t.integer "nexo_protocol", null: false
     t.string "external_identifier"
     t.string "name"
     t.string "description"

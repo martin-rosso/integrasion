@@ -4,7 +4,7 @@
 #
 #  id                  :bigint           not null, primary key
 #  integration_id      :bigint           not null
-#  protocol            :integer          not null
+#  nexo_protocol       :integer          not null
 #  external_identifier :string
 #  name                :string
 #  description         :string
@@ -14,14 +14,14 @@
 #
 default:
   name: "Test calendar"
-  protocol: "calendar"
+  nexo_protocol: "calendar"
   integration: default
   description: Created automatically with Nexo
   external_identifier: <%= ENV.fetch('TEST_GOOGLE_CALENDAR_ID', "folder-id-default") %>
 
 other:
   name: "Other folder"
-  protocol: "calendar"
+  nexo_protocol: "calendar"
   integration: default
   description: Created automatically with Nexo
   external_identifier: <%= ENV.fetch('TEST_GOOGLE_CALENDAR_ID_2', "folder-id-other") %>

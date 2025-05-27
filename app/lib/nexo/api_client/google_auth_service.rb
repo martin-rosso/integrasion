@@ -53,9 +53,13 @@ module Nexo
     # Guarda el Token
     # Si el client tiene más permisos que los que el user solicitó
     def get_credentials(request = nil)
-      if request.present? && request.session["code_verifier"].present?
+      if request.present?
         # :nocov: tricky
-        authorizer.code_verifier = request.session["code_verifier"]
+        if request.session["code_verifier"].present?
+          authorizer.code_verifier = request.session["code_verifier"]
+        else
+          Rails.logger.warn("Request has no code_verifier")
+        end
         # :nocov:
       end
       authorizer.get_credentials @integration, request
@@ -63,11 +67,11 @@ module Nexo
       # TODO: log
     end
 
-    def get_authorization_url(request)
+    def get_authorization_url(request, login_hint: nil)
       request.session["code_verifier"] ||= Google::Auth::WebUserAuthorizer.generate_code_verifier
       authorizer.code_verifier = request.session["code_verifier"]
-      authorizer.get_authorization_url(request:)
-      # authorizer.get_authorization_url(request:, login_hint: "bla@gmail.com")
+      # authorizer.get_authorization_url(request:)
+      authorizer.get_authorization_url(request:, login_hint:)
     end
 
     private

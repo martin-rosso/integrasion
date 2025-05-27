@@ -14,6 +14,8 @@ module Nexo
   class SyncElementJob < BaseJob
     limits_concurrency key: ->(element) { element.to_gid }
 
+    # TODO!: set priority based on date distance to today
+
     # discard_on Errors::SyncElementJobError
     # retry_on StandardError, wait: :polynomially_longer
 
