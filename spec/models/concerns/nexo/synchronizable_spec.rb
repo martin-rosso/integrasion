@@ -53,6 +53,18 @@ module Nexo
         # the in-memory value is inconsistent, this is a known issue
         expect(event.sequence).to eq new_value
       end
+
+      context "when sequence is nil" do
+        before do
+          event.update(sequence: nil)
+        end
+
+        it do
+          allow(Rails.logger).to receive(:warn).and_call_original
+          event.increment_sequence!
+          expect(Rails.logger).to have_received(:warn).with(/sequence is nil/)
+        end
+      end
     end
 
     # pending "update_from!"
