@@ -2,10 +2,10 @@ require 'rails_helper'
 
 module Nexo
   describe "integrations requests", type: :request do
-    let(:client) { Client.first }
+    let(:client) { create(:nexo_client) }
 
     let(:integration) do
-      Integration.create!(user: User.first, client: client, scope: [ "auth_calendar_app_created" ])
+      create(:nexo_integration, client:)
     end
 
     before do

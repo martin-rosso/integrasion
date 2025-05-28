@@ -2,11 +2,7 @@ require "rails_helper"
 
 module Nexo
   describe GoogleAuthService do
-    let(:client) { Client.first }
-
-    let(:integration) do
-      Integration.create!(user: User.first, client: client, scope: [ "auth_calendar_app_created" ])
-    end
+    let(:integration) { create(:nexo_integration) }
 
     describe "token_info" do
       let(:service) { described_class.new(integration) }

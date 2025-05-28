@@ -4,8 +4,16 @@ module Nexo
   describe EventReceiver do
     include ActiveJob::TestHelper
 
+    before do
+      Nexo.folder_policies.register_folder_policy_finder do |folder|
+        # FIXME: explicitar que matchea todo
+        DummyFolderPolicy.new(/.*/, :include, 1)
+      end
+      create(:nexo_folder)
+    end
+
     let(:event_receiver) { described_class.new }
-    let(:event) { events(:with_nil_sequence) }
+    let(:event) { create(:event, :with_nil_sequence) }
 
     describe "synchronizable_created" do
       subject do
@@ -82,7 +90,7 @@ module Nexo
         event_receiver.folder_changed(folder)
       end
 
-      let(:folder) { nexo_folders(:default) }
+      let(:folder) { create(:nexo_folder) }
 
       it "enqueues the job" do
         assert_enqueued_jobs(1, only: FolderSyncJob) do

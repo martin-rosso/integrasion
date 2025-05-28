@@ -13,7 +13,7 @@ module Nexo
     end
 
     context "when element doesnt exists on remote server" do
-      let(:element) { nexo_elements(:unsynced_local_change) }
+      let(:element) { create(:nexo_element, :unsynced_local_change) }
 
       it do
         response = instance_double(ApiResponse, etag: "abc123", payload: { "status" => "ok" }, id: "fooid")
@@ -30,7 +30,7 @@ module Nexo
     end
 
     context "when element was synced previously on remote server" do
-      let(:element) { nexo_elements(:synced) }
+      let(:element) { create(:nexo_element, :synced) }
 
       before do
         element.synchronizable.increment_sequence!
@@ -50,7 +50,7 @@ module Nexo
     end
 
     context "when element is already synced" do
-      let(:element) { nexo_elements(:synced) }
+      let(:element) { create(:nexo_element, :synced) }
 
       it do
         expect { subject }.to raise_error(Errors::ElementAlreadySynced)
@@ -58,7 +58,7 @@ module Nexo
     end
 
     context "when element is conflicted" do
-      let(:element) { nexo_elements(:conflicted) }
+      let(:element) { create(:nexo_element, :conflicted) }
 
       it do
         expect { subject }.to raise_error(Errors::ElementConflicted)
@@ -66,7 +66,7 @@ module Nexo
     end
 
     context "when there is an external unsynced change" do
-      let(:element) { nexo_elements(:unsynced_external_change) }
+      let(:element) { create(:nexo_element, :unsynced_external_change) }
 
       it do
         expect { subject }.to raise_error(Errors::ExternalUnsyncedChange)

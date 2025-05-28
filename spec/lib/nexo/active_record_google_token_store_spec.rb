@@ -2,10 +2,8 @@ require "rails_helper"
 
 module Nexo
   describe ActiveRecordGoogleTokenStore do
-    let(:client) { Client.first }
-
     let(:integration) do
-      Integration.create!(user: User.first, client: client, scope: [ "auth_calendar_app_created" ])
+      create(:nexo_integration)
     end
 
     let(:store) { described_class.new }

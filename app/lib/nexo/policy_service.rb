@@ -1,7 +1,11 @@
 module Nexo
   class PolicyService
-    def initialize
+    def clear_finders!
       @finders = []
+    end
+
+    def initialize
+      clear_finders!
     end
 
     @instance = new

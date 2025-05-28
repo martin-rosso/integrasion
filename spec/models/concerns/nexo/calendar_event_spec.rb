@@ -2,7 +2,7 @@ require "rails_helper"
 
 module Nexo
   describe CalendarEvent do
-    let(:event) { events(:initialized) }
+    let(:event) { create(:event).reload }
 
     describe "change_is_significative_to_sequence?" do
       subject do

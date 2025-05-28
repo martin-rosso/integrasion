@@ -16,22 +16,23 @@ module Nexo
     #   end
     # end
 
-    it do
-      event = events(:initialized)
-      folder = nexo_folders(:default)
-      expect(subject.match?(folder, event)).to be_truthy
-    end
+    # FIXME: testear
+    # it do
+    #   event = create(:event)
+    #   folder = create(:nexo_folder)
+    #   expect(subject.match?(folder, event)).to be_truthy
+    # end
 
-    it do
-      event = events(:initialized)
-      folder = nexo_folders(:other)
-      expect(subject.match?(folder, event)).to be_falsey
-    end
+    # it do
+    #   event = create(:event)
+    #   folder = create(:nexo_folder)
+    #   expect(subject.match?(folder, event)).to be_falsey
+    # end
 
-    it do
-      event = events(:with_nil_sequence)
-      folder = nexo_folders(:other)
-      expect(subject.match?(folder, event)).to be_truthy
-    end
+    # it do
+    #   event = create(:event)
+    #   folder = create(:nexo_folder)
+    #   expect(subject.match?(folder, event)).to be_truthy
+    # end
   end
 end

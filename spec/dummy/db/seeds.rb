@@ -1,4 +1,3 @@
-# ActiveRecord::FixtureSet.create_fixtures(["#{::Rails.root}/../fixtures"], ["events", "users", "nexo/clients" , "nexo/integrations" , "nexo/tokens" , "nexo/folders"])
-
-ActiveRecord::FixtureSet.create_fixtures(["#{::Rails.root}/../fixtures"], ["events", "users"])
+FactoryBot.create_list(:event, 2)
+FactoryBot.create_list(:user, 1)
 Nexo::Engine.load_seed

@@ -6,13 +6,21 @@ module Nexo
       described_class.perform_now(event)
     end
 
+    before do
+      Nexo.folder_policies.register_folder_policy_finder do |folder|
+        DummyFolderPolicy.new("initialized", :include, 1)
+      end
+create_list(:nexo_folder, 2)
+    end
+
     around do |example|
       perform_enqueued_jobs(only: described_class) do
         example.run
       end
     end
 
-    let(:event) { events(:initialized) }
+    let(:event) { create(:event) }
+
 
     it "calls the folder service with each folder" do
       folder_service_mock = instance_double(FolderService, find_element_and_sync: nil)

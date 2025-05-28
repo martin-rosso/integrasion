@@ -2,6 +2,14 @@ require "rails_helper"
 
 module Nexo
   describe Synchronizable do
+    it "events factory works" do
+      expect { create(:event) }.to change(Event, :count).by(1)
+    end
+
+    it "users factory works" do
+      expect { create(:user) }.to change(User, :count).by(1)
+    end
+
     describe "protocols" do
       it "includes the nexo_calendar_event protocol" do
         event = Event.new
@@ -42,7 +50,7 @@ module Nexo
     end
 
     describe "increment_sequence!" do
-      let(:event) { events(:initialized) }
+      let(:event) { create(:event) }
 
       it "increments the sequence atomicly" do
         event2 = Event.find(event.id)

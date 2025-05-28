@@ -14,7 +14,7 @@ module Nexo
     end
 
     context "when element doesnt exists on remote server" do
-      let(:element) { nexo_elements(:synced) }
+      let(:element) { create(:nexo_element, :synced) }
 
       it do
         response = instance_double(ApiResponse, etag: "abc123", payload: { "status" => "ok" })

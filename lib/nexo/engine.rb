@@ -31,5 +31,9 @@ module Nexo
         g.orm :active_record
       end
     end
+
+    initializer "nexo.set_factory_paths", after: "factory_bot.set_factory_paths" do
+      FactoryBot.definition_file_paths << "#{root}/spec/factories"
+    end
   end
 end

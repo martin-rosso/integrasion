@@ -14,14 +14,14 @@ module Nexo
 
     context "when flagged for deletion" do
       it "when synchronizable is present, enqueues the job" do
-        element = nexo_elements(:flagged_for_deletion_synchronizable_present)
+        element = create(:nexo_element, :flagged_for_removal)
         assert_enqueued_jobs(1, only: DeleteRemoteResourceJob) do
           described_class.perform_now(element)
         end
       end
 
       it "when synchronizable is ghosted, enqueues the job" do
-        element = nexo_elements(:flagged_for_deletion_ghost_synchronizable)
+        element = create(:nexo_element, :flagged_for_removal, :with_ghost_synchronizable)
         assert_enqueued_jobs(1, only: DeleteRemoteResourceJob) do
           described_class.perform_now(element)
         end
@@ -29,7 +29,7 @@ module Nexo
     end
 
     context "when already synced" do
-      let(:element) { nexo_elements(:synced) }
+      let(:element) { create(:nexo_element, :synced) }
 
       it do
         assert_no_enqueued_jobs do
@@ -39,7 +39,7 @@ module Nexo
     end
 
     context "when local change to export" do
-      let(:element) { nexo_elements(:unsynced_local_change) }
+      let(:element) { create(:nexo_element, :unsynced_local_change) }
 
       it do
         assert_enqueued_jobs(1, only: UpdateRemoteResourceJob) do
@@ -49,7 +49,7 @@ module Nexo
     end
 
     context "when element is discarded" do
-      let(:element) { nexo_elements(:discarded) }
+      let(:element) { create(:nexo_element, :discarded) }
 
       it do
         expect { subject }.to raise_error(Errors::ElementDiscarded)
@@ -57,7 +57,7 @@ module Nexo
     end
 
     context "when synchronizable is blank" do
-      let(:element) { nexo_elements(:with_ghost_synchronizable) }
+      let(:element) { create(:nexo_element, :with_ghost_synchronizable) }
 
       it do
         expect { subject }.to raise_error(Errors::SynchronizableNotFound)
@@ -65,7 +65,7 @@ module Nexo
     end
 
     context "when synchronizable is conflicted" do
-      let(:element) { nexo_elements(:conflicted_indirectly) }
+      let(:element) { create(:nexo_element, :conflicted_indirectly) }
 
       it do
         expect { subject }.to raise_error(Errors::SynchronizableConflicted)
@@ -73,7 +73,7 @@ module Nexo
     end
 
     context "when element is conflicted" do
-      let(:element) { nexo_elements(:conflicted) }
+      let(:element) { create(:nexo_element, :conflicted) }
 
       it do
         expect { subject }.to raise_error(Errors::ElementConflicted)
@@ -81,7 +81,7 @@ module Nexo
     end
 
     context "when synchronizable sequence is nil" do
-      let(:element) { nexo_elements(:synced) }
+      let(:element) { create(:nexo_element, :synced) }
 
       it do
         element.synchronizable.update(sequence: nil)

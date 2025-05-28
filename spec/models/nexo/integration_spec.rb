@@ -16,11 +16,15 @@ require 'rails_helper'
 
 module Nexo
   describe Integration do
-    let(:client) { nexo_clients(:default) }
-    let(:user) { users(:default) }
+    let(:client) { create(:nexo_client) }
+    let(:user) { create(:user) }
 
     let(:integration) do
-      described_class.create!(user:, client:, scope: [ "auth_calendar_app_created" ])
+      create(:nexo_integration)
+    end
+
+    it "factory works" do
+      expect { create(:nexo_integration) }.to change(Nexo::Integration, :count).by(1)
     end
 
     describe "expires_in" do
@@ -47,7 +51,7 @@ module Nexo
       end
 
       let(:integration) do
-        aux = described_class.create!(user: User.first, client: client, scope: [ "auth_calendar_app_created" ])
+        aux = described_class.create!(user:, client:, scope: [ "auth_calendar_app_created" ])
         credentials_mock = instance_double(Google::Auth::UserRefreshCredentials, expires_at:)
         allow(aux).to receive(:credentials).and_return(credentials_mock)
         aux

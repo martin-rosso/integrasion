@@ -3,7 +3,7 @@ require "rails_helper"
 module Nexo
   describe GoogleCalendarService do
     let(:google_calendar_service) { described_class.new(integration) }
-    let(:integration) { nexo_integrations(:default) }
+    let(:integration) { create(:nexo_integration) }
 
     let(:response) do
       ApiResponse.new(etag: "bla", payload: "payload", status: :ok)
@@ -39,14 +39,14 @@ module Nexo
         { insert_event: response }
       end
 
-      let(:element) { nexo_elements(:unsynced_local_change) }
+      let(:element) { create(:nexo_element, :unsynced_local_change) }
 
       it do
         expect(subject).to be_a ApiResponse
       end
 
       context "when its an all day event" do
-        let(:element) { nexo_elements(:all_day_event) }
+        let(:element) { create(:nexo_element, synchronizable: create(:event, :all_day_event)) }
 
         it do
           expect(subject).to be_a ApiResponse
@@ -65,7 +65,7 @@ module Nexo
         { update_event: response }
       end
 
-      let(:element) { nexo_elements(:unsynced_local_change) }
+      let(:element) { create(:nexo_element, :unsynced_local_change) }
 
       it do
         expect(subject).to be_a ApiResponse
@@ -83,7 +83,7 @@ module Nexo
         { delete_event: response }
       end
 
-      let(:element) { nexo_elements(:unsynced_local_change) }
+      let(:element) { create(:nexo_element, :unsynced_local_change) }
 
       it do
         expect(subject).to be_a ApiResponse
@@ -101,7 +101,7 @@ module Nexo
         { insert_calendar: response }
       end
 
-      let(:folder) { nexo_folders(:default) }
+      let(:folder) { create(:nexo_folder) }
 
       it do
         expect(subject).to be_a ApiResponse

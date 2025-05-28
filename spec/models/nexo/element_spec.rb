@@ -18,12 +18,21 @@ require 'rails_helper'
 
 module Nexo
   RSpec.describe Element, type: :model do
+    let(:element) { create(:nexo_element) }
+
+    it "factory works" do
+      expect {
+        create(:nexo_element, :with_versions)
+      }.to change(Nexo::ElementVersion, :count).by(1)
+           .and(change(Nexo::Element, :count).by(1))
+    end
+
     describe "flag_for_deletion!" do
       subject do
         element.flag_for_deletion!(reason)
       end
 
-      let(:element) { nexo_elements(:synced) }
+      let(:element) { create(:nexo_element, :synced) }
       let(:reason) { :no_longer_included_in_folder }
 
       it do
