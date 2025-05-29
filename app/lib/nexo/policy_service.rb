@@ -16,31 +16,42 @@ module Nexo
       @instance
     end
 
-    def register_folder_policy_finder(&block)
+    def register_folder_rule_finder(&block)
       @finders << block
     end
 
     attr_reader :finders
 
     def applies?(folder, synchronizable)
-      logger = Nexo.logger.tagged("PolicyService")
       policies = policies_for(folder)
-      logger.debug { "Found #{policies.length} policies" }
       applied_policies = policies.select { |policy| policy.applies?(synchronizable) }
       if applied_policies.any?
         aplicable_policy = applied_policies.sort_by { |policy| policy.priority }.last
-        aplicable_policy.sync_policy == :include
+        logger.debug { "Aplicable policy: #{aplicable_policy.inspect}" }
+
+        aplicable_policy.sync_policy.to_s == "include"
       else
+        logger.debug { "No applicable policies" }
         false
       end
     end
 
     def policies_for(folder)
+      logger.debug { "Found #{@finders.length} finders" }
+
       aux = @finders.map do |finder|
         finder.call(folder)
       end
 
-      aux.flatten.compact
+      aux.flatten.compact.tap do |ret|
+        logger.debug { "Found #{ret.length} policies" }
+      end
+    end
+
+    private
+
+    def logger
+      logger = Nexo.logger.tagged("PolicyService")
     end
   end
 end

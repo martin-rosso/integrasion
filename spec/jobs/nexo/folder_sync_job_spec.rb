@@ -3,10 +3,8 @@ require "rails_helper"
 module Nexo
   describe FolderSyncJob, type: :job do
     before do
-      Nexo.folder_policies.register_folder_policy_finder do |folder|
-        DummyFolderPolicy.new("initialized", :include, 1)
-      end
-allow(ServiceBuilder.instance).to receive(:build_protocol_service).and_return(calendar_service_mock)
+      DummyFolderRule.create!(folder:, search_regex: ".*")
+      allow(ServiceBuilder.instance).to receive(:build_protocol_service).and_return(calendar_service_mock)
       allow_any_instance_of(described_class).to receive(:folder_service).and_return(folder_service_mock)
     end
 

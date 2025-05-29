@@ -9,5 +9,11 @@ FactoryBot.define do
     trait :discarded do
       discarded_at { Faker::Date.backward }
     end
+
+    trait :with_rule_matching_all do
+      after(:create) do |folder, context|
+        create(:dummy_folder_rule, :match_all, folder:)
+      end
+    end
   end
 end

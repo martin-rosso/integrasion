@@ -47,6 +47,9 @@ module Dummy
     config.i18n.default_locale = :es
 
     config.to_prepare do
+      Nexo.folder_rules.register_folder_rule_finder do |folder|
+        DummyFolderRule.where(folder:)
+      end
       Nexo.api_jobs_throttle = [ 200, 1.minute ]
     end
   end

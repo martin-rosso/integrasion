@@ -10,6 +10,7 @@ module Nexo
       end
 
       policies = PolicyService.instance.policies_for(folder)
+      Nexo.logger.debug { "Found #{policies.length} policies" }
       # flat_map should be equivalent to:
       #   policies.map(&:synchronizable_queries).flatten(1)
       queries = policies.flat_map(&:synchronizable_queries)

@@ -10,10 +10,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_05_19_210346) do
+ActiveRecord::Schema[7.2].define(version: 2025_05_29_123806) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
+
+  create_table "dummy_folder_rules", force: :cascade do |t|
+    t.integer "priority"
+    t.integer "sync_policy"
+    t.bigint "folder_id", null: false
+    t.string "search_regex"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["folder_id"], name: "index_dummy_folder_rules_on_folder_id"
+  end
 
   create_table "events", force: :cascade do |t|
     t.date "date_from"
@@ -197,6 +207,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_05_19_210346) do
     t.datetime "updated_at", null: false
   end
 
+  add_foreign_key "dummy_folder_rules", "nexo_folders", column: "folder_id"
   add_foreign_key "nexo_element_versions", "nexo_elements", column: "element_id"
   add_foreign_key "nexo_elements", "nexo_folders", column: "folder_id"
   add_foreign_key "nexo_folders", "nexo_integrations", column: "integration_id"

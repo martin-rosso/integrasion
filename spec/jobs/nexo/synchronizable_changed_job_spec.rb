@@ -7,10 +7,7 @@ module Nexo
     end
 
     before do
-      Nexo.folder_policies.register_folder_policy_finder do |folder|
-        DummyFolderPolicy.new("initialized", :include, 1)
-      end
-create_list(:nexo_folder, 2)
+      create_list(:nexo_folder, 2, :with_rule_matching_all)
     end
 
     around do |example|

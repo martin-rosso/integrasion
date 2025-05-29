@@ -64,10 +64,6 @@ RSpec.configure do |config|
 
   config.include FactoryBot::Syntax::Methods
 
-  config.before(:each) do |_example|
-    Nexo::PolicyService.instance.clear_finders!
-  end
-
   # You can uncomment this line to turn off ActiveRecord support entirely.
   # config.use_active_record = false
 

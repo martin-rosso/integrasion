@@ -5,11 +5,7 @@ module Nexo
     include ActiveJob::TestHelper
 
     before do
-      Nexo.folder_policies.register_folder_policy_finder do |folder|
-        # match any event with any folder
-        DummyFolderPolicy.new(/.*/, :include, 1)
-      end
-      create(:nexo_folder)
+      create(:nexo_folder, :with_rule_matching_all)
     end
 
     let(:event_receiver) { described_class.new }
