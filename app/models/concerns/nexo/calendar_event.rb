@@ -33,6 +33,38 @@ module Nexo
       build_date_time(date_to, time_to)
     end
 
+    def all_day?
+      time_from.blank? && time_to.blank?
+    end
+
+    # transparent: non blocking
+    # opaque: blocking
+    def transparency
+      if all_day?
+        "transparent"
+      else
+        "opaque"
+      end
+    end
+
+    def validate_synchronizable!
+      unless datetime_from.present?
+        raise Errors::SynchronizableInvalid, "datetime_from is nil"
+      end
+
+      unless datetime_to.present?
+        raise Errors::SynchronizableInvalid, "datetime_to is nil"
+      end
+
+      unless datetime_from != datetime_to
+        raise Errors::SynchronizableInvalid, "datetime_from and datetime_to are equal"
+      end
+
+      unless summary.present?
+        raise Errors::SynchronizableInvalid, "summary is nil"
+      end
+    end
+
     private
 
     # @param [Date] date

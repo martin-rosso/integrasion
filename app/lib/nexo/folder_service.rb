@@ -7,6 +7,8 @@ module Nexo
   # - Triggering the SyncElementJob
   class FolderService
     def find_element_and_sync(folder, synchronizable)
+      synchronizable.validate_synchronizable!
+
       # TODO: handle conflicted synchronizable
       element = find_element(folder, synchronizable)
 
@@ -17,6 +19,8 @@ module Nexo
         Nexo.logger.debug { "Element not found" }
         create_and_sync_element(folder, synchronizable)
       end
+    rescue Errors::SynchronizableInvalid => e
+      Nexo.logger.warn { "Synchronizable invalid: #{e}. Skipping sync" }
     end
 
     def destroy_elements(synchronizable, reason)

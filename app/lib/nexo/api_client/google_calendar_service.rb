@@ -97,7 +97,8 @@ module Nexo
         start: estart,
         end: eend,
         summary: calendar_event.summary,
-        description: calendar_event.description
+        description: calendar_event.description,
+        transparency: calendar_event.transparency
       )
     end
 

@@ -4,6 +4,16 @@ module Nexo
   describe CalendarEvent do
     let(:event) { create(:event).reload }
 
+    describe "validate_synchronizable!" do
+      subject { event.validate_synchronizable! }
+      let(:date) { Date.today }
+      let(:event) { create(:event, :all_day_event, date_from: date, date_to: date) }
+
+      it "when datetime_from is equal to datetime_to, raises error" do
+        expect { subject }.to raise_error Errors::SynchronizableInvalid
+      end
+    end
+
     describe "change_is_significative_to_sequence?" do
       subject do
         event.change_is_significative_to_sequence?

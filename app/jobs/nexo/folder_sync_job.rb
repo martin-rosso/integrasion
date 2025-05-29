@@ -14,15 +14,18 @@ module Nexo
       # flat_map should be equivalent to:
       #   policies.map(&:synchronizable_queries).flatten(1)
       queries = policies.flat_map(&:synchronizable_queries)
+      Nexo.logger.debug { "Found #{queries.length} queries" }
 
       GoodJob::Bulk.enqueue do
         queries.each do |query|
           # TODO: avoid calling more than once per synchronizable
           query.find_each do |synchronizable|
+            Nexo.logger.debug { "Processing synchronizable: #{synchronizable}" }
             folder_service.find_element_and_sync(folder, synchronizable)
           end
         end
       end
+      Nexo.logger.debug { "Finished processing queries" }
     end
 
     private
