@@ -48,5 +48,9 @@ module Nexo
     def discard!
       update!(discarded_at: Time.current)
     end
+
+    def to_s
+      name || super
+    end
   end
 end

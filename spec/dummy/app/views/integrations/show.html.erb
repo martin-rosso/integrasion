@@ -19,6 +19,9 @@
   <br>
   <% if params[:check_token] %>
     Token info: <%= @token_info %>
+    <pre style="white-space: normal">
+      SEED_GOOGLE_APIS_TOKEN=<%= @integration.tokens.active.last.secret %>
+    </pre>
     <br>
     <%= link_to "Close", integration_path(@integration) %>
   <% else %>

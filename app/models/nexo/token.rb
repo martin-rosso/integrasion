@@ -14,6 +14,8 @@ module Nexo
   class Token < ApplicationRecord
     belongs_to :integration, class_name: "Nexo::Integration"
 
+    scope :active, -> { where(nt_status: :active) }
+
     after_initialize do
       # TODO: https://api.rubyonrails.org/classes/ActiveRecord/Attributes/ClassMethods.html#method-i-attribute
       self.nt_status = :active if nt_status.nil?

@@ -8,4 +8,8 @@ class Event < ApplicationRecord
   def discarded?
     false
   end
+
+  def to_s
+    "#{summary}"
+  end
 end
