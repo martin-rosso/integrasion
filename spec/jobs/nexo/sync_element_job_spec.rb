@@ -83,7 +83,7 @@ module Nexo
     context "when synchronizable sequence is nil" do
       let(:element) { create(:nexo_element, :synced) }
 
-      fit do
+      it do
         allow_any_instance_of(Event).to receive(:sequence).and_return(nil)
         expect { subject }.to raise_error(Errors::SynchronizableSequenceIsNull)
       end

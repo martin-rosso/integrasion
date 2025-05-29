@@ -23,7 +23,7 @@ module Nexo
 
     validates :nexo_protocol, :name, presence: true
 
-    # TODO!: find better name
+    # FIXME!: find better name
     # maybe policy_applies?
     def policy_match?(synchronizable)
       PolicyService.instance.match?(self, synchronizable)

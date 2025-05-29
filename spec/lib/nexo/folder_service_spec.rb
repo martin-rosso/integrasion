@@ -42,7 +42,7 @@ module Nexo
         let(:event) { element.synchronizable }
 
         it "when still matches, it doesnt flag for deletion" do
-          # TODO!: remove mocks to policy_still_match?
+          # FIXME!: remove mocks to policy_still_match?
           allow(element).to receive(:policy_still_match?).and_return(true)
           # allow(folder_service).to receive(:find_element).and_return(element)
           assert_enqueued_jobs(1, only: SyncElementJob) do
