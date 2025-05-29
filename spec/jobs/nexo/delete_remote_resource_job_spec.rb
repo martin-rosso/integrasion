@@ -12,17 +12,33 @@ module Nexo
       end
     end
 
-    context "when element doesnt exists on remote server" do
-      let(:element) { create(:nexo_element, :synced) }
+    context "when element is flagged for removal" do
+      let(:element) { create(:nexo_element, :synced, :flagged_for_removal) }
 
-      it do
+      it "calls the API" do
         response = instance_double(ApiResponse, etag: "abc123", payload: { "status" => "ok" })
         service_mock = instance_double(GoogleCalendarService, remove: response)
         allow(ServiceBuilder.instance).to receive(:build_protocol_service).and_return(service_mock)
 
-        subject
+        expect { subject }.to change { element.reload.discarded_at }.to be_present
 
         expect(service_mock).to have_received(:remove)
+      end
+    end
+
+    context "when already discarded" do
+      let(:element) { create(:nexo_element, :discarded) }
+
+      it "raises error" do
+        expect { subject }.to raise_error /element already discarded/
+      end
+    end
+
+    context "when not flagged for removal" do
+      let(:element) { create(:nexo_element) }
+
+      it "raises error" do
+        expect { subject }.to raise_error /not flagged for removal/
       end
     end
   end

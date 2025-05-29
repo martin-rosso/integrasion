@@ -19,19 +19,19 @@ module Nexo
     # it do
     #   event = create(:event)
     #   folder = create(:nexo_folder)
-    #   expect(subject.match?(folder, event)).to be_truthy
+    #   expect(subject.applies?(folder, event)).to be_truthy
     # end
 
     # it do
     #   event = create(:event)
     #   folder = create(:nexo_folder)
-    #   expect(subject.match?(folder, event)).to be_falsey
+    #   expect(subject.applies?(folder, event)).to be_falsey
     # end
 
     # it do
     #   event = create(:event)
     #   folder = create(:nexo_folder)
-    #   expect(subject.match?(folder, event)).to be_truthy
+    #   expect(subject.applies?(folder, event)).to be_truthy
     # end
   end
 end

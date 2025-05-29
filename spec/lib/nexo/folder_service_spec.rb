@@ -21,7 +21,7 @@ module Nexo
         let(:event) { create(:event, :not_yet_synced) }
 
         it "when policy match, creates the element and enqueues the job" do
-          allow(folder).to receive(:policy_match?).and_return(true)
+          allow(folder).to receive(:policy_applies?).and_return(true)
 
           assert_enqueued_jobs(1, only: SyncElementJob) do
             expect { subject }.to change(Element, :count).by(1)
@@ -29,7 +29,7 @@ module Nexo
         end
 
         it "when policy dont match, does nothing" do
-          allow(folder).to receive(:policy_match?).and_return(false)
+          allow(folder).to receive(:policy_applies?).and_return(false)
 
           assert_no_enqueued_jobs do
             expect { subject }.not_to change(Element, :count)
@@ -41,20 +41,19 @@ module Nexo
         let(:element) { create(:nexo_element, :synced, folder:) }
         let(:event) { element.synchronizable }
 
-        it "when still matches, it doesnt flag for deletion" do
-          # FIXME!: remove mocks to policy_still_match?
-          allow(element).to receive(:policy_still_match?).and_return(true)
-          # allow(folder_service).to receive(:find_element).and_return(element)
+        it "when still matches, it doesnt flag for removal" do
+          # TODO: remove mocks to policy_still_applies?
+          allow(element).to receive(:policy_still_applies?).and_return(true)
           assert_enqueued_jobs(1, only: SyncElementJob) do
-            expect { subject }.not_to change(element, :flagged_for_deletion?)
+            expect { subject }.not_to change(element, :flagged_for_removal?)
           end
         end
 
-        it "when doesnt match anymore, it gets flagged for deletion" do
-          allow(element).to receive(:policy_still_match?).and_return(false)
+        it "when doesnt match anymore, it gets flagged for removal" do
+          allow(element).to receive(:policy_still_applies?).and_return(false)
           allow(folder_service).to receive(:find_element).and_return(element)
           assert_enqueued_jobs(1, only: SyncElementJob) do
-            expect { subject }.to change(element, :flagged_for_deletion?).to(true)
+            expect { subject }.to change(element, :flagged_for_removal?).to(true)
           end
         end
 
@@ -65,7 +64,7 @@ module Nexo
           it "raises exception" do
             assert_no_enqueued_jobs do
               expect { subject }.to raise_error(Nexo::Errors::ElementConflicted)
-                                      .and(not_change(element, :flagged_for_deletion?))
+                                      .and(not_change(element, :flagged_for_removal?))
             end
           end
         end
@@ -80,7 +79,7 @@ module Nexo
       let(:event) { create(:event, :with_elements) }
       let(:elements) { event.nexo_elements }
 
-      it "marks all elements as flagged for deletion and enqueues a job for each" do
+      it "marks all elements as flagged for removal and enqueues a job for each" do
         assert_enqueued_jobs(elements.count, only: SyncElementJob) do
           expect { subject }.to change { elements.pluck(:flagged_for_removal).uniq }.to([ true ])
         end

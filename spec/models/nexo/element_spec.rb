@@ -27,16 +27,16 @@ module Nexo
            .and(change(Nexo::Element, :count).by(1))
     end
 
-    describe "flag_for_deletion!" do
+    describe "flag_for_removal!" do
       subject do
-        element.flag_for_deletion!(reason)
+        element.flag_for_removal!(reason)
       end
 
       let(:element) { create(:nexo_element, :synced) }
       let(:reason) { :no_longer_included_in_folder }
 
       it do
-        expect { subject }.to change(element, :flagged_for_deletion?)
+        expect { subject }.to change(element, :flagged_for_removal?)
       end
     end
   end

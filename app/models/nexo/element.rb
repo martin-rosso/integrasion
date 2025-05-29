@@ -31,8 +31,8 @@ module Nexo
 
     scope :conflicted, -> { where(conflicted: true) }
 
-    def policy_still_match?
-      folder.policy_match?(synchronizable)
+    def policy_still_applies?
+      folder.policy_applies?(synchronizable)
     end
 
     def last_synced_sequence
@@ -47,12 +47,8 @@ module Nexo
       element_versions.where(sequence: nil).order(created_at: :desc).first
     end
 
-    def flag_for_deletion!(removal_reason)
+    def flag_for_removal!(removal_reason)
       update!(flagged_for_removal: true, removal_reason:)
-    end
-
-    def flagged_for_deletion?
-      flagged_for_removal?
     end
 
     # :nocov: TODO, not yet being called

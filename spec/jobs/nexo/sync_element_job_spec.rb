@@ -12,7 +12,7 @@ module Nexo
       end
     end
 
-    context "when flagged for deletion" do
+    context "when flagged for removal" do
       it "when synchronizable is present, enqueues the job" do
         element = create(:nexo_element, :flagged_for_removal)
         assert_enqueued_jobs(1, only: DeleteRemoteResourceJob) do

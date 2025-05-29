@@ -3,7 +3,7 @@ module Nexo
   #
   # Responsabilities:
   # - Creation of Element's
-  # - Flagging Element's for deletion
+  # - Flagging Element's for removal
   # - Triggering the SyncElementJob
   class FolderService
     def find_element_and_sync(folder, synchronizable)
@@ -19,7 +19,7 @@ module Nexo
 
     def destroy_elements(synchronizable, reason)
       synchronizable.nexo_elements.each do |element|
-        element.flag_for_deletion!(reason)
+        element.flag_for_removal!(reason)
 
         SyncElementJob.perform_later(element)
       end
@@ -32,7 +32,7 @@ module Nexo
     end
 
     def create_and_sync_element(folder, synchronizable)
-      must_be_included = folder.policy_match?(synchronizable)
+      must_be_included = folder.policy_applies?(synchronizable)
 
       if must_be_included
         element = Element.create!(
@@ -52,8 +52,8 @@ module Nexo
       end
 
       # Check if Synchronizable still must be included in folder
-      if !element.policy_still_match?
-        element.flag_for_deletion!(:no_longer_included_in_folder)
+      if !element.policy_still_applies?
+        element.flag_for_removal!(:no_longer_included_in_folder)
       end
 
       SyncElementJob.perform_later(element)

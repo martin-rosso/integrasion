@@ -1,3 +1,4 @@
+# TODO: rename to DummyFolderRule ?
 class DummyFolderPolicy
   include Nexo::FolderPolicy
 
@@ -7,7 +8,7 @@ class DummyFolderPolicy
     @priority = priority
   end
 
-  def match?(synchronizable)
+  def applies?(synchronizable)
     synchronizable.summary.match?(@search)
   end
 

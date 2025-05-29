@@ -22,16 +22,14 @@ module Nexo
     def perform(element)
       validate_element_state!(element)
 
-      if element.flagged_for_deletion?
+      if element.flagged_for_removal?
         DeleteRemoteResourceJob.perform_later(element)
-
-        element.discard!
       else
         current_sequence = element.synchronizable.sequence
         last_synced_sequence = element.last_synced_sequence
 
         if element.external_unsynced_change?
-          # :nocov: TODO
+          # :nocov: TODO not yet implemented
           raise Errors::SyncElementJobError, "not yet implemented"
           # :nocov:
 
@@ -66,8 +64,8 @@ module Nexo
         raise Errors::ElementDiscarded, element
       end
 
-      if element.synchronizable.blank? && !element.flagged_for_deletion?
-        # element should have been flagged for deletion
+      if element.synchronizable.blank? && !element.flagged_for_removal?
+        # element should have been flagged for removal
         raise Errors::SynchronizableNotFound, element
       end
 

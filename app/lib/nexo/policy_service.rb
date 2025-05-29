@@ -22,11 +22,11 @@ module Nexo
 
     attr_reader :finders
 
-    def match?(folder, synchronizable)
+    def applies?(folder, synchronizable)
       policies = policies_for(folder)
-      matching_policies = policies.select { |policy| policy.match?(synchronizable) }
-      if matching_policies.any?
-        aplicable_policy = matching_policies.sort_by { |policy| policy.priority }.last
+      applied_policies = policies.select { |policy| policy.applies?(synchronizable) }
+      if applied_policies.any?
+        aplicable_policy = applied_policies.sort_by { |policy| policy.priority }.last
         aplicable_policy.sync_policy == :include
       else
         false
