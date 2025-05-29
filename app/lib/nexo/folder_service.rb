@@ -11,8 +11,10 @@ module Nexo
       element = find_element(folder, synchronizable)
 
       if element.present?
+        Nexo.logger.debug { "Element found" }
         sync_element(element)
       else
+        Nexo.logger.debug { "Element not found" }
         create_and_sync_element(folder, synchronizable)
       end
     end
@@ -39,8 +41,11 @@ module Nexo
           synchronizable:,
           folder:
         )
+        Nexo.logger.debug { "Element created" }
 
         SyncElementJob.perform_later(element)
+      else
+        Nexo.logger.debug { "Policy not applies, skipping creation" }
       end
     end
 

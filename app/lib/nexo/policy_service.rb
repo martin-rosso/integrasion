@@ -23,7 +23,9 @@ module Nexo
     attr_reader :finders
 
     def applies?(folder, synchronizable)
+      logger = Nexo.logger.tagged("PolicyService")
       policies = policies_for(folder)
+      logger.debug { "Found #{policies.length} policies" }
       applied_policies = policies.select { |policy| policy.applies?(synchronizable) }
       if applied_policies.any?
         aplicable_policy = applied_policies.sort_by { |policy| policy.priority }.last

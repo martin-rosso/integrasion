@@ -10,6 +10,8 @@ module Nexo
     def perform(synchronizable)
       # Maybe restrict this query to a more specific scope
       scope = Folder.kept
+      Nexo.logger.debug { "Processing #{scope.count} folders" }
+
       # TODO: test
       GoodJob::Bulk.enqueue do
         scope.each do |folder|

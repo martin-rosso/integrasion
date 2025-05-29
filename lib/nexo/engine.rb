@@ -7,6 +7,10 @@ module Nexo
     ::Nexo::PolicyService.instance
   end
 
+  def self.logger
+    Rails.logger
+  end
+
   mattr_accessor :api_jobs_throttle
 
   # @!visibility private
