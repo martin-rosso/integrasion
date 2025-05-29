@@ -52,5 +52,11 @@ module Nexo
         end
       end
     end
+
+    describe "discard!" do
+      it "discards" do
+        expect { folder.discard! }.to change(folder, :discarded_at).to be_present
+      end
+    end
   end
 end

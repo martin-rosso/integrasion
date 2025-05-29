@@ -3,7 +3,7 @@ require "rails_helper"
 module Nexo
   describe UpdateRemoteResourceJob, type: :job do
     subject do
-      described_class.perform_now(element)
+      described_class.perform_later(element)
     end
 
     around do |example|
@@ -21,7 +21,7 @@ module Nexo
         allow(ServiceBuilder.instance).to receive(:build_protocol_service).and_return(remote_service_mock)
 
         expect { subject }.to change(ElementVersion, :count).by(1)
-                              .and(change(element, :uuid).to("fooid"))
+                              .and(change { element.reload.uuid }.to("fooid"))
 
         expect(remote_service_mock).to have_received(:insert).with(element.folder, element.synchronizable)
         expect(ElementVersion.last.etag).to eq "abc123"
@@ -70,6 +70,46 @@ module Nexo
 
       it do
         expect { subject }.to raise_error(Errors::ExternalUnsyncedChange)
+      end
+    end
+
+    context "when synchronizable is ghosted" do
+      let(:element) { create(:nexo_element, :with_ghost_synchronizable) }
+
+      it do
+        expect { subject }.to raise_error(Errors::SynchronizableNotFound)
+      end
+    end
+
+    context "when element is discarded" do
+      let(:element) { create(:nexo_element, :discarded) }
+
+      it do
+        expect { subject }.to raise_error(Errors::ElementDiscarded)
+      end
+    end
+
+    context "when synchronizable is discarded" do
+      let(:element) { create(:nexo_element) }
+
+      before do
+        allow_any_instance_of(Event).to receive(:discarded?).and_return(true)
+      end
+
+      it do
+        expect { subject }.to raise_error(Errors::SynchronizableDiscarded)
+      end
+    end
+
+    context "when folder is discarded" do
+      let(:element) { create(:nexo_element) }
+
+      before do
+        element.folder.discard!
+      end
+
+      it do
+        expect { subject }.to raise_error(Errors::FolderDiscarded)
       end
     end
   end

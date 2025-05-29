@@ -17,11 +17,7 @@ module Nexo
     belongs_to :integration, class_name: "Nexo::Integration"
     has_many :elements, class_name: "Nexo::Element"
 
-    if respond_to?(:enumerize)
-      enumerize :nexo_protocol, in: { calendar: 0, dummy_calendar: 1 }
-    else
-      enum :nexo_protocol, calendar: 0, dummy_calendar: 1
-    end
+    enum :nexo_protocol, calendar: 0, dummy_calendar: 1
 
     scope :kept, -> { where(discarded_at: nil) }
 

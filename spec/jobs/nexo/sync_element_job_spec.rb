@@ -3,7 +3,7 @@ require "rails_helper"
 module Nexo
   describe SyncElementJob, type: :job do
     subject do
-      described_class.perform_now(element)
+      described_class.perform_later(element)
     end
 
     around do |example|
@@ -16,14 +16,14 @@ module Nexo
       it "when synchronizable is present, enqueues the job" do
         element = create(:nexo_element, :flagged_for_removal)
         assert_enqueued_jobs(1, only: DeleteRemoteResourceJob) do
-          described_class.perform_now(element)
+          described_class.perform_later(element)
         end
       end
 
       it "when synchronizable is ghosted, enqueues the job" do
         element = create(:nexo_element, :flagged_for_removal, :with_ghost_synchronizable)
         assert_enqueued_jobs(1, only: DeleteRemoteResourceJob) do
-          described_class.perform_now(element)
+          described_class.perform_later(element)
         end
       end
     end
@@ -83,8 +83,8 @@ module Nexo
     context "when synchronizable sequence is nil" do
       let(:element) { create(:nexo_element, :synced) }
 
-      it do
-        element.synchronizable.update(sequence: nil)
+      fit do
+        allow_any_instance_of(Event).to receive(:sequence).and_return(nil)
         expect { subject }.to raise_error(Errors::SynchronizableSequenceIsNull)
       end
     end

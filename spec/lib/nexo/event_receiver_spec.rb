@@ -6,14 +6,14 @@ module Nexo
 
     before do
       Nexo.folder_policies.register_folder_policy_finder do |folder|
-        # FIXME: explicitar que matchea todo
+        # match any event with any folder
         DummyFolderPolicy.new(/.*/, :include, 1)
       end
       create(:nexo_folder)
     end
 
     let(:event_receiver) { described_class.new }
-    let(:event) { create(:event, :with_nil_sequence) }
+    let(:event) { create(:event) }
 
     describe "synchronizable_created" do
       subject do
@@ -95,6 +95,24 @@ module Nexo
       it "enqueues the job" do
         assert_enqueued_jobs(1, only: FolderSyncJob) do
           subject
+        end
+      end
+
+      context "when folder is discarded" do
+        let(:folder) { create(:nexo_folder, :discarded) }
+
+        it "raises error" do
+          expect { subject }.to raise_error /folder discarded/
+        end
+      end
+    end
+
+    describe "folder_discarded" do
+      let(:folder) { create(:nexo_folder, :discarded) }
+
+      it "enqueues the job" do
+        assert_enqueued_jobs(1, only: FolderDestroyJob) do
+          event_receiver.folder_discarded(folder)
         end
       end
     end

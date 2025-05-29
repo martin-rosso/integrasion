@@ -4,4 +4,8 @@ class Event < ApplicationRecord
   after_initialize do
     self.sequence = 0 if sequence.nil?
   end
+
+  def discarded?
+    false
+  end
 end

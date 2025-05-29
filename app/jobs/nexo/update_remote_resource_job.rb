@@ -30,6 +30,10 @@ module Nexo
         raise Errors::SynchronizableNotFound
       end
 
+      if element.discarded?
+        raise Errors::ElementDiscarded
+      end
+
       if element.synchronizable.respond_to?(:discarded?) && element.synchronizable.discarded?
         raise Errors::SynchronizableDiscarded
       end

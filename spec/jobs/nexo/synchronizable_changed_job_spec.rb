@@ -3,7 +3,7 @@ require "rails_helper"
 module Nexo
   describe SynchronizableChangedJob, type: :job do
     subject do
-      described_class.perform_now(event)
+      described_class.perform_later(event)
     end
 
     before do

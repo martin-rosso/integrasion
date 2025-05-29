@@ -23,9 +23,6 @@ allow(ServiceBuilder.instance).to receive(:build_protocol_service).and_return(ca
       end
     end
 
-
-
-
     context "when folder is created" do
       before do
         folder.update!(external_identifier: nil)
@@ -33,7 +30,7 @@ allow(ServiceBuilder.instance).to receive(:build_protocol_service).and_return(ca
       end
 
       it do
-        expect { described_class.perform_now(folder) }.to change(folder, :external_identifier).to("folder-id")
+        expect { described_class.perform_later(folder) }.to change { folder.reload.external_identifier }.to("folder-id")
         expect(folder_service_mock).to have_received(:find_element_and_sync).exactly(3).times
         expect(calendar_service_mock).to have_received(:insert_calendar)
       end
@@ -46,7 +43,7 @@ allow(ServiceBuilder.instance).to receive(:build_protocol_service).and_return(ca
       end
 
       it do
-        described_class.perform_now(folder)
+        described_class.perform_later(folder)
         expect(folder_service_mock).to have_received(:find_element_and_sync).exactly(3).times
         expect(calendar_service_mock).to have_received(:update_calendar)
       end

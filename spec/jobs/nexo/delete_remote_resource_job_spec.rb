@@ -1,10 +1,9 @@
-
 require "rails_helper"
 
 module Nexo
   describe DeleteRemoteResourceJob, type: :job do
     subject do
-      described_class.perform_now(element)
+      described_class.perform_later(element)
     end
 
     around do |example|

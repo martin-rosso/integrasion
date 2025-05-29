@@ -16,7 +16,6 @@ module Nexo
     #   end
     # end
 
-    # FIXME: testear
     # it do
     #   event = create(:event)
     #   folder = create(:nexo_folder)

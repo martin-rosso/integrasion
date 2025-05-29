@@ -34,5 +34,8 @@ RSpec/EmptyExampleGroup:
 RSpec/DescribedClass:
   Enabled: false
 
+RSpec/MessageChain:
+  Enabled: false
+
 RSpec/NestedGroups:
   Max: 4

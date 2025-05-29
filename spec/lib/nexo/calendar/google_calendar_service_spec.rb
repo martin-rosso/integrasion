@@ -9,11 +9,14 @@ module Nexo
       ApiResponse.new(etag: "bla", payload: "payload", status: :ok)
     end
 
+    let(:credentials_mock) { instance_double(Google::Auth::UserRefreshCredentials, expires_at: 10.minutes.from_now) }
+
+    let(:folder) { create(:nexo_folder) }
+
     before do
       client_mock = instance_double(Google::Apis::CalendarV3::CalendarService, mocks)
       allow(google_calendar_service).to receive(:client).and_return(client_mock)
 
-      credentials_mock = instance_double(Google::Auth::UserRefreshCredentials, expires_at: 10.minutes.from_now)
       auth_service_mock = instance_double(GoogleAuthService, get_credentials: credentials_mock)
       allow(ServiceBuilder.instance).to receive(:build_auth_service).and_return(auth_service_mock)
     end
@@ -92,6 +95,16 @@ module Nexo
       it_behaves_like "folder operation"
     end
 
+    shared_examples "without credentials" do
+      context "when integration has no token" do
+        let(:credentials_mock) { nil }
+
+        it "raises error" do
+          expect { subject }.to raise_error /folder has no token/
+        end
+      end
+    end
+
     describe "insert_calendar" do
       subject do
         google_calendar_service.insert_calendar(folder)
@@ -101,7 +114,37 @@ module Nexo
         { insert_calendar: response }
       end
 
-      let(:folder) { create(:nexo_folder) }
+      it do
+        expect(subject).to be_a ApiResponse
+      end
+
+      it_behaves_like "without credentials"
+    end
+
+    describe "update_calendar" do
+      subject do
+        google_calendar_service.update_calendar(folder)
+      end
+
+      let(:mocks) do
+        { update_calendar: response }
+      end
+
+      it do
+        expect(subject).to be_a ApiResponse
+      end
+
+      it_behaves_like "without credentials"
+    end
+
+    describe "remove_calendar" do
+      subject do
+        google_calendar_service.remove_calendar(folder)
+      end
+
+      let(:mocks) do
+        { delete_calendar: response }
+      end
 
       it do
         expect(subject).to be_a ApiResponse

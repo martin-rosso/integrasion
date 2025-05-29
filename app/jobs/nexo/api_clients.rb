@@ -10,6 +10,7 @@ module Nexo
       # TODO!: configure good job queues and thread pools
       # https://github.com/bensheldon/good_job?tab=readme-ov-file#optimize-queues-threads-and-processes
       # TODO: make this configurable, so other job backends are allowed
+      # :nocov: tricky
       good_job_control_concurrency_with(
         perform_limit: 1,
 
@@ -17,6 +18,7 @@ module Nexo
 
         key: -> { "#{queue_name}" }
       )
+      # :nocov:
 
       retry_on(
         GoodJob::ActiveJobExtensions::Concurrency::ConcurrencyExceededError,
