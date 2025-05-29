@@ -343,6 +343,9 @@ GEM
     simplecov-html (0.13.1)
     simplecov-lcov (0.8.0)
     simplecov_json_formatter (0.1.4)
+    spring (4.3.0)
+    spring-commands-rspec (1.0.4)
+      spring (>= 0.9.1)
     sprockets (4.2.2)
       concurrent-ruby (~> 1.0)
       logger
@@ -401,6 +404,8 @@ DEPENDENCIES
   rubocop-rspec
   simplecov
   simplecov-lcov
+  spring
+  spring-commands-rspec
   sprockets-rails
   sqlite3
   undercover (= 0.5.0)

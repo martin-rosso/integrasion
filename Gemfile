@@ -30,6 +30,9 @@ group :development, :test do
   gem "annotate", "~> 3.2.0"
 
   gem "byebug"
+
+  gem "spring"
+  gem "spring-commands-rspec"
 end
 
 gem "good_job", "~> 4.10"
