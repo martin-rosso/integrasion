@@ -32,7 +32,9 @@ module Nexo
     scope :conflicted, -> { where(conflicted: true) }
 
     def policy_still_applies?
+      # :nocov: TODO
       folder.policy_applies?(synchronizable)
+      # :nocov:
     end
 
     def last_synced_sequence

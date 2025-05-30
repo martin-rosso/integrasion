@@ -6,6 +6,9 @@ module Nexo
   #   - notFound: Not Found (calendar not exists or was deleted)
   #   - forbidden: Forbidden (event to update was deleted)
   #   - conditionNotMet: Precondition Failed (etag / if-match header verification failed)
+  #   - invalid: Invalid sequence value. The specified sequence number is below
+  #              the current sequence number of the resource. Re-fetch the resource and
+  #              use its sequence number on the following request.
   #
   # TODO! when event to update was deleted, create a new one and warn
   class GoogleCalendarService < CalendarService
@@ -43,7 +46,6 @@ module Nexo
     def remove(element)
       validate_folder_state!(element.folder)
 
-      # FIXME: add integration test
       # TODO: try with cancelled
       client.delete_event(element.folder.external_identifier, element.uuid, options: ifmatch_options(element))
       ApiResponse.new(payload: nil, status: :ok, etag: nil)
@@ -96,7 +98,14 @@ module Nexo
       estart = build_event_date_time(calendar_event.datetime_from)
       eend = build_event_date_time(calendar_event.datetime_to)
 
-      # FIXME: test sequence
+      # TODO: sequence is managed by both google and nexo
+      # google accepts the sent sequence only if its valid (>= current_sequence)
+      # when we receive a remote change with updated sequence, we should
+      # update the secuence accordingly. and if we receive a remote change without a
+      # secuence increment, then we could:
+      #   1. not update the local secuence. but maybe thats not viable
+      #   2. increment the local secuence and update the remote
+      #   3. increment the local secuence and not update the remote
       Google::Apis::CalendarV3::Event.new(
         start: estart,
         end: eend,
@@ -136,7 +145,6 @@ module Nexo
     def ifmatch_options(element)
       ifmatch = element.etag
 
-      # FIXME: cover both branches
       raise Errors::Error, "an etag is required to perform the request" if ifmatch.blank?
 
       Google::Apis::RequestOptions.new(header: { "If-Match" => ifmatch })

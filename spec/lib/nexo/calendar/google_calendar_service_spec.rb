@@ -38,7 +38,7 @@ module Nexo
       context "when there is not an etag" do
         let(:element) { create(:nexo_element, :unsynced_local_change) }
 
-        fit "raises error" do
+        it "raises error" do
           expect { subject }.to raise_error /an etag is required/
         end
       end

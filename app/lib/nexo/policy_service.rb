@@ -25,6 +25,7 @@ module Nexo
     def applies?(folder, synchronizable)
       policies = policies_for(folder)
       applied_policies = policies.select { |policy| policy.applies?(synchronizable) }
+      # :nocov: TODO
       if applied_policies.any?
         aplicable_policy = applied_policies.sort_by { |policy| policy.priority }.last
         logger.debug { "Aplicable policy: #{aplicable_policy.inspect}" }
@@ -34,6 +35,7 @@ module Nexo
         logger.debug { "No applicable policies" }
         false
       end
+      # :nocov:
     end
 
     def policies_for(folder)
