@@ -10,10 +10,7 @@ if ENV.fetch('LCOV', "1") == "1"
 end
 
 SimpleCov.start 'rails' do
-  add_filter %r{^/app/admin/}
-  if ENV['BRANCH_COV'] == '1'
-    enable_coverage(:branch) # Report branch coverage to trigger branch-level undercover warnings
-  end
+  enable_coverage(:branch)
 end
 
 require 'spec_helper'

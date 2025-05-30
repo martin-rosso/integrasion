@@ -58,9 +58,11 @@ module Nexo
       nexo_elements.conflicted.any?
     end
 
+    # :nocov: borderline
     def validate_synchronizable!
       raise "must be implemented in subclass"
     end
+    # :nocov:
 
     # :nocov: TODO, not yet implemented
     def update_from!(element_version)

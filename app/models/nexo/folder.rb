@@ -50,7 +50,7 @@ module Nexo
     end
 
     def to_s
-      name || super
+      name.presence || super
     end
   end
 end

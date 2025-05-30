@@ -14,9 +14,6 @@
 #
 module Nexo
   class Integration < ApplicationRecord
-    include Discard::Model if defined? Discard::Model
-    include Hashid::Rails if defined? Hashid::Rails
-
     serialize :scope, coder: JSON
     belongs_to :user
     belongs_to :client, class_name: "Nexo::Client"

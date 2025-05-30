@@ -22,6 +22,21 @@ module Nexo
       expect { folder }.to change(Nexo::Folder, :count).by(1)
     end
 
+    describe "to_s" do
+      subject do
+        folder.to_s
+      end
+
+      it "when name is present it is the name" do
+        expect(subject).to eq folder.name
+      end
+
+      it "when name is blank it is the classname" do
+        folder.name = ""
+        expect(subject).to match "Nexo::Folder"
+      end
+    end
+
     describe "find_element" do
       subject do
         folder.find_element(synchronizable: event)

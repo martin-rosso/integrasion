@@ -47,6 +47,7 @@ module Dummy
     config.i18n.default_locale = :es
 
     config.to_prepare do
+      Nexo.folder_rules.clear_finders!
       Nexo.folder_rules.register_folder_rule_finder do |folder|
         DummyFolderRule.where(folder:)
       end

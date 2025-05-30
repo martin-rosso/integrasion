@@ -1,9 +1,9 @@
 FactoryBot.define do
   factory :event do
     date_from { Faker::Date.forward }
-    date_to { date_from + 1.day }
+    date_to { date_from ? date_from + 1.day : Faker::Date.forward }
     time_from { Faker::Time.forward }
-    time_to { time_from + 30.minutes }
+    time_to { time_from ? time_from + 30.minutes : Faker::Time.forward }
     summary { Faker::Lorem.sentence }
     description { Faker::Lorem.paragraph }
     add_attribute(:sequence) { rand(0..10) }

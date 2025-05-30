@@ -6,11 +6,38 @@ module Nexo
 
     describe "validate_synchronizable!" do
       subject { event.validate_synchronizable! }
-      let(:date) { Date.today }
-      let(:event) { create(:event, :all_day_event, date_from: date, date_to: date) }
 
-      it "when datetime_from is equal to datetime_to, raises error" do
-        expect { subject }.to raise_error Errors::SynchronizableInvalid
+      context "when datetime_from is nil" do
+        let(:event) { create(:event, date_from: nil) }
+
+        it "raises error" do
+          expect { subject }.to raise_error Errors::SynchronizableInvalid
+        end
+      end
+
+      context "when datetime_to is nil" do
+        let(:event) { create(:event, date_to: nil) }
+
+        it "raises error" do
+          expect { subject }.to raise_error Errors::SynchronizableInvalid
+        end
+      end
+
+      context "when summary is nil" do
+        let(:event) { create(:event, summary: nil) }
+
+        it "raises error" do
+          expect { subject }.to raise_error Errors::SynchronizableInvalid
+        end
+      end
+
+      context "when datetime_from is equal to datetime_to" do
+        let(:date) { Date.today }
+        let(:event) { create(:event, :all_day_event, date_from: date, date_to: date) }
+
+        it "raises error" do
+          expect { subject }.to raise_error Errors::SynchronizableInvalid
+        end
       end
     end
 

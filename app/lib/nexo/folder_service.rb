@@ -19,8 +19,6 @@ module Nexo
         Nexo.logger.debug { "Element not found" }
         create_and_sync_element(folder, synchronizable)
       end
-    rescue Errors::SynchronizableInvalid => e
-      Nexo.logger.warn { "Synchronizable invalid: #{e}. Skipping sync" }
     end
 
     def destroy_elements(synchronizable, reason)

@@ -13,8 +13,9 @@ module Nexo
 
     let(:folder) { create(:nexo_folder) }
 
+    let(:client_mock) { instance_double(Google::Apis::CalendarV3::CalendarService, mocks) }
+
     before do
-      client_mock = instance_double(Google::Apis::CalendarV3::CalendarService, mocks)
       allow(google_calendar_service).to receive(:client).and_return(client_mock)
 
       auth_service_mock = instance_double(GoogleAuthService, get_credentials: credentials_mock)
@@ -29,6 +30,31 @@ module Nexo
 
         it "raises error" do
           expect { subject }.to raise_error(Errors::InvalidFolderState)
+        end
+      end
+    end
+
+    shared_examples "operation over existing remote element" do
+      context "when the google client raises error" do
+        let(:client_mock) do
+          aux = instance_double(Google::Apis::CalendarV3::CalendarService)
+          allow(aux).to receive(:update_event).and_raise(Google::Apis::ClientError, error_message)
+          allow(aux).to receive(:delete_event).and_raise(Google::Apis::ClientError, error_message)
+          aux
+        end
+
+        let(:error_message) { "notFound" }
+
+        it "raises error" do
+          expect { subject }.to raise_error(Google::Apis::ClientError)
+        end
+
+        context "and the error is conditionNotMet" do
+          let(:error_message) { "conditionNotMet" }
+
+          it "raises error" do
+            expect { subject }.to raise_error(Errors::ConflictingRemoteElementChange)
+          end
         end
       end
     end
@@ -68,13 +94,14 @@ module Nexo
         { update_event: response }
       end
 
-      let(:element) { create(:nexo_element, :unsynced_local_change) }
+      let(:element) { create(:nexo_element, :unsynced_local_change_to_update) }
 
       it do
         expect(subject).to be_a ApiResponse
       end
 
       it_behaves_like "folder operation"
+      it_behaves_like "operation over existing remote element"
     end
 
     describe "remove" do
@@ -93,6 +120,7 @@ module Nexo
       end
 
       it_behaves_like "folder operation"
+      it_behaves_like "operation over existing remote element"
     end
 
     shared_examples "without credentials" do

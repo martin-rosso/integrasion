@@ -21,6 +21,10 @@ FactoryBot.define do
     trait :unsynced_local_change do
     end
 
+    trait :unsynced_local_change_to_update do
+      element_versions { build_list(:nexo_element_version, 1, sequence: synchronizable.sequence - 1) }
+    end
+
     trait :unsynced_external_change do
       element_versions { build_list(:nexo_element_version, 1, sequence: nil, origin: "external") }
     end

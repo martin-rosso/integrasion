@@ -72,7 +72,7 @@ module Nexo
     #
     # @return [Date, DateTime]
     def build_date_time(date, time = nil)
-      if time.present?
+      if time.present? && date.present?
         DateTime.new(
           date.year,
           date.month,
