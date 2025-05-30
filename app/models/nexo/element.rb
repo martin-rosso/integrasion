@@ -43,6 +43,10 @@ module Nexo
       last_external_unsynced_version.present?
     end
 
+    def etag
+      element_versions.order(created_at: :desc).first&.etag
+    end
+
     def last_external_unsynced_version
       element_versions.where(sequence: nil).order(created_at: :desc).first
     end

@@ -5,6 +5,7 @@ module Nexo
   #   - duplicate: The requested identifier already exists.
   #   - notFound: Not Found (calendar not exists or was deleted)
   #   - forbidden: Forbidden (event to update was deleted)
+  #   - conditionNotMet: Precondition Failed (etag / if-match header verification failed)
   #
   # TODO! when event to update was deleted, create a new one and warn
   class GoogleCalendarService < CalendarService
@@ -26,17 +27,32 @@ module Nexo
       validate_folder_state!(element.folder)
 
       event = build_event(element.synchronizable)
-      response = client.update_event(element.folder.external_identifier, element.uuid, event)
+
+      response = client.update_event(element.folder.external_identifier, element.uuid, event, options: ifmatch_options(element))
+
       ApiResponse.new(payload: response.to_json, status: :ok, etag: response.etag)
+    rescue Google::Apis::ClientError => e
+      if e.message.match? /conditionNotMet/
+        raise Errors::ConflictingRemoteElementChange, e
+      else
+        raise
+      end
     end
 
     # Delete an event in a Google Calendar
     def remove(element)
       validate_folder_state!(element.folder)
 
+      # FIXME: add integration test
       # TODO: try with cancelled
-      client.delete_event(element.folder.external_identifier, element.uuid)
+      client.delete_event(element.folder.external_identifier, element.uuid, options: ifmatch_options(element))
       ApiResponse.new(payload: nil, status: :ok, etag: nil)
+    rescue Google::Apis::ClientError => e
+      if e.message.match? /conditionNotMet/
+        raise Errors::ConflictingRemoteElementChange, e
+      else
+        raise
+      end
     end
 
     # Create a Google calendar
@@ -63,19 +79,6 @@ module Nexo
       client.delete_calendar(folder.external_identifier)
       ApiResponse.new(status: :ok)
     end
-
-    # @!visibility private
-    # :nocov: non-production
-    def clear_calendars
-      Folder.all.each do |folder|
-        cid = folder.external_identifier
-        events = client.list_events(cid).items
-        events.each do |event|
-          client.delete_event(cid, event.id)
-        end
-      end
-    end
-    # :nocov:
 
     private
 
@@ -128,6 +131,15 @@ module Nexo
           cli.authorization = integration.credentials
         end
       # :nocov:
+    end
+
+    def ifmatch_options(element)
+      ifmatch = element.etag
+
+      # FIXME: cover both branches
+      raise Errors::Error, "an etag is required to perform the request" if ifmatch.blank?
+
+      Google::Apis::RequestOptions.new(header: { "If-Match" => ifmatch })
     end
   end
 end

@@ -3,6 +3,7 @@ module Nexo
     class Error < StandardError; end
 
     class SynchronizableInvalid < Error; end
+    class ConflictingRemoteElementChange < Error; end
 
     # From here on, classes are subject to review
     # A lot of them are never rescued explicitly

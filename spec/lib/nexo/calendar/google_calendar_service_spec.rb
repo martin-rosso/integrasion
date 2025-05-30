@@ -35,6 +35,14 @@ module Nexo
     end
 
     shared_examples "operation over existing remote element" do
+      context "when there is not an etag" do
+        let(:element) { create(:nexo_element, :unsynced_local_change) }
+
+        fit "raises error" do
+          expect { subject }.to raise_error /an etag is required/
+        end
+      end
+
       context "when the google client raises error" do
         let(:client_mock) do
           aux = instance_double(Google::Apis::CalendarV3::CalendarService)
@@ -45,14 +53,14 @@ module Nexo
 
         let(:error_message) { "notFound" }
 
-        it "raises error" do
+        it "raises the same error" do
           expect { subject }.to raise_error(Google::Apis::ClientError)
         end
 
         context "and the error is conditionNotMet" do
           let(:error_message) { "conditionNotMet" }
 
-          it "raises error" do
+          it "wraps the error" do
             expect { subject }.to raise_error(Errors::ConflictingRemoteElementChange)
           end
         end
@@ -113,9 +121,9 @@ module Nexo
         { delete_event: response }
       end
 
-      let(:element) { create(:nexo_element, :unsynced_local_change) }
+      let(:element) { create(:nexo_element, :unsynced_local_change_to_update) }
 
-      it do
+      it "is successful" do
         expect(subject).to be_a ApiResponse
       end
 
