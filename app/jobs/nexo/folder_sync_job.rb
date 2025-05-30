@@ -1,5 +1,6 @@
 module Nexo
   class FolderSyncJob < BaseJob
+    # FIXME: limit concurrency
     def perform(folder)
       protocol_service = ServiceBuilder.instance.build_protocol_service(folder)
       if folder.external_identifier.blank?

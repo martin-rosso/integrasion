@@ -12,12 +12,18 @@ module Nexo
   #
   # TODO: implement external ElementVersion creation, not here, on another place
   class SyncElementJob < BaseJob
-    limits_concurrency key: ->(element) { element.to_gid }
+    # :nocov: tricky
+    if defined? GoodJob
+      include GoodJob::ActiveJobExtensions::Concurrency
+
+      good_job_control_concurrency_with(
+        perform_limit: 1,
+        key: -> { arguments.first.to_gid.to_s }
+      )
+    end
+    # :nocov:
 
     # TODO: set priority based on date distance to today
-
-    # discard_on Errors::SyncElementJobError
-    # retry_on StandardError, wait: :polynomially_longer
 
     def perform(element)
       validate_element_state!(element)

@@ -1,6 +1,15 @@
 module Nexo
   class SynchronizableChangedJob < BaseJob
-    limits_concurrency key: ->(synchronizable) { synchronizable.to_gid }
+    # :nocov: tricky
+    if defined? GoodJob
+      include GoodJob::ActiveJobExtensions::Concurrency
+
+      good_job_control_concurrency_with(
+        perform_limit: 1,
+        key: -> { arguments.first.to_gid.to_s }
+      )
+    end
+    # :nocov:
 
     # TODO: check
     # https://github.com/rails/solid_queue?tab=readme-ov-file#jobs-and-transactional-integrity
