@@ -93,12 +93,14 @@ module Nexo
       estart = build_event_date_time(calendar_event.datetime_from)
       eend = build_event_date_time(calendar_event.datetime_to)
 
+      # FIXME: test sequence
       Google::Apis::CalendarV3::Event.new(
         start: estart,
         end: eend,
         summary: calendar_event.summary,
         description: calendar_event.description,
-        transparency: calendar_event.transparency
+        transparency: calendar_event.transparency,
+        sequence: calendar_event.sequence
       )
     end
 
