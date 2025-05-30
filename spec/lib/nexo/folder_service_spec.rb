@@ -17,6 +17,14 @@ module Nexo
 
       let(:folder) { create(:nexo_folder) }
 
+      context "when synchronizable is invalid" do
+        let(:event) { create(:event, summary: nil) }
+
+        it "raises error" do
+          expect { subject }.to raise_error(Errors::SynchronizableInvalid)
+        end
+      end
+
       context "when the event is not yet synced" do
         let(:event) { create(:event, :not_yet_synced) }
 
@@ -44,6 +52,7 @@ module Nexo
         it "when still matches, it doesnt flag for removal" do
           # TODO: remove mocks to policy_still_applies?
           allow(element).to receive(:policy_still_applies?).and_return(true)
+          allow(folder_service).to receive(:find_element).and_return(element)
           assert_enqueued_jobs(1, only: SyncElementJob) do
             expect { subject }.not_to change(element, :flagged_for_removal?)
           end
