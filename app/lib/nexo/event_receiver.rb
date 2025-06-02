@@ -3,7 +3,6 @@ module Nexo
   # be called when the system is notified of an external element change
   class EventReceiver
     def synchronizable_created(synchronizable)
-      Nexo.logger.debug("enqueuing SynchronizableChangedJob")
       SynchronizableChangedJob.perform_later(synchronizable)
     end
 
