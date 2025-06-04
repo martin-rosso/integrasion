@@ -1,0 +1,24 @@
+<h1>Element version</h1>
+<%= link_to "Back to element", element_path(@element_version.element) %>
+
+<%= form_with(url: sync_element_version_path(@element_version)) do |f| %>
+  <%= hidden_field_tag "operation", "import" %>
+  <%= f.submit "Import" %>
+<% end %>
+
+<%= form_with(url: sync_element_version_path(@element_version)) do |f| %>
+  <%= hidden_field_tag "operation", "update_remote" %>
+  <%= f.submit "Update remote" %>
+<% end %>
+
+<br>
+<% if @element_version.payload.present? %>
+  <br><label>payload:</label>
+  <pre><%= JSON.pretty_generate(@element_version.payload) %></pre>
+<% else %>
+  No payload
+<% end %>
+
+<pre>
+<%= JSON.pretty_generate @element_version.as_json %>
+</pre>
