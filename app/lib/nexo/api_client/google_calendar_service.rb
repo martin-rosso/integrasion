@@ -32,7 +32,7 @@ module Nexo
 
       response = client.update_event(element.folder.external_identifier, element.uuid, event, options: ifmatch_options(element))
 
-      ApiResponse.new(payload: response.to_json, status: :ok, etag: response.etag)
+      ApiResponse.new(payload: response.to_h, status: :ok, etag: response.etag)
     rescue Google::Apis::ClientError => e
       if e.message.match? /conditionNotMet/
         raise Errors::ConflictingRemoteElementChange, e
@@ -62,7 +62,7 @@ module Nexo
 
       cal = build_calendar(folder)
       response = client.insert_calendar(cal)
-      ApiResponse.new(payload: response.to_json, status: :ok, etag: response.etag, id: response.id)
+      ApiResponse.new(payload: response.to_h, status: :ok, etag: response.etag, id: response.id)
     end
 
     # Update a Google calendar
@@ -71,7 +71,7 @@ module Nexo
 
       cal = build_calendar(folder)
       response = client.update_calendar(folder.external_identifier, cal)
-      ApiResponse.new(payload: response.to_json, status: :ok, etag: response.etag, id: response.id)
+      ApiResponse.new(payload: response.to_h, status: :ok, etag: response.etag, id: response.id)
     end
 
     def remove_calendar(folder)
