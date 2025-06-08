@@ -27,10 +27,12 @@ FactoryBot.define do
     ne_status { :synced }
 
     trait :discarded do
+      uuid { Digest::MD5.hexdigest(Faker::Lorem.word) }
       discarded_at { Faker::Date.backward }
     end
 
     trait :conflicted do
+      uuid { Digest::MD5.hexdigest(Faker::Lorem.word) }
       element_versions {
         [
           build(:nexo_element_version, :unsynced_local_change),
@@ -47,6 +49,7 @@ FactoryBot.define do
     end
 
     trait :unsynced_local_change_to_update do
+      uuid { Digest::MD5.hexdigest(Faker::Lorem.word) }
       element_versions {
         [
           build(:nexo_element_version, :synced, sequence: synchronizable.sequence - 1),
@@ -56,24 +59,28 @@ FactoryBot.define do
     end
 
     trait :unsynced_external_change do
+      uuid { Digest::MD5.hexdigest(Faker::Lorem.word) }
       element_versions {
         [
-          build(:nexo_element_version, sequence: synchronizable.sequence),
+          build(:nexo_element_version, :synced, sequence: synchronizable.sequence),
           build(:nexo_element_version, :unsynced_external_change)
         ]
       }
     end
 
     trait :synced do
+      uuid { Digest::MD5.hexdigest(Faker::Lorem.word) }
       element_versions { build_list(:nexo_element_version, 1, :synced, sequence: synchronizable.sequence) }
     end
 
     trait :flagged_for_removal do
+      uuid { Digest::MD5.hexdigest(Faker::Lorem.word) }
       flagged_for_removal { true }
       removal_reason { "synchronizable_destroyed" }
     end
 
     trait :with_ghost_synchronizable do
+      uuid { Digest::MD5.hexdigest(Faker::Lorem.word) }
       after(:create) do |element, context|
         element.update_columns(synchronizable_id: rand(999999))
       end

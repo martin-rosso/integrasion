@@ -1,7 +1,7 @@
 class DummyFolderRule < ApplicationRecord
   belongs_to :folder, class_name: "Nexo::Folder"
 
-  enum :sync_policy, { include: 0, exclude: 1 }
+  enum :sync_policy, { include: 0, exclude: 1 }, default: :include
 
   def applies?(synchronizable)
     synchronizable.summary.match?(/#{search_regex}/).tap do |result|
