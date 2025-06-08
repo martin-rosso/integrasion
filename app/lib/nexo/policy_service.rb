@@ -29,7 +29,7 @@ module Nexo
       if applied_policies.any?
         aplicable_policy = applied_policies.sort_by { |policy| policy.priority }.last
         logger.debug { "Aplicable policy: #{aplicable_policy.inspect}" }
-
+        logger.debug { "sync_policy: #{aplicable_policy.sync_policy}" }
         aplicable_policy.sync_policy.to_s == "include"
       else
         logger.debug { "No applicable policies" }

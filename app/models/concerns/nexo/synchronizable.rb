@@ -83,7 +83,7 @@ module Nexo
         increment_sequence!
         reload
 
-        # FIXME: all previous external pending_sync versions must be marked as synced
+        # FIXME: all previous external pending_sync versions must be marked as superseded
         element_version.update!(sequence: sequence, nev_status: :synced)
       end
     end

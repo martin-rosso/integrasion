@@ -27,6 +27,8 @@ module Nexo
     # Update an event in a Google Calendar
     def update(element)
       validate_folder_state!(element.folder)
+      # sidebranch
+      # FIXME: validate uuid presence
 
       event = build_event(element)
 
@@ -44,6 +46,8 @@ module Nexo
     # Delete an event in a Google Calendar
     def remove(element)
       validate_folder_state!(element.folder)
+      # sidebranch
+      # FIXME: validate uuid presence
 
       # TODO: try with cancelled
       client.delete_event(element.folder.external_identifier, element.uuid, options: ifmatch_options(element))
@@ -58,10 +62,19 @@ module Nexo
 
     def get_event(element)
       validate_folder_state!(element.folder)
+      # sidebranch
+      # FIXME: validate uuid presence
 
       response = client.get_event(element.folder.external_identifier, element.uuid)
 
       ApiResponse.new(payload: response.to_h, status: :ok, etag: response.etag, id: response.id)
+    rescue Google::Apis::ClientError => e
+      if e.message.match? "notFound"
+        Nexo.logger.warn("Event not found for #{element.to_gid}")
+        return nil
+      else
+        raise
+      end
     end
 
     # Create a Google calendar
@@ -89,9 +102,8 @@ module Nexo
       ApiResponse.new(status: :ok)
     end
 
-    def fields_from_version(version)
-      event_data = ActiveSupport::HashWithIndifferentAccess.new(version.payload)
-      event = Google::Apis::CalendarV3::Event.new(**event_data)
+    def fields_from_version(element_version)
+      event = validate_version!(element_version)
 
       {
         date_from: parse_date(event.start),
@@ -105,31 +117,37 @@ module Nexo
 
     private
 
+    def validate_version!(element_version)
+      event_data = ActiveSupport::HashWithIndifferentAccess.new(element_version.payload)
+      event = Google::Apis::CalendarV3::Event.new(**event_data)
+
+      validate_datetime!(event.start)
+      validate_datetime!(event.end)
+
+      event
+    end
+
     def parse_date(datetime)
-      if datetime.is_a?(Hash)
-        if datetime["date"].present?
-          Date.parse(datetime["date"])
-        elsif datetime["date_time"].present?
-          Date.parse(datetime["date_time"])
-        else
-          raise "invalid datetime"
-        end
+      if datetime["date"].present?
+        Date.parse(datetime["date"])
       else
-        raise "invalid datetime"
+        Date.parse(datetime["date_time"])
       end
     end
 
     def parse_time(datetime)
-      if datetime.is_a?(Hash)
-        if datetime["date"].present?
-          nil
-        elsif datetime["date_time"].present?
-          Time.parse(datetime["date_time"])
-        else
-          raise "invalid datetime"
-        end
+      if datetime["date"].present?
+        nil
       else
+        Time.parse(datetime["date_time"])
+      end
+    end
+
+    def validate_datetime!(datetime)
+      unless datetime.is_a?(Hash) && (datetime["date"].present? || datetime["date_time"].present?)
+        # :nocov: borderline
         raise "invalid datetime"
+        # :nocov:
       end
     end
 
@@ -163,13 +181,7 @@ module Nexo
       base_event =
         if from.present?
           event_data = ActiveSupport::HashWithIndifferentAccess.new(from.payload)
-          if event_data["eventType"].present?
-            Nexo.logger.warn("Discarding previous payload because it's in old format")
-
-            Google::Apis::CalendarV3::Event.new
-          else
-            Google::Apis::CalendarV3::Event.new(**event_data)
-          end
+          Google::Apis::CalendarV3::Event.new(**event_data)
         else
           Google::Apis::CalendarV3::Event.new
         end

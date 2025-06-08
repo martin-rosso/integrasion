@@ -38,6 +38,14 @@ module Nexo
     private
 
     def validate_element_state!
+      if element.element_versions.where(origin: :internal, nev_status: :synced)
+                .where("sequence > ?", element_version.sequence).any?
+
+        element_version.update(nev_status: :superseded)
+
+        raise Errors::Error, "version superseded"
+      end
+
       if element.synchronizable.blank?
         raise Errors::SynchronizableNotFound
       end
@@ -75,19 +83,10 @@ module Nexo
       unless element_version.pending_sync?
         raise Errors::Error, "invalid ElementVersion: must be pending_sync"
       end
-
-      if element.element_versions.where(origin: :internal, nev_status: :synced)
-                .where("sequence > ?", element_version.sequence).any?
-
-        element_version.update(nev_status: :superseded)
-
-        raise Errors::Error, "version superseded"
-      end
     end
 
     def update_element_version(service_response)
       # TODO!: maybe some lock here
-      # FIXME: all previous internal pending_sync versions must be marked as synced
       element_version.update!(
         nev_status: :synced,
         etag: service_response.etag,

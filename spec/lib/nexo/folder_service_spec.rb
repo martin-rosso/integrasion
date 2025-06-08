@@ -19,6 +19,16 @@ module Nexo
 
       let(:folder) { create(:nexo_folder) }
 
+      context "when synchronizable sequence is nil" do
+        let(:element) { create(:nexo_element, :synced, folder:) }
+        let(:event) { element.synchronizable }
+
+        it do
+          allow_any_instance_of(Event).to receive(:sequence).and_return(nil)
+          expect { subject }.to raise_error(Errors::SynchronizableSequenceIsNull)
+        end
+      end
+
       context "when synchronizable is invalid" do
         let(:event) { create(:event, summary: nil) }
 
@@ -49,6 +59,11 @@ module Nexo
       end
 
       context "when the event was previously synced" do
+        subject do
+          folder_service.find_element_and_sync(folder, event)
+          element.reload
+        end
+
         let(:element) { create(:nexo_element, :synced, folder:) }
         let(:event) { element.synchronizable }
 
@@ -57,19 +72,29 @@ module Nexo
         end
 
         it "when still matches, it doesnt flag for removal" do
-          # TODO: remove mocks to policy_still_applies?
-          allow(element).to receive(:policy_still_applies?).and_return(true)
-          allow(folder_service).to receive(:find_element).and_return(element)
+          DummyFolderRule.create!(folder: element.folder, search_regex: ".*")
+
           assert_enqueued_jobs(1, only: UpdateRemoteResourceJob) do
-            expect { subject }.not_to change(element, :flagged_for_removal?)
+            expect { subject }.to not_change(element, :flagged_for_removal?)
+              .and(change(ElementVersion, :count).by(1))
           end
         end
 
         it "when doesnt match anymore, it gets flagged for removal" do
-          allow(element).to receive(:policy_still_applies?).and_return(false)
-          allow(folder_service).to receive(:find_element).and_return(element)
           assert_enqueued_jobs(1, only: DeleteRemoteResourceJob) do
             expect { subject }.to change(element, :flagged_for_removal?).to(true)
+          end
+        end
+
+        context "when element has an unsynced_local_change" do
+          let(:element) { create(:nexo_element, :unsynced_local_change, folder:) }
+
+          it "creates a new version" do
+            DummyFolderRule.create!(folder: element.folder, search_regex: ".*")
+
+            assert_enqueued_jobs(1, only: UpdateRemoteResourceJob) do
+              expect { subject }.to change(ElementVersion, :count).by(1)
+            end
           end
         end
 
@@ -78,7 +103,7 @@ module Nexo
 
           it "raises exception" do
             assert_no_enqueued_jobs do
-              expect { subject }.to raise_error(Nexo::Errors::ElementConflicted)
+              expect { subject }.to raise_error(Nexo::Errors::SynchronizableConflicted)
                                       .and(not_change(element, :flagged_for_removal?))
             end
           end

@@ -33,13 +33,13 @@ FactoryBot.define do
     trait :synced do
       etag { "asd" }
       nev_status { :synced }
-      add_attribute(:sequence) { rand(0..10) }
+      add_attribute(:sequence) { rand(0..999999) }
     end
 
     trait :unsynced_local_change do
       nev_status { :pending_sync }
       origin { "internal" }
-      add_attribute(:sequence) { rand(0..10) }
+      add_attribute(:sequence) { rand(0..999999) }
       etag { nil }
     end
 
