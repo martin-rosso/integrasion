@@ -93,7 +93,8 @@ module Nexo
       end
     end
 
-    def build_event(calendar_event)
+    def build_event(element)
+      calendar_event = element.synchronizable
       estart = build_event_date_time(calendar_event.datetime_from)
       eend = build_event_date_time(calendar_event.datetime_to)
 
@@ -105,14 +106,34 @@ module Nexo
       #   1. not update the local secuence. but maybe thats not viable
       #   2. increment the local secuence and update the remote
       #   3. increment the local secuence and not update the remote
-      Google::Apis::CalendarV3::Event.new(
+      #   4. <current> ignore the sequence from google
+
+      from = element.last_synced_version
+
+      base_event =
+        if from.present?
+          event_data = ActiveSupport::HashWithIndifferentAccess.new(from.payload)
+          if event_data["eventType"].present?
+            Nexo.logger.warn("Discarding previous payload because it's in old format")
+
+            Google::Apis::CalendarV3::Event.new
+          else
+            Google::Apis::CalendarV3::Event.new(**event_data)
+          end
+        else
+          Google::Apis::CalendarV3::Event.new
+        end
+
+      base_event.update!(
         start: estart,
         end: eend,
         summary: calendar_event.summary,
         description: calendar_event.description,
         transparency: calendar_event.transparency,
-        sequence: calendar_event.sequence
+        # sequence: calendar_event.sequence
       )
+
+      base_event
     end
 
     def build_calendar(folder)
@@ -143,6 +164,7 @@ module Nexo
 
     def ifmatch_options(element)
       ifmatch = element.etag
+      Nexo.logger.debug { "ifmatch: #{ifmatch}" }
 
       raise Errors::Error, "an etag is required to perform the request" if ifmatch.blank?
 
