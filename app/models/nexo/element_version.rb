@@ -10,12 +10,16 @@
 #  origin     :integer          not null
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
+#  nev_status :integer          not null
 #
 module Nexo
   # sequence
   #
   #   cuando es null significa que el origin es external que debe ser
-  #   sincronizado. si está presente, significa que fue sinzronizado
+  #   sincronizado. si está presente, significa que fue sincronizado
+  #   incremental correlativa. puede ser discontinua si se generan updates
+  #   a una frecuencia alta
+  #   TODO!: rename to "version"
   #
   # etag
   #
@@ -30,9 +34,10 @@ module Nexo
     belongs_to :element, class_name: "Nexo::Element"
 
     enum :origin, internal: 0, external: 1
+    enum :nev_status, pending_sync: 0, synced: 1, ignored_in_conflict: 2, superseded: 3
 
     serialize :payload, coder: JSON
 
-    validates :payload, :etag, :origin, presence: true
+    validates :origin, presence: true
   end
 end

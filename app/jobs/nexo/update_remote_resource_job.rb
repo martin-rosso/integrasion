@@ -2,25 +2,37 @@ module Nexo
   class UpdateRemoteResourceJob < BaseJob
     include ApiClients
 
-    attr_reader :element
+    attr_reader :element, :element_version
 
-    def perform(element)
-      @element = element
+    # @raise Google::Apis::ClientError
+    # @raise [ActiveRecord::RecordNotUnique] on ElementVersion update
+    # @raise [Errno::ENETUNREACH]
+    #   - (Network is unreachable - Network is unreachable - connect(2) for "www.googleapis.com"
+    def perform(element_version)
+      @element_version = element_version
+      @element = element_version.element
 
       validate_element_state!
 
       remote_service = ServiceBuilder.instance.build_protocol_service(element.folder)
 
       response =
-        if element.element_versions.any?
+        if element.uuid.present?
           remote_service.update(element)
         else
-          remote_service.insert(element.folder, element.synchronizable).tap do |response|
+          remote_service.insert(element).tap do |response|
             element.update(uuid: response.id)
           end
         end
 
-      save_element_version(response)
+      update_element_version(response)
+    rescue Errors::ConflictingRemoteElementChange => e
+      Nexo.logger.warn <<~STR
+        ConflictingRemoteElementChange for #{element.to_gid}
+
+        Enqueuing FetchRemoteResourceJob, which should lead to conflicted element
+      STR
+      FetchRemoteResourceJob.perform_later(element)
     end
 
     private
@@ -48,26 +60,38 @@ module Nexo
         raise Errors::ElementConflicted
       end
 
-      if element.external_unsynced_change?
-        raise Errors::ExternalUnsyncedChange
+      unless element.pending_local_sync?
+        raise Errors::Error, "invalid ne_status: #{element.ne_status}"
       end
 
-      current_sequence = element.synchronizable.sequence
-      last_synced_sequence = element.last_synced_sequence
+      if !element_version.internal?
+        raise Errors::Error, "invalid ElementVersion: must be internal"
+      end
 
-      unless current_sequence > last_synced_sequence
-        raise Errors::ElementAlreadySynced
+      if element_version.etag.present?
+        raise Errors::Error, "invalid ElementVersion: etag must be blank"
+      end
+
+      unless element_version.pending_sync?
+        raise Errors::Error, "invalid ElementVersion: must be pending_sync"
+      end
+
+      if element.element_versions.where(origin: :internal, nev_status: :synced)
+                .where("sequence > ?", element_version.sequence).any?
+
+        element_version.update(nev_status: :superseded)
+
+        raise Errors::Error, "version superseded"
       end
     end
 
-    # @todo sequence should be fetched before to avoid being outdated
-    def save_element_version(service_response)
-      ElementVersion.create!(
-        element:,
-        origin: :internal,
+    def update_element_version(service_response)
+      # TODO!: maybe some lock here
+      # FIXME: all previous internal pending_sync versions must be marked as synced
+      element_version.update!(
+        nev_status: :synced,
         etag: service_response.etag,
-        payload: service_response.payload,
-        sequence: element.synchronizable.sequence,
+        payload: service_response.payload
       )
     end
   end

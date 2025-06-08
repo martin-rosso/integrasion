@@ -10,6 +10,11 @@ module Nexo
       expect { create(:user) }.to change(User, :count).by(1)
     end
 
+    it "conflicted trait works" do
+      event = create(:event, :conflicted)
+      expect(event).to be_conflicted
+    end
+
     describe "protocols" do
       it "includes the nexo_calendar_event protocol" do
         event = Event.new

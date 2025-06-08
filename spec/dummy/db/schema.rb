@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_05_29_123806) do
+ActiveRecord::Schema[7.2].define(version: 2025_06_04_124821) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -144,6 +144,9 @@ ActiveRecord::Schema[7.2].define(version: 2025_05_29_123806) do
     t.integer "origin", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "nev_status", null: false
+    t.index ["element_id", "etag"], name: "index_nexo_element_versions_on_element_id_and_etag", unique: true, where: "(etag IS NOT NULL)"
+    t.index ["element_id", "sequence"], name: "index_nexo_element_versions_on_element_id_and_sequence", unique: true, where: "(sequence IS NOT NULL)"
     t.index ["element_id"], name: "index_nexo_element_versions_on_element_id"
   end
 
@@ -154,10 +157,10 @@ ActiveRecord::Schema[7.2].define(version: 2025_05_29_123806) do
     t.string "uuid"
     t.boolean "flagged_for_removal", null: false
     t.integer "removal_reason"
-    t.boolean "conflicted", default: false, null: false
     t.datetime "discarded_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "ne_status", null: false
     t.index ["discarded_at"], name: "index_nexo_elements_on_discarded_at"
     t.index ["folder_id"], name: "index_nexo_elements_on_folder_id"
     t.index ["synchronizable_id"], name: "index_nexo_elements_on_synchronizable_id"

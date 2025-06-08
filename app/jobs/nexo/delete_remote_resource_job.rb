@@ -1,4 +1,5 @@
 module Nexo
+  # - Removing/discarding Element's
   class DeleteRemoteResourceJob < BaseJob
     include ApiClients
 

@@ -14,22 +14,21 @@ module Nexo
   class GoogleCalendarService < CalendarService
     # Create an event in a Google Calendar
     #
-    # @param [Folder] folder
+    # @param [Element] folder
     #
-    # @todo Debería recibir un {Element}?
-    def insert(folder, calendar_event)
-      validate_folder_state!(folder)
+    def insert(element)
+      validate_folder_state!(element.folder)
 
-      event = build_event(calendar_event)
-      response = client.insert_event(folder.external_identifier, event)
-      ApiResponse.new(payload: response.to_json, status: :ok, etag: response.etag, id: response.id)
+      event = build_event(element)
+      response = client.insert_event(element.folder.external_identifier, event)
+      ApiResponse.new(payload: response.to_h, status: :ok, etag: response.etag, id: response.id)
     end
 
     # Update an event in a Google Calendar
     def update(element)
       validate_folder_state!(element.folder)
 
-      event = build_event(element.synchronizable)
+      event = build_event(element)
 
       response = client.update_event(element.folder.external_identifier, element.uuid, event, options: ifmatch_options(element))
 
@@ -66,7 +65,7 @@ module Nexo
       ApiResponse.new(payload: response.to_json, status: :ok, etag: response.etag, id: response.id)
     end
 
-    # Create a Google calendar
+    # Update a Google calendar
     def update_calendar(folder)
       validate_folder_state!(folder)
 

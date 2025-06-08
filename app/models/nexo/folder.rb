@@ -27,6 +27,8 @@ module Nexo
       PolicyService.instance.applies?(self, synchronizable)
     end
 
+    # TODO: use find_sole_by
+    # TODO: add a unique index to DB
     def find_element(synchronizable:)
       ary = elements.where(synchronizable:, discarded_at: nil).to_a
 

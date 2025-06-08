@@ -22,6 +22,9 @@ module Nexo
           # TODO: avoid calling more than once per synchronizable
           query.find_each do |synchronizable|
             Nexo.logger.debug { "Processing synchronizable: #{synchronizable}" }
+
+            # FIXME!: this can lead to new versions for all elements!
+            #         or at least a crash because of a duplicated version
             folder_service.find_element_and_sync(folder, synchronizable)
           end
         end

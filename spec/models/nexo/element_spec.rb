@@ -9,10 +9,10 @@
 #  uuid                :string
 #  flagged_for_removal :boolean          not null
 #  removal_reason      :integer
-#  conflicted          :boolean          default(FALSE), not null
 #  discarded_at        :datetime
 #  created_at          :datetime         not null
 #  updated_at          :datetime         not null
+#  ne_status           :integer          not null
 #
 require 'rails_helper'
 
@@ -20,11 +20,11 @@ module Nexo
   RSpec.describe Element, type: :model do
     let(:element) { create(:nexo_element) }
 
-    it "factory works" do
-      expect {
-        create(:nexo_element, :with_versions)
-      }.to change(Nexo::ElementVersion, :count).by(1)
-           .and(change(Nexo::Element, :count).by(1))
+    it "conflicted trait works" do
+      element = create(:nexo_element, :conflicted)
+      expect(element).to be_conflicted
+      element.update_ne_status!
+      expect(element).to be_conflicted
     end
 
     describe "flag_for_removal!" do

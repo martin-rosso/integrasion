@@ -8,7 +8,6 @@ module Nexo
     # From here on, classes are subject to review
     # A lot of them are never rescued explicitly
     class ElementConflicted < Error; end
-    class ExternalUnsyncedChange < Error; end
     class ElementAlreadySynced < Error; end
     class MoreThanOneElementInFolderForSynchronizable < Error; end
     class InvalidFolderState < Error; end
@@ -24,8 +23,6 @@ module Nexo
     # on EventReceiver
     class InvalidSynchronizableState < Error; end
 
-    # on SyncElementJob
-    class SyncElementJobError < Errors::Error; end
     class SynchronizableConflicted < Error; end
     class ElementDiscarded < Error; end
     class SynchronizableNotFound < Error; end
