@@ -69,7 +69,7 @@ module Nexo
 
     describe "insert" do
       subject do
-        google_calendar_service.insert(element.folder, element.synchronizable)
+        google_calendar_service.insert(element)
       end
 
       let(:mocks) do

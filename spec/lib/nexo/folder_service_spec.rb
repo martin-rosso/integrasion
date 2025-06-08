@@ -10,6 +10,8 @@ module Nexo
       described_class.new
     end
 
+    pending "when ActiveRecord::RecordNotUnique"
+
     describe "find_element_and_sync" do
       subject do
         folder_service.find_element_and_sync(folder, event)
@@ -31,8 +33,9 @@ module Nexo
         it "when policy match, creates the element and enqueues the job" do
           allow(folder).to receive(:policy_applies?).and_return(true)
 
-          assert_enqueued_jobs(1, only: SyncElementJob) do
+          assert_enqueued_jobs(1, only: UpdateRemoteResourceJob) do
             expect { subject }.to change(Element, :count).by(1)
+              .and(change(ElementVersion, :count).by(1))
           end
         end
 
@@ -49,11 +52,15 @@ module Nexo
         let(:element) { create(:nexo_element, :synced, folder:) }
         let(:event) { element.synchronizable }
 
+        before do
+          event.increment_sequence!
+        end
+
         it "when still matches, it doesnt flag for removal" do
           # TODO: remove mocks to policy_still_applies?
           allow(element).to receive(:policy_still_applies?).and_return(true)
           allow(folder_service).to receive(:find_element).and_return(element)
-          assert_enqueued_jobs(1, only: SyncElementJob) do
+          assert_enqueued_jobs(1, only: UpdateRemoteResourceJob) do
             expect { subject }.not_to change(element, :flagged_for_removal?)
           end
         end
@@ -61,14 +68,13 @@ module Nexo
         it "when doesnt match anymore, it gets flagged for removal" do
           allow(element).to receive(:policy_still_applies?).and_return(false)
           allow(folder_service).to receive(:find_element).and_return(element)
-          assert_enqueued_jobs(1, only: SyncElementJob) do
+          assert_enqueued_jobs(1, only: DeleteRemoteResourceJob) do
             expect { subject }.to change(element, :flagged_for_removal?).to(true)
           end
         end
 
         context "when event is conflicted" do
           let(:element) { create(:nexo_element, :synced, :conflicted, folder:) }
-          let(:event) { element.synchronizable }
 
           it "raises exception" do
             assert_no_enqueued_jobs do
@@ -89,7 +95,7 @@ module Nexo
       let(:elements) { event.nexo_elements }
 
       it "marks all elements as flagged for removal and enqueues a job for each" do
-        assert_enqueued_jobs(elements.count, only: SyncElementJob) do
+        assert_enqueued_jobs(elements.count, only: DeleteRemoteResourceJob) do
           expect { subject }.to change { elements.pluck(:flagged_for_removal).uniq }.to([ true ])
         end
       end

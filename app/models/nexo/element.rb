@@ -9,10 +9,10 @@
 #  uuid                :string
 #  flagged_for_removal :boolean          not null
 #  removal_reason      :integer
-#  conflicted          :boolean          default(FALSE), not null
 #  discarded_at        :datetime
 #  created_at          :datetime         not null
 #  updated_at          :datetime         not null
+#  ne_status           :integer          not null
 #
 module Nexo
   class Element < ApplicationRecord
@@ -28,8 +28,9 @@ module Nexo
     scope :kept, -> { where(discarded_at: nil) }
 
     enum :removal_reason, no_longer_included_in_folder: 0, synchronizable_destroyed: 1
+    enum :ne_status, synced: 0, pending_external_sync: 1, pending_local_sync: 2, conflicted: 3
 
-    scope :conflicted, -> { where(conflicted: true) }
+    scope :conflicted, -> { where(ne_status: :conflicted) }
 
     def policy_still_applies?
       # :nocov: TODO
@@ -37,33 +38,35 @@ module Nexo
       # :nocov:
     end
 
-    def last_synced_sequence
-      element_versions.pluck(:sequence).max || -1
-    end
+    def update_ne_status!
+      external_change = element_versions.where(origin: :external, nev_status: :pending_sync).any?
+      local_change = element_versions.where(origin: :internal, nev_status: :pending_sync).any?
 
-    def external_unsynced_change?
-      last_external_unsynced_version.present?
+      self.ne_status =
+        if external_change && local_change
+          :conflicted
+        elsif external_change
+          :pending_external_sync
+        elsif local_change
+          :pending_local_sync
+        else
+          :synced
+        end
+
+      save!
     end
 
     def etag
-      element_versions.order(created_at: :desc).first&.etag
+      last_synced_version&.etag
     end
 
-    def last_external_unsynced_version
-      element_versions.where(sequence: nil).order(created_at: :desc).first
+    def last_synced_version
+      element_versions.where.not(etag: nil).order(:etag).last
     end
 
     def flag_for_removal!(removal_reason)
       update!(flagged_for_removal: true, removal_reason:)
     end
-
-    # :nocov: TODO, not yet being called
-    def flag_as_conflicted!
-      update!(conflicted: true)
-
-      # TODO: log "Conflicted Element: #{element.to_gid}"
-    end
-    # :nocov:
 
     def discarded?
       discarded_at.present?
