@@ -80,7 +80,40 @@ module Nexo
       end
     end
 
-    # pending "update_from!"
+    describe "update_from!" do
+      subject do
+        event.update_from!(element_version)
+      end
+
+      let(:event) { create(:event) }
+      let(:element) { create(:nexo_element, synchronizable: event) }
+
+      pending "when ActiveRecord::RecordNotUnique"
+
+      context "all-day" do
+        let(:element_version) { create(:nexo_element_version, :all_day, :unsynced_external_change, element:) }
+
+        it "when its an all-day event" do
+          expect { subject }.to change { element_version.reload.sequence }.to(be_present)
+            .and(change { event.reload.summary }.to("test-summary"))
+            .and(change { event.reload.date_from }.to(Date.parse("2025-06-05")))
+            .and(change { event.reload.date_to }.to(Date.parse("2025-06-06")))
+        end
+      end
+
+      context "when event has time / i.e.: not an all-day event" do
+        let(:element_version) { create(:nexo_element_version, :with_time, :unsynced_external_change, element:) }
+
+        it "when it has time" do
+          expect { subject }.to change { element_version.reload.sequence }.to(be_present)
+            .and(change { event.reload.summary }.to("test-summary"))
+            .and(change { event.reload.date_from }.to(Date.parse("2025-06-11")))
+            .and(change { event.reload.date_to }.to(Date.parse("2025-06-11")))
+            .and(change { event.reload.time_from }.to(Time.parse("2000-01-01T10:00")))
+            .and(change { event.reload.time_to }.to(Time.parse("2000-01-01T14:30")))
+        end
+      end
+    end
     # pending "conflicted?"
   end
 end

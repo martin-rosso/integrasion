@@ -56,6 +56,14 @@ module Nexo
       end
     end
 
+    def get_event(element)
+      validate_folder_state!(element.folder)
+
+      response = client.get_event(element.folder.external_identifier, element.uuid)
+
+      ApiResponse.new(payload: response.to_h, status: :ok, etag: response.etag, id: response.id)
+    end
+
     # Create a Google calendar
     def insert_calendar(folder)
       validate_folder_state!(folder, verify_external_identifier_presence: false)
@@ -81,7 +89,49 @@ module Nexo
       ApiResponse.new(status: :ok)
     end
 
+    def fields_from_version(version)
+      event_data = ActiveSupport::HashWithIndifferentAccess.new(version.payload)
+      event = Google::Apis::CalendarV3::Event.new(**event_data)
+
+      {
+        date_from: parse_date(event.start),
+        date_to: parse_date(event.end),
+        time_from: parse_time(event.start),
+        time_to: parse_time(event.end),
+        summary: event.summary,
+        description: event.description
+      }
+    end
+
     private
+
+    def parse_date(datetime)
+      if datetime.is_a?(Hash)
+        if datetime["date"].present?
+          Date.parse(datetime["date"])
+        elsif datetime["date_time"].present?
+          Date.parse(datetime["date_time"])
+        else
+          raise "invalid datetime"
+        end
+      else
+        raise "invalid datetime"
+      end
+    end
+
+    def parse_time(datetime)
+      if datetime.is_a?(Hash)
+        if datetime["date"].present?
+          nil
+        elsif datetime["date_time"].present?
+          Time.parse(datetime["date_time"])
+        else
+          raise "invalid datetime"
+        end
+      else
+        raise "invalid datetime"
+      end
+    end
 
     def validate_folder_state!(folder, verify_external_identifier_presence: true)
       unless folder.integration.token?
