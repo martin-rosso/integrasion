@@ -31,7 +31,7 @@ FactoryBot.define do
     end
 
     trait :synced do
-      etag { "asd" }
+      etag { Time.current.to_f.to_s }
       nev_status { :synced }
       add_attribute(:sequence) { rand(0..999999) }
     end
