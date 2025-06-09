@@ -65,6 +65,8 @@ module Nexo
       # sidebranch
       # FIXME: validate uuid presence
 
+      # would be nice to send If-None-Match header, but Google API doesn't seem
+      # to accept it
       response = client.get_event(element.folder.external_identifier, element.uuid)
 
       ApiResponse.new(payload: response.to_h, status: :ok, etag: response.etag, id: response.id)

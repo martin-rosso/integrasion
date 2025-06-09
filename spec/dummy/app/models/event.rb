@@ -5,6 +5,12 @@ class Event < ApplicationRecord
     self.sequence = 0 if sequence.nil?
   end
 
+  validate do
+    if summary&.match? "this is an invalid value"
+      errors.add(:summary, "invalid value")
+    end
+  end
+
   def assign_fields!(fields)
     hsh = {
       date_from: fields[:date_from],
