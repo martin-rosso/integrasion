@@ -10,6 +10,9 @@ inherit_gem: { rubocop-rails-omakase: rubocop.yml }
 inherit_from:
   - .rubocop.rspec.yml
 
+Layout/EmptyLines:
+  Enabled: true
+
 AllCops:
   NewCops: enable
   Exclude:
