@@ -18,7 +18,6 @@ module Nexo
 
     let(:event) { create(:event) }
 
-
     it "calls the folder service with each folder" do
       folder_service_mock = instance_double(FolderService, find_element_and_sync: nil)
       allow_any_instance_of(described_class).to receive(:folder_service).and_return(folder_service_mock)
