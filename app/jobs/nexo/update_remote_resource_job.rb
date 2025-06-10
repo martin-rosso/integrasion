@@ -2,12 +2,19 @@ module Nexo
   class UpdateRemoteResourceJob < BaseJob
     include ApiClients
 
+    # https://github.com/rails/solid_queue?tab=readme-ov-file#jobs-and-transactional-integrity
+    self.enqueue_after_transaction_commit = true
+
     attr_reader :element, :element_version
 
     # @raise Google::Apis::ClientError
     # @raise [ActiveRecord::RecordNotUnique] on ElementVersion update
     # @raise [Errno::ENETUNREACH]
     #   - (Network is unreachable - Network is unreachable - connect(2) for "www.googleapis.com"
+    # @raise [Signet::AuthorizationError]
+    #   - Unexpected error: #<Faraday::ConnectionFailed
+    #       wrapped=#<Socket::ResolutionError: Failed to open TCP connection to
+    #       oauth2.googleapis.com:443 (getaddrinfo: Name or service not known)>>"
     def perform(element_version)
       @element_version = element_version
       @element = element_version.element
@@ -38,7 +45,7 @@ module Nexo
     private
 
     def validate_element_state!
-      if element.element_versions.where(origin: :internal, nev_status: :synced)
+      if element.element_versions.where(nev_status: :synced)
                 .where("sequence > ?", element_version.sequence).any?
 
         element_version.update(nev_status: :superseded)
@@ -92,6 +99,8 @@ module Nexo
         etag: service_response.etag,
         payload: service_response.payload
       )
+
+      element.update_ne_status!
     end
   end
 end

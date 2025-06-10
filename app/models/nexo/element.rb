@@ -65,14 +65,25 @@ module Nexo
     end
 
     def resolve_conflict!
-      # FIXME: when more than one pending version
-      transaction do
-        # FIXME: ensure there is conflict
-        # TODO!: big concurrency problem here. element versions could be created in the middle?
-        #        Element should be locked?
+      unless conflicted?
+        raise "element not conflicted"
+      end
+
+      # both lock on Element and start a transaction
+      with_lock do
+        # FIXME: ElementVersions must be created within a lock to the element
 
         external_change = element_versions.where(origin: :external, nev_status: :pending_sync).order(:etag).last
         local_change = element_versions.where(origin: :internal, nev_status: :pending_sync).order(:sequence).last
+        last_synced = element_versions.where(nev_status: :synced).order(:sequence).last
+
+        if local_change.sequence < last_synced.sequence
+          raise "there a newer synced sequence"
+        end
+
+        if external_change.etag < last_synced.etag
+          raise "there a newer synced etag"
+        end
 
         Nexo.logger.debug { "resolving conflict" }
         remote_update = Time.zone.parse(external_change.payload["updated"])
@@ -80,16 +91,19 @@ module Nexo
         Nexo.logger.debug { "Remote updated at: #{remote_update}. Local updated at #{local_update}" }
         if remote_update > local_update
           Nexo.logger.debug { "Remote wins, ignoring local change" }
-          local_change.update(nev_status: :ignored_in_conflict)
           synchronizable.update_from!(external_change)
+          win_version = external_change
         else
           Nexo.logger.debug { "Local wins, discarding remote changes" }
-          external_change.update(nev_status: :ignored_in_conflict)
-          # FIXME: check integrity transaction rollback
           UpdateRemoteResourceJob.perform_later(local_change)
+          win_version = local_change
         end
 
-        # FIXME: updatesyncstatus
+        element_versions.where(nev_status: :pending_sync)
+                        .where.not(id: win_version.id)
+                        .update_all(nev_status: :ignored_in_conflict)
+
+        update_ne_status!
       end
     end
 
