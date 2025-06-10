@@ -63,7 +63,11 @@ module Nexo
 
         DeleteRemoteResourceJob.perform_later(element)
       else
-        handle_new_internal_version(element)
+        if element.element_versions.where(sequence: element.synchronizable.sequence).none?
+          handle_new_internal_version(element)
+        else
+          Nexo.logger.debug { "There is a version for current sequence, nothing to do" }
+        end
       end
     end
 
@@ -85,8 +89,6 @@ module Nexo
     end
 
     def handle_new_internal_version(element)
-      # FIXME: ensure this is only executed when synchronizable has changed and
-      # incremented his sequence. or simply handle RecordNotUnique
       # TODO!: maybe some lock here?
       element_version = ElementVersion.create!(
         element:,
