@@ -104,6 +104,41 @@ module Nexo
       ApiResponse.new(status: :ok)
     end
 
+    def watch_calendar(folder)
+      channel = Google::Apis::CalendarV3::Channel.new(
+        id: "123-321",
+        token: "the-token-312",
+        type: "web_hook",
+        address: "https://bien.com.ar:8001/google_webhook",
+      )
+      client.watch_event(folder.external_identifier, channel)
+
+      # Headers to parse
+      # {
+      #   host: 'bien.com.ar:8001',
+      #   accept: '*/*',
+      #   'x-goog-channel-id': '123-321',
+      #   'x-goog-channel-expiration': 'Tue, 17 Jun 2025 01:29:16 GMT',
+      #   'x-goog-resource-state': 'exists',
+      #   'x-goog-message-number': '35574024',
+      #   'x-goog-resource-id': 'n8R-BiCIoxzWnlpUXnKfyFu5skU',
+      #   'x-goog-resource-uri': 'https://www.googleapis.com/calendar/v3/calendars/cbed3a3fe2e0352b59aef4f498bc15d12277ed703de7114f8acbf0774339d995%40group.calendar.google.com/events?alt=json',
+      #   'x-goog-channel-token': 'the-token-312',
+      #   'content-length': '0',
+      #   connection: 'keep-alive',
+      #   'user-agent': 'APIs-Google; (+https://developers.google.com/webmasters/APIs-Google.html)',
+      #   'accept-encoding': 'gzip, deflate, br'
+      # }
+    end
+
+    def stop_watching(folder, id = "123")
+      channel = Google::Apis::CalendarV3::Channel.new(
+        id:,
+        resource_id: "n8R-BiCIoxzWnlpUXnKfyFu5skU",
+      )
+      client.stop_channel(channel)
+    end
+
     def fields_from_version(element_version)
       event = validate_version!(element_version)
 
