@@ -37,10 +37,6 @@ module Nexo
     def validate_synchronizable!(synchronizable)
       synchronizable.validate_synchronizable!
 
-      if synchronizable.conflicted?
-        raise Errors::SynchronizableConflicted
-      end
-
       if synchronizable.sequence.nil?
         raise Errors::SynchronizableSequenceIsNull
       end
@@ -96,12 +92,18 @@ module Nexo
         sequence: element.synchronizable.sequence,
         nev_status: :pending_sync
       )
-      Nexo.logger.debug { "ElementVersion created and enqueuing UpdateRemoteResourceJob" }
+      Nexo.logger.debug { "ElementVersion created" }
 
-      # set ne_status = pending_local_sync
       element.update_ne_status!
 
-      UpdateRemoteResourceJob.perform_later(element_version)
+      if element.pending_local_sync?
+        Nexo.logger.debug { "Enqueuing UpdateRemoteResourceJob" }
+        UpdateRemoteResourceJob.perform_later(element_version)
+      elsif element.conflicted?
+        Nexo.logger.info { "Element conflicted, so not enqueuing UpdateRemoteResourceJob" }
+      else
+        Nexo.logger.warn { "Element status is: #{element.ne_status}. That's weird" }
+      end
     end
   end
 end
