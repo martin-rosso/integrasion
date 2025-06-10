@@ -14,7 +14,7 @@ module Nexo
 
       ServiceBuilder.instance.build_protocol_service(element.folder).remove(element)
 
-      element.discard!
+      ElementService.new(element:).discard!
     end
   end
 end

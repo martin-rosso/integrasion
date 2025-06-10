@@ -5,10 +5,7 @@ module Nexo
     def perform(element_version)
       validate_element_state!(element_version)
 
-      element_version.element.synchronizable.update_from!(element_version)
-
-      # set ne_status = synced
-      element_version.element.update_ne_status!
+      ElementService.new(element_version:).update_synchronizable!
     rescue VersionSuperseded
       Nexo.logger.info { "ImportRemoteElementVersion: version superseded" }
     end
@@ -28,7 +25,7 @@ module Nexo
       if element.element_versions.where(nev_status: :synced)
                 .where("etag > ?", element_version.etag).any?
 
-        element_version.update(nev_status: :superseded)
+        ElementService.new(element_version:).update_element_version!(nev_status: :superseded)
 
         raise VersionSuperseded
       end

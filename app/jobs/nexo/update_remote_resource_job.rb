@@ -28,11 +28,15 @@ module Nexo
           remote_service.update(element)
         else
           remote_service.insert(element).tap do |response|
-            element.update(uuid: response.id)
+            ElementService.new(element:).update_element!(uuid: response.id)
           end
         end
 
-      update_element_version(response)
+      ElementService.new(element_version:).update_element_version!(
+        nev_status: :synced,
+        etag: response.etag,
+        payload: response.payload
+      )
     rescue Errors::ConflictingRemoteElementChange => e
       Nexo.logger.warn <<~STR
         ConflictingRemoteElementChange for #{element.to_gid}
@@ -48,7 +52,7 @@ module Nexo
       if element.element_versions.where(nev_status: :synced)
                 .where("sequence > ?", element_version.sequence).any?
 
-        element_version.update(nev_status: :superseded)
+        ElementService.new(element_version:).update_element_version!(nev_status: :superseded)
 
         raise Errors::Error, "version superseded"
       end
@@ -90,17 +94,6 @@ module Nexo
       unless element_version.pending_sync?
         raise Errors::Error, "invalid ElementVersion: must be pending_sync"
       end
-    end
-
-    def update_element_version(service_response)
-      # TODO!: maybe some lock here
-      element_version.update!(
-        nev_status: :synced,
-        etag: service_response.etag,
-        payload: service_response.payload
-      )
-
-      element.update_ne_status!
     end
   end
 end

@@ -28,7 +28,7 @@ module Nexo
     def update(element)
       validate_folder_state!(element.folder)
       # sidebranch
-      # FIXME: validate uuid presence
+      # TODO!: validate uuid presence
 
       event = build_event(element)
 
@@ -47,7 +47,7 @@ module Nexo
     def remove(element)
       validate_folder_state!(element.folder)
       # sidebranch
-      # FIXME: validate uuid presence
+      # TODO!: validate uuid presence
 
       # TODO: try with cancelled
       client.delete_event(element.folder.external_identifier, element.uuid, options: ifmatch_options(element))
@@ -63,7 +63,7 @@ module Nexo
     def get_event(element)
       validate_folder_state!(element.folder)
       # sidebranch
-      # FIXME: validate uuid presence
+      # TODO!: validate uuid presence
 
       # would be nice to send If-None-Match header, but Google API doesn't seem
       # to accept it
@@ -73,7 +73,7 @@ module Nexo
     rescue Google::Apis::ClientError => e
       if e.message.match? "notFound"
         Nexo.logger.warn("Event not found for #{element.to_gid}")
-        return nil
+        nil
       else
         raise
       end
