@@ -10,7 +10,6 @@ module Nexo
     include ApiClients
 
     attr_reader :element
-    attr_reader :element_version
 
     def perform(element)
       @element = element
@@ -24,12 +23,9 @@ module Nexo
         Nexo.logger.debug { "Fetched new element version from remote server" }
         Nexo.logger.debug { response.payload }
 
-        version = save_element_version(response)
+        element_version = save_element_version(response)
 
-        # set ne_status = pending_external_sync
-        element.update_ne_status!
-
-        ImportRemoteElementVersion.new.perform(version)
+        ImportRemoteElementVersion.new.perform(element_version)
       else
         Nexo.logger.debug { "No new version fetched from remote server" }
       end
@@ -38,8 +34,7 @@ module Nexo
     private
 
     def save_element_version(service_response)
-      @element_version = ElementVersion.create!(
-        element:,
+      ElementService.new(element:).create_element_version!(
         origin: :external,
         etag: service_response.etag,
         payload: service_response.payload,

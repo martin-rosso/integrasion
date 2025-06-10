@@ -68,25 +68,6 @@ module Nexo
     end
     # :nocov:
 
-    # @raise ActiveRecord::RecordNotUnique
-    def update_from!(element_version)
-      transaction do
-        service = ServiceBuilder.instance.build_protocol_service(element_version.element.folder)
-        fields = service.fields_from_version(element_version)
-
-        # and set the Synchronizable fields according to the Folder#nexo_protocol
-        assign_fields!(fields)
-
-        # TODO!: maybe some lock here?
-        # si esto se ejecuta en paralelo con SynchronizableChangedJob? (para otro
-        # element del mismo synchronizable) puede haber race conditions
-        increment_sequence!
-        reload
-
-        element_version.update!(sequence: sequence, nev_status: :synced)
-      end
-    end
-
     def increment_sequence!
       if sequence.nil?
         Rails.logger.warn("Synchronizable sequence is nil on increment_sequence!: #{self.to_gid}")
