@@ -101,10 +101,14 @@ module Nexo
         context "when event is conflicted" do
           let(:element) { create(:nexo_element, :synced, :conflicted, folder:) }
 
-          it "raises exception" do
+          it "creates a version" do
+            DummyFolderRule.create!(folder: element.folder, search_regex: ".*")
+
             assert_no_enqueued_jobs do
-              expect { subject }.to raise_error(Nexo::Errors::SynchronizableConflicted)
-                                      .and(not_change(element, :flagged_for_removal?))
+              expect { subject }.to change(ElementVersion, :count).by(1)
+              element.update_ne_status!
+              element.reload
+              expect(element).to be_conflicted
             end
           end
         end
