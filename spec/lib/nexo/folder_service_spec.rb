@@ -106,7 +106,6 @@ module Nexo
 
             assert_no_enqueued_jobs do
               expect { subject }.to change(ElementVersion, :count).by(1)
-              element.update_ne_status!
               element.reload
               expect(element).to be_conflicted
             end

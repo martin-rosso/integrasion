@@ -15,7 +15,7 @@ module Nexo
     end
 
     def update_status
-      @element.update_ne_status!
+      ElementService.new(element:).update_ne_status!
 
       redirect_to @element, notice: "Updated status"
     end
@@ -45,7 +45,7 @@ module Nexo
     end
 
     def resolve_conflict
-      @element.resolve_conflict!
+      ElementService.new(element: @element).resolve_conflict!
 
       redirect_to @element, notice: "Conflict solved"
     rescue StandardError => e

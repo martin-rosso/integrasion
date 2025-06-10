@@ -87,7 +87,7 @@ FactoryBot.define do
     end
 
     after(:create) do |element, context|
-      element.update_ne_status!
+      Nexo::ElementService.new(element:).update_ne_status!
     end
   end
 end

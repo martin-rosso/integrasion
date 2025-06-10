@@ -50,11 +50,12 @@ FactoryBot.define do
     trait :unsynced_external_change do
       add_attribute(:sequence) { nil }
       nev_status { :pending_sync }
+      etag { Time.current.to_f.to_s }
       origin { "external" }
     end
 
     after(:create) do |element_version, context|
-      element_version.element.update_ne_status!
+      Nexo::ElementService.new(element: element_version.element).update_ne_status!
     end
   end
 end
