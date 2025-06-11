@@ -178,7 +178,7 @@ module Nexo
       #   3. increment the local secuence and not update the remote
       #   4. <current> ignore the sequence from google
 
-      from = element.last_synced_version
+      from = element.last_remote_version
 
       base_event =
         if from.present?
