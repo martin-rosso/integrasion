@@ -57,10 +57,10 @@ module Nexo
     end
 
     def etag
-      last_synced_version&.etag
+      last_remote_version&.etag
     end
 
-    def last_synced_version
+    def last_remote_version
       element_versions.where.not(etag: nil).order(:etag).last
     end
 
