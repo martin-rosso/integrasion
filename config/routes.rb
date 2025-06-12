@@ -1,4 +1,11 @@
 Nexo::Engine.routes.draw do
+  resources :folders do
+    member do
+      post :full_sync
+      post :incremental_sync
+    end
+  end
+
   resources :elements do
     member do
       post :fetch_remote

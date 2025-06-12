@@ -1,0 +1,14 @@
+<h1>Folder: <%= @folder.name %></h1>
+
+<%= link_to "Back to list", folders_path %>
+<br>
+<%= form_with(url: full_sync_folder_path(@folder)) do |f| %>
+  <%= f.submit "Full sync" %>
+<% end %>
+<%= form_with(url: incremental_sync_folder_path(@folder)) do |f| %>
+  <%= f.submit "Incremental sync" %>
+<% end %>
+
+<pre>
+<%= JSON.pretty_generate @folder.as_json %>
+</pre>

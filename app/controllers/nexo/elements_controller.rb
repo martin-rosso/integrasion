@@ -15,7 +15,7 @@ module Nexo
     end
 
     def update_status
-      ElementService.new(element:).update_ne_status!
+      ElementService.new(element: @element).update_ne_status!
 
       redirect_to @element, notice: "Updated status"
     end
