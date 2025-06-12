@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_06_04_124821) do
+ActiveRecord::Schema[7.2].define(version: 2025_06_12_002919) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -176,6 +176,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_06_04_124821) do
     t.datetime "discarded_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "google_next_sync_token"
     t.index ["discarded_at"], name: "index_nexo_folders_on_discarded_at"
     t.index ["integration_id"], name: "index_nexo_folders_on_integration_id"
   end

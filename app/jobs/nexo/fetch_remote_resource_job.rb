@@ -19,6 +19,13 @@ module Nexo
       response = remote_service.get_event(element)
       # TODO!: handle calendar change
 
+      handle_response(element, response)
+    end
+
+    def handle_response(element, response)
+      # FIXME: refactor
+      @element = element
+
       if response.present? && element.element_versions.where(etag: response.etag).empty?
         Nexo.logger.debug { "Fetched new element version from remote server" }
         Nexo.logger.debug { response.payload }

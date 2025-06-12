@@ -1,7 +1,11 @@
 module Nexo
   # Wrapper around +Google::Apis::CalendarV3+
   #
-  # @raise [Google::Apis::ClientError] possible messages:
+  # TODO: handle ServerError to be retried
+  # @raise [Google::Apis::ServerError] An error occurred on the server and the request can be retried
+  # @raise [Google::Apis::AuthorizationError] Authorization is required
+  # @raise [Google::Apis::ClientError] The request is invalid and should not be retried without modification
+  #   possible messages:
   #   - duplicate: The requested identifier already exists.
   #   - notFound: Not Found (calendar not exists or was deleted)
   #   - forbidden: Forbidden (event to update was deleted)
