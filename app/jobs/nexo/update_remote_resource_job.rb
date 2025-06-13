@@ -39,8 +39,7 @@ module Nexo
       )
     rescue Errors::ConflictingRemoteElementChange => e
       Nexo.logger.warn <<~STR
-        ConflictingRemoteElementChange for #{element.to_gid}
-
+        ConflictingRemoteElementChange for #{element.to_gid}. \
         Enqueuing FetchRemoteResourceJob, which should lead to conflicted element
       STR
       FetchRemoteResourceJob.perform_later(element)

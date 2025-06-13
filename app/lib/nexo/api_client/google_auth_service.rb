@@ -58,6 +58,7 @@ module Nexo
         if request.session["code_verifier"].present?
           authorizer.code_verifier = request.session["code_verifier"]
         else
+          # FIXME: may be the user simply showing the integration
           Rails.logger.warn("Request has no code_verifier")
         end
         # :nocov:

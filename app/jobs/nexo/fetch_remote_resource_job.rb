@@ -23,7 +23,8 @@ module Nexo
     end
 
     def handle_response(element, response)
-      # FIXME: refactor
+      # TODO!: refactor y que no tenga que repetir esta asignación
+      #        extraer a algún Service?
       @element = element
 
       if response.present? && element.element_versions.where(etag: response.etag).empty?
