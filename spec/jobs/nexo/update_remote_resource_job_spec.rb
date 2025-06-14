@@ -115,7 +115,7 @@ module Nexo
       let(:element_version) { create(:nexo_element_version, :unsynced_local_change, element: element) }
 
       it do
-        expect { subject }.to raise_error(Errors::ElementConflicted)
+        expect { subject }.to raise_error(Errors::UpdateRemoteVersionFailed, "synchronizable conflited")
       end
     end
 

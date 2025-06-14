@@ -2,6 +2,7 @@ module Nexo
   class ImportRemoteElementVersion
     class VersionSuperseded < Errors::Error; end
 
+    # @raise [Nexo::Errors::ImportRemoteVersionFailed]
     def perform(element_version)
       validate_element_state!(element_version)
 
@@ -31,24 +32,24 @@ module Nexo
       end
 
       if element.conflicted?
-        raise Errors::ElementConflicted
+        raise Errors::ImportRemoteVersionFailed, "element conflicted"
       end
 
       # :nocov: borderline
       if element.synchronizable.blank?
-        raise Errors::SynchronizableNotFound
+        raise Errors::ImportRemoteVersionFailed, "synchronizable not found"
       end
 
       if element.discarded?
-        raise Errors::ElementDiscarded
+        raise Errors::ImportRemoteVersionFailed, "element discarded"
       end
 
       if element.synchronizable.conflicted?
-        raise Errors::SynchronizableConflicted
+        raise Errors::ImportRemoteVersionFailed, "synchronizable conflicted"
       end
 
       if element.synchronizable.sequence.nil?
-        raise Errors::SynchronizableSequenceIsNull
+        raise Errors::ImportRemoteVersionFailed, "synchronizable sequence is null"
       end
       # :nocov:
     end

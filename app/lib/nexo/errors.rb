@@ -4,10 +4,11 @@ module Nexo
 
     class SynchronizableInvalid < Error; end
     class ConflictingRemoteElementChange < Error; end
+    class ImportRemoteVersionFailed < Error; end
+    class UpdateRemoteVersionFailed < Error; end
 
     # From here on, classes are subject to review
     # A lot of them are never rescued explicitly
-    class ElementConflicted < Error; end
     class ElementAlreadySynced < Error; end
     class MoreThanOneElementInFolderForSynchronizable < Error; end
     class InvalidFolderState < Error; end
