@@ -53,17 +53,17 @@ module Nexo
     # Guarda el Token
     # Si el client tiene más permisos que los que el user solicitó
     def get_credentials(request = nil)
-      if request.present?
-        # :nocov: tricky
-        if request.session["code_verifier"].present?
-          authorizer.code_verifier = request.session["code_verifier"]
-        else
-          # FIXME: may be the user simply showing the integration
+      # :nocov: tricky
+      if request.present? && request.session["code_verifier"].present?
+        authorizer.code_verifier = request.session["code_verifier"]
+      end
+      # :nocov:
+
+      authorizer.get_credentials(@integration, request).tap do |credentials|
+        if credentials.nil? && request.present? && !request.session["code_verifier"].present?
           Rails.logger.warn("Request has no code_verifier")
         end
-        # :nocov:
       end
-      authorizer.get_credentials @integration, request
     rescue Signet::AuthorizationError
       # TODO: log
     end
