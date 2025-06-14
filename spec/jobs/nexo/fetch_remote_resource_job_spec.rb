@@ -62,7 +62,7 @@ module Nexo
 
       it "not updates the synchronizable" do
         # expect { subject }.not_to change(synchronizable, :summary)
-        expect { subject }.to raise_error(Errors::ElementConflicted)
+        expect { subject }.to raise_error(Errors::ImportRemoteVersionFailed, "element conflicted")
         expect(remote_service_mock).not_to have_received(:fields_from_version)
         expect(element.reload).to be_conflicted
       end

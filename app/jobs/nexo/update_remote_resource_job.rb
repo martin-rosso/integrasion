@@ -75,7 +75,7 @@ module Nexo
       end
 
       if element.synchronizable.conflicted?
-        raise Errors::ElementConflicted
+        raise Errors::UpdateRemoteVersionFailed, "synchronizable conflicted"
       end
 
       unless element.pending_local_sync?
