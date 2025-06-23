@@ -63,6 +63,5 @@ module Nexo
         end
       end
     end
-
   end
 end
