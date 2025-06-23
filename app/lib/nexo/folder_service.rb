@@ -25,6 +25,11 @@ module Nexo
 
     def destroy_elements(synchronizable, reason)
       synchronizable.nexo_elements.each do |element|
+        unless element.folder.sync_internal_changes?
+          Nexo.logger.debug("Folder dont syncs internal changes, skipping")
+          next
+        end
+
         ElementService.new(element:).flag_for_removal!(reason)
 
         DeleteRemoteResourceJob.perform_later(element)

@@ -34,7 +34,7 @@ module Nexo
     belongs_to :element, class_name: "Nexo::Element"
 
     enum :origin, internal: 0, external: 1
-    enum :nev_status, pending_sync: 0, synced: 1, ignored_in_conflict: 2, superseded: 3
+    enum :nev_status, pending_sync: 0, synced: 1, ignored_in_conflict: 2, superseded: 3, ignored_by_sync_direction: 4
 
     serialize :payload, coder: JSON
 

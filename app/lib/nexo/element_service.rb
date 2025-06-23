@@ -135,10 +135,13 @@ module Nexo
     private
 
     def _create_internal_version!
+      nev_status =
+        element.folder.sync_internal_changes? ? :pending_sync : :ignored_by_sync_direction
+
       _create_element_version!(
         origin: :internal,
         sequence: element.synchronizable.sequence,
-        nev_status: :pending_sync
+        nev_status:
       ).tap do |element_version|
         Nexo.logger.debug { "ElementVersion created" }
 
@@ -163,8 +166,13 @@ module Nexo
     end
 
     def _update_ne_status!
-      external_change = element.element_versions.where(origin: :external, nev_status: :pending_sync).any?
-      local_change = element.element_versions.where(origin: :internal, nev_status: :pending_sync).any?
+      external_change =
+        element.folder.sync_external_changes? &&
+          element.element_versions.where(origin: :external, nev_status: :pending_sync).any?
+
+      local_change =
+        element.folder.sync_internal_changes? &&
+          element.element_versions.where(origin: :internal, nev_status: :pending_sync).any?
 
       element.ne_status =
         if external_change && local_change

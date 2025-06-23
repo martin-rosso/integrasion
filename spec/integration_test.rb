@@ -69,6 +69,7 @@ def get_folder
   unless folder.present?
     folder = Nexo::Folder.create!(
       integration:,
+      sync_direction: :sync_bidirectional,
       nexo_protocol: :calendar,
       name: "Nexo Automated Test",
       description: "Automatically created calendar for Nexo Automated Test"

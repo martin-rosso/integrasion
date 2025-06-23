@@ -33,7 +33,11 @@ module Nexo
 
         element_version = save_element_version(response)
 
-        ImportRemoteElementVersion.new.perform(element_version)
+        if element.folder.sync_external_changes?
+          ImportRemoteElementVersion.new.perform(element_version)
+        else
+          Nexo.logger.info("Element version ignored_by_sync_direction")
+        end
       else
         Nexo.logger.debug { "No new version fetched from remote server" }
       end
@@ -42,12 +46,15 @@ module Nexo
     private
 
     def save_element_version(service_response)
+      nev_status =
+        element.folder.sync_external_changes? ? :pending_sync : :ignored_by_sync_direction
+
       ElementService.new(element:).create_element_version!(
         origin: :external,
         etag: service_response.etag,
         payload: service_response.payload,
         sequence: nil,
-        nev_status: :pending_sync
+        nev_status:
       )
     end
   end

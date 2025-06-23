@@ -56,6 +56,10 @@ module Nexo
         raise Errors::Error, "version superseded"
       end
 
+      unless element.folder.sync_internal_changes?
+        raise Errors::Error, "sync direction excludes internal changes"
+      end
+
       if element.synchronizable.blank?
         raise Errors::SynchronizableNotFound
       end

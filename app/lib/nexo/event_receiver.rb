@@ -21,6 +21,8 @@ module Nexo
     end
 
     def folder_changed(folder)
+      return unless folder.sync_internal_changes?
+
       if folder.discarded?
         raise "folder discarded"
       end
@@ -28,6 +30,8 @@ module Nexo
     end
 
     def folder_discarded(folder)
+      return unless folder.sync_internal_changes?
+
       FolderDestroyJob.perform_later(folder)
     end
 
