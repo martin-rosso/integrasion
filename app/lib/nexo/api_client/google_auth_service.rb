@@ -61,7 +61,7 @@ module Nexo
 
       authorizer.get_credentials(@integration, request).tap do |credentials|
         if credentials.nil? && request.present? && !request.session["code_verifier"].present?
-          Rails.logger.warn("Request has no code_verifier")
+          Nexo.logger.warn("Request has no code_verifier")
         end
       end
     rescue Signet::AuthorizationError

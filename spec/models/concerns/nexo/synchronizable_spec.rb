@@ -73,9 +73,9 @@ module Nexo
         end
 
         it do
-          allow(Rails.logger).to receive(:warn).and_call_original
+          allow(Nexo.logger).to receive(:warn).and_call_original
           event.increment_sequence!
-          expect(Rails.logger).to have_received(:warn).with(/sequence is nil/)
+          expect(Nexo.logger).to have_received(:warn).with(/sequence is nil/)
         end
       end
     end
