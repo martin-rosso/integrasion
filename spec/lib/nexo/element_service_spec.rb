@@ -61,8 +61,8 @@ module Nexo
             .and(change { event.reload.summary }.to("test-summary"))
             .and(change { event.reload.date_from }.to(Date.parse("2025-06-11")))
             .and(change { event.reload.date_to }.to(Date.parse("2025-06-11")))
-            .and(change { event.reload.time_from }.to(Time.parse("2000-01-01T10:00")))
-            .and(change { event.reload.time_to }.to(Time.parse("2000-01-01T14:30")))
+            .and(change { event.reload.time_from }.to(Time.zone.parse("2000-01-01T10:00")))
+            .and(change { event.reload.time_to }.to(Time.zone.parse("2000-01-01T14:30")))
         end
       end
     end
