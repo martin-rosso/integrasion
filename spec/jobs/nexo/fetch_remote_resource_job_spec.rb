@@ -21,10 +21,7 @@ module Nexo
 
     let!(:element) { create(:nexo_element, :synced) }
     let(:remote_service_mock) do
-      mock = instance_double(GoogleCalendarService)
-      allow(mock).to receive(:get_event).and_return(response)
-      allow(mock).to receive(:fields_from_version).and_return(fields)
-      mock
+      instance_double(GoogleCalendarService, get_event: response, fields_from_version: fields)
     end
     let(:fields) { { summary: "foo" } }
     let(:response) { instance_double(ApiResponse, etag: Time.current.to_f.to_s, payload: { "status" => "ok" }, id: "fooid") }

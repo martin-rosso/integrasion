@@ -22,7 +22,7 @@ module Nexo
 
     def incremental_sync
       FolderDownloadJob.perform_later(@folder, "incremental_sync")
-      
+
       redirect_to @folder, notice: "Enqueued incremental sync"
     end
   end
