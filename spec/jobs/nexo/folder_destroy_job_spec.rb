@@ -24,11 +24,12 @@ module Nexo
       expect(service_mock).to have_received(:remove_calendar).with(folder)
     end
 
-    it "when folder dont have external_identifier" do
+    it "when folder doesn't have external_identifier" do
       folder.update(external_identifier: nil)
-      allow(Rails.logger).to receive(:info).and_call_original
+
+      allow(ServiceBuilder).to receive(:instance)
       subject
-      expect(Rails.logger).to have_received(:info).with(/Folder doesn't have external_identifier/)
+      expect(ServiceBuilder).not_to have_received(:instance)
     end
   end
 end

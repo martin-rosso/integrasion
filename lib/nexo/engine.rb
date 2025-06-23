@@ -8,12 +8,14 @@ module Nexo
   end
 
   def self.logger
-    # Eventually "Nexo" tag could be removed, but the "tagged" call must be kept to
-    # ensure the logger is cloned and the log level can be changed
-    # without affecting the Rails logger
-    Rails.logger.tagged("Nexo").tap do |logger|
-      logger.level = ENV.fetch("NEXO_LOG_LEVEL", "debug")
-    end
+    @logger ||=
+      begin
+        nexo_logger = ActiveSupport::Logger.new(Rails.root.join("log/nexo-#{Rails.env}.log"))
+          .tap  { |logger| logger.formatter = ::Logger::Formatter.new }
+          .tap  { |logger| logger.level = ENV.fetch("NEXO_LOG_LEVEL", "debug") }
+
+        ActiveSupport::BroadcastLogger.new(nexo_logger, Rails.logger)
+      end
   end
 
   mattr_accessor :api_jobs_throttle

@@ -70,7 +70,7 @@ module Nexo
 
     def increment_sequence!
       if sequence.nil?
-        Rails.logger.warn("Synchronizable sequence is nil on increment_sequence!: #{self.to_gid}")
+        Nexo.logger.warn("Synchronizable sequence is nil on increment_sequence!: #{self.to_gid}")
       end
 
       # This operation is performed directly in the database without the need
