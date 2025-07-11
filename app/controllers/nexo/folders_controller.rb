@@ -20,6 +20,12 @@ module Nexo
       redirect_to @folder, notice: "Checking status"
     end
 
+    def sync
+      FolderDownloadJob.perform_later(@folder, "full_or_incremental_sync")
+
+      redirect_to @folder, notice: "Enqueued sync"
+    end
+
     def full_sync
       FolderDownloadJob.perform_later(@folder, "full_sync")
 

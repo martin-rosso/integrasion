@@ -6,8 +6,25 @@ module Nexo
     end
 
     def incremental_sync!(folder)
+      raise Nexo::Errors::Error, "no sync token" if folder.google_next_sync_token.blank?
+
       Nexo.logger.debug("performing incremental sync")
       sync!(folder, sync_token: folder.google_next_sync_token)
+    rescue Google::Apis::ClientError => e
+      if e.message.match /fullSyncRequired/
+        Nexo.logger.warn "Full sync required: #{e}"
+        full_sync!(folder)
+      else
+        raise
+      end
+    end
+
+    def full_or_incremental_sync!(folder)
+      if folder.google_next_sync_token.present?
+        incremental_sync!(folder)
+      else
+        full_sync!(folder)
+      end
     end
 
     private
@@ -22,6 +39,7 @@ module Nexo
           Nexo.logger.debug("Calling list_events with page_token")
         elsif sync_token.present?
           Nexo.logger.debug("Calling list_events with sync_token")
+          # raise Google::Apis::ClientError, "fullSyncRequired: Sync token is no longer valid..."
         else
           Nexo.logger.debug("Calling list_events without sync_token")
         end

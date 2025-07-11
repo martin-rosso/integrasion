@@ -2,11 +2,16 @@
 
 <%= link_to "Back to list", folders_path %>
 <br>
+<!--
 <%= form_with(url: full_sync_folder_path(@folder)) do |f| %>
   <%= f.submit "Full sync" %>
 <% end %>
 <%= form_with(url: incremental_sync_folder_path(@folder)) do |f| %>
   <%= f.submit "Incremental sync" %>
+<% end %>
+-->
+<%= form_with(url: sync_folder_path(@folder)) do |f| %>
+  <%= f.submit "Sync" %>
 <% end %>
 <%= form_with(url: check_status_folder_path(@folder)) do |f| %>
   <%= f.submit "Check status" %>

@@ -1,6 +1,7 @@
 Nexo::Engine.routes.draw do
   resources :folders do
     member do
+      post :sync
       post :full_sync
       post :incremental_sync
       post :check_status

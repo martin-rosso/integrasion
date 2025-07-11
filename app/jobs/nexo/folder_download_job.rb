@@ -5,6 +5,8 @@ module Nexo
         GoogleCalendarSyncService.new(folder.integration).full_sync!(folder)
       elsif type == "incremental_sync"
         GoogleCalendarSyncService.new(folder.integration).incremental_sync!(folder)
+      elsif type == "full_or_incremental_sync"
+        GoogleCalendarSyncService.new(folder.integration).full_or_incremental_sync!(folder)
       else
         raise "unknown sync type"
       end
