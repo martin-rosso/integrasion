@@ -53,7 +53,7 @@ module Nexo
     private
 
     def logger
-      logger = Nexo.logger.tagged("PolicyService")
+      logger = Nexo.logger
     end
   end
 end

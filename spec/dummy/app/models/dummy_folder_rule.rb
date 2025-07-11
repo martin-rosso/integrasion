@@ -5,7 +5,7 @@ class DummyFolderRule < ApplicationRecord
 
   def applies?(synchronizable)
     synchronizable.summary.match?(/#{search_regex}/).tap do |result|
-      Nexo.logger.tagged("DummyFolderRule").debug { "Matching result: #{result}" }
+      Nexo.logger.debug { "Matching result: #{result}" }
     end
   end
 
