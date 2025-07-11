@@ -97,19 +97,13 @@ module Nexo
         Nexo.logger.debug { "Remote updated at: #{remote_update}. Local updated at #{local_update}" }
         if remote_update > local_update
           Nexo.logger.debug { "Remote wins, ignoring local change" }
+          _update_status_on_conflict_with_winner!(external_change)
           ImportRemoteElementVersion.new.perform(external_change)
-          win_version = external_change
         else
           Nexo.logger.debug { "Local wins, discarding remote changes" }
+          _update_status_on_conflict_with_winner!(local_change)
           UpdateRemoteResourceJob.perform_later(local_change)
-          win_version = local_change
         end
-
-        element.element_versions.where(nev_status: :pending_sync)
-                        .where.not(id: win_version.id)
-                        .update_all(nev_status: :ignored_in_conflict)
-
-        _update_ne_status!
       end
     end
 
@@ -148,6 +142,14 @@ module Nexo
     end
 
     private
+
+    def _update_status_on_conflict_with_winner!(win_version)
+      element.element_versions.where(nev_status: :pending_sync)
+        .where.not(id: win_version.id)
+        .update_all(nev_status: :ignored_in_conflict)
+
+      _update_ne_status!
+    end
 
     def _create_internal_version!
       nev_status =
