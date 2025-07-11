@@ -23,8 +23,18 @@ module Nexo
       end
     end
 
-    def destroy_elements(synchronizable, reason)
-      synchronizable.nexo_elements.each do |element|
+    def destroy_elements(synchronizable, reason, exclude_elements: [])
+      Nexo.logger.debug("Destroying elements for synchronizable")
+
+      scope = synchronizable.nexo_elements
+
+      if exclude_elements.any?
+        Nexo.logger.debug("Excluding elements: #{exclude_elements}")
+
+        scope = scope.where.not(id: exclude_elements)
+      end
+
+      scope.each do |element|
         unless element.folder.sync_internal_changes?
           Nexo.logger.debug("Folder dont syncs internal changes, skipping")
           next
@@ -56,13 +66,13 @@ module Nexo
     end
 
     def sync_element(element)
-      if !element.policy_still_applies?
+      if element.policy_still_applies?
+        ElementService.new(element:).create_internal_version_if_none!
+      else
         Nexo.logger.debug("Flagging for removal and enqueuing DeleteRemoteResourceJob")
         ElementService.new(element:).flag_for_removal!(:no_longer_included_in_folder)
 
         DeleteRemoteResourceJob.perform_later(element)
-      else
-        ElementService.new(element:).create_internal_version_if_none!
       end
     end
 

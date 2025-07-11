@@ -29,12 +29,16 @@ module Nexo
     end
 
     def flag_for_removal!(removal_reason)
+      Nexo.logger.debug("Flagging an element for removal")
+
       # TODO!: the reason for this? just monitoring?
       element.update!(flagged_for_removal: true, removal_reason:)
     end
 
     # @raise ActiveRecord::RecordNotUnique
     def update_synchronizable!
+      Nexo.logger.debug("Updating synchronizable")
+
       element.with_lock do
         service = ServiceBuilder.instance.build_protocol_service(element_version.element.folder)
         fields = service.fields_from_version(element_version)
@@ -43,17 +47,28 @@ module Nexo
         synchronizable = element_version.element.synchronizable
         synchronizable.assign_fields!(fields)
 
-        # si esto se ejecuta en paralelo con SynchronizableChangedJob? (para otro
-        # element del mismo synchronizable) puede haber race conditions
-        synchronizable.increment_sequence!
-        synchronizable.reload
+        # synchronizable could have been destroyed
+        if synchronizable.persisted?
+          # si esto se ejecuta en paralelo con SynchronizableChangedJob? (para otro
+          # element del mismo synchronizable) puede haber race conditions
+          synchronizable.increment_sequence!
+          synchronizable.reload
 
-        ElementService.new(element_version:).update_element_version!(
-          sequence: synchronizable.sequence,
-          nev_status: :synced
-        )
+          ElementService.new(element_version:).update_element_version!(
+            sequence: synchronizable.sequence,
+            nev_status: :synced
+          )
 
-        SynchronizableChangedJob.perform_later(synchronizable)
+          SynchronizableChangedJob.perform_later(synchronizable, excluded_folders: [ element.folder.id ])
+        else
+          Nexo.logger.debug("Synchronizable destroyed. Removing other elements")
+          ElementService.new(element_version:).update_element_version!(
+            sequence: nil,
+            nev_status: :synced
+          )
+
+          FolderService.new.destroy_elements(synchronizable, :synchronizable_destroyed, exclude_elements: [ element.id ])
+        end
       end
     end
 
@@ -143,17 +158,19 @@ module Nexo
         sequence: element.synchronizable.sequence,
         nev_status:
       ).tap do |element_version|
-        Nexo.logger.debug { "ElementVersion created" }
+        Nexo.logger.debug("ElementVersion created")
 
         if element.pending_local_sync?
-          Nexo.logger.debug { "Enqueuing UpdateRemoteResourceJob" }
+          Nexo.logger.debug("Enqueuing UpdateRemoteResourceJob")
 
           UpdateRemoteResourceJob.perform_later(element_version)
         elsif element.conflicted?
-          Nexo.logger.info { "Element conflicted, so not enqueuing UpdateRemoteResourceJob" }
+          Nexo.logger.info("Element conflicted, so not enqueuing UpdateRemoteResourceJob")
+        elsif element.synced?
+          Nexo.logger.info("Element's ne_status is: #{element.ne_status}. No need to push any changes.")
         else
           # :nocov: borderline
-          Nexo.logger.warn { "Element status is: #{element.ne_status}. That's weird" }
+          Nexo.logger.info("Element's ne_status is: #{element.ne_status}. That's weird.")
           # :nocov:
         end
       end

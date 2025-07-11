@@ -12,15 +12,20 @@ class Event < ApplicationRecord
   end
 
   def assign_fields!(fields)
-    hsh = {
-      date_from: fields[:date_from],
-      time_from: fields[:time_from],
-      date_to: fields[:date_to],
-      time_to: fields[:time_to],
-      summary: fields[:summary],
-      description: fields[:description]
-    }
-    update!(hsh)
+    if fields[:status] == "cancelled"
+      Nexo.logger.debug("Event status is 'cancelled', destroying event")
+      destroy!
+    else
+      hsh = {
+        date_from: fields[:date_from],
+        time_from: fields[:time_from],
+        date_to: fields[:date_to],
+        time_to: fields[:time_to],
+        summary: fields[:summary],
+        description: fields[:description]
+      }
+      update!(hsh)
+    end
   end
 
   def discarded?

@@ -17,10 +17,13 @@ module Nexo
     # TODO: handle exceptions
 
     # @raise [ActiveRecord::PreparedStatementCacheExpired]
-    def perform(synchronizable)
+    def perform(synchronizable, excluded_folders: [])
       # Maybe restrict this query to a more specific scope
       scope = Folder.kept
-      Nexo.logger.debug { "Processing #{scope.count} folders" }
+      if excluded_folders.any?
+        scope = scope.where.not(id: excluded_folders)
+      end
+      Nexo.logger.debug("Processing #{scope.count} folders")
 
       # TODO: test
       GoodJob::Bulk.enqueue do

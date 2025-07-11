@@ -124,7 +124,13 @@ module Nexo
         time_from: parse_time(event.start),
         time_to: parse_time(event.end),
         summary: event.summary,
-        description: event.description
+        description: event.description,
+
+        # Posible status values:
+        # - confirmed
+        # - tentative
+        # - cancelled (deleted)
+        status: event.status
       }
     end
 
