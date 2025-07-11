@@ -2,15 +2,18 @@
 #
 # Table name: nexo_folders
 #
-#  id                  :bigint           not null, primary key
-#  integration_id      :bigint           not null
-#  nexo_protocol       :integer          not null
-#  external_identifier :string
-#  name                :string
-#  description         :string
-#  discarded_at        :datetime
-#  created_at          :datetime         not null
-#  updated_at          :datetime         not null
+#  id                     :bigint           not null, primary key
+#  integration_id         :bigint           not null
+#  nexo_protocol          :integer          not null
+#  external_identifier    :string
+#  name                   :string
+#  description            :string
+#  discarded_at           :datetime
+#  created_at             :datetime         not null
+#  updated_at             :datetime         not null
+#  google_next_sync_token :string
+#  sync_direction         :integer          not null
+#  nf_status              :integer          default(0), not null
 #
 module Nexo
   class Folder < ApplicationRecord

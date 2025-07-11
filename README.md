@@ -26,6 +26,16 @@ Configure good_job
     max_threads:
     queues:
 
+## Unhandled cases / TODO's
+
+- Restore cancelled/deleted Google Calendar events from Recycle bin, both locally and remotelly
+  deleted
+- Restore locally discarded Events. It creates a new Google Calendar event.
+- Import remote brand new Google Calendar events
+
+- Llevar mucho control de los jobs y las exceptions que puedan surgir como
+  ActiveRecord::PreparedStatementCacheExpired
+
 ## Contributing
 Contribution directions go here.
 

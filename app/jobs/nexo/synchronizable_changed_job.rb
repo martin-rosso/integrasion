@@ -16,6 +16,7 @@ module Nexo
     #
     # TODO: handle exceptions
 
+    # @raise [ActiveRecord::PreparedStatementCacheExpired]
     def perform(synchronizable)
       # Maybe restrict this query to a more specific scope
       scope = Folder.kept

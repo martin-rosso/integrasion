@@ -37,10 +37,20 @@ module Nexo
 
       # :nocov: borderline
       if element.synchronizable.blank?
+        # TODO!: this could be that an external element was restored. i.e.:
+        # google calendar event cancelled and restored.
+        # this should be handled in some way, maybe configurable per folder
+        # options are:
+        #   - ignore the element
+        #   - create synchronizable as if it were new
+        #   - discard/undiscard, for this the synchronizable should have been
+        #     deleted
         raise Errors::ImportRemoteVersionFailed, "synchronizable not found"
       end
 
       if element.discarded?
+        # TODO!: this could be that an external element was restored. i.e.:
+        #   Event excluded from folder and then restored from Google Calendar
         raise Errors::ImportRemoteVersionFailed, "element discarded"
       end
 
