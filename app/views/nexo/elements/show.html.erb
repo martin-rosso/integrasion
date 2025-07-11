@@ -13,26 +13,21 @@
 <%= form_with(url: modify_local_element_path(@element)) do |f| %>
   <%= f.submit "Modify" %>
 <% end %>
+
 <%= form_with(url: update_status_element_path(@element)) do |f| %>
   <%= f.submit "Update status" %>
 <% end %>
 <br>
 
+<h4>Element</h4>
+<pre>
+<%= JSON.pretty_generate @element.as_json %>
+</pre>
 
-
-<br><label>synchronizable_type:</label> <%= @element.synchronizable_type %>
-<br><label>synchronizable_id:</label> <%= @element.synchronizable_id %>
-
-<% @element.synchronizable.protocol_methods.each do |method| %>
-  <br><label><%= method %>:</label> <%= @element.synchronizable.send(method) %>
-<% end %>
-<br><label>synchronizable created_at:</label> <%= @element.synchronizable.created_at %>
-<br><label>synchronizable updated_at:</label> <%= @element.synchronizable.updated_at %>
-<br>
-
-<br><label>ne_status:</label> <%= @element.ne_status %>
-<br><label>updated_at:</label> <%= @element.updated_at %>
-<br><label>created_at:</label> <%= @element.created_at %>
+<h4><%= @element.synchronizable_type %></h4>
+<pre>
+<%= JSON.pretty_generate @element.synchronizable.as_json %>
+</pre>
 
 <h3>Versions</h3>
 <table>

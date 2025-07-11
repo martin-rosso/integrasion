@@ -22,7 +22,11 @@
 
   <body>
     <% flash.each do |flash_type, message| %>
-      <div>
+      <% if flash_type == "alert" %>
+        <div style="color: red">
+      <% else %>
+        <div style="color: blue">
+      <% end %>
         <%= flash_type %>:
         <%= message %>
       </div>
