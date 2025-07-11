@@ -178,6 +178,7 @@ ActiveRecord::Schema[7.2].define(version: 2025_06_23_132502) do
     t.datetime "updated_at", null: false
     t.string "google_next_sync_token"
     t.integer "sync_direction", null: false
+    t.integer "nf_status", default: 0, null: false
     t.index ["discarded_at"], name: "index_nexo_folders_on_discarded_at"
     t.index ["integration_id"], name: "index_nexo_folders_on_integration_id"
   end

@@ -5,6 +5,7 @@ Showing <%= @folders.count %> folders from a total of <%= Nexo::Folder.count %>
     <th></th>
     <th>User</th>
     <th>Name</th>
+    <th>Status</th>
     <th>Updated at</th>
     <th>Created at</th>
   </tr>
@@ -13,6 +14,7 @@ Showing <%= @folders.count %> folders from a total of <%= Nexo::Folder.count %>
       <td><%= link_to "Show", folder_path(folder) %></td>
       <td><%= folder.integration.user %></td>
       <td><%= folder.name %></td>
+      <td><%= folder.nf_status %></td>
       <td><%= folder.updated_at %></td>
       <td><%= folder.created_at %></td>
     </tr>

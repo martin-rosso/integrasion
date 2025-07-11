@@ -83,6 +83,13 @@ module Nexo
       end
     end
 
+    def get_calendar(folder)
+      validate_folder_state!(folder)
+
+      response = client.get_calendar(folder.external_identifier)
+      ApiResponse.new(payload: response.to_h, status: :ok, etag: response.etag, id: response.id)
+    end
+
     # Create a Google calendar
     def insert_calendar(folder)
       validate_folder_state!(folder, verify_external_identifier_presence: false)

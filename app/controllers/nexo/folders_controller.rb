@@ -14,6 +14,12 @@ module Nexo
     def show
     end
 
+    def check_status
+      FolderCheckStatusJob.perform_later(@folder)
+
+      redirect_to @folder, notice: "Checking status"
+    end
+
     def full_sync
       FolderDownloadJob.perform_later(@folder, "full_sync")
 

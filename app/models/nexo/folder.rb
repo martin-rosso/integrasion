@@ -22,6 +22,7 @@ module Nexo
 
     enum :nexo_protocol, calendar: 0, dummy_calendar: 1
     enum :sync_direction, sync_in_out: 0, sync_out_in: 1, sync_bidirectional: 2
+    enum :nf_status, initial: 0, ok: 1, not_found: 2
 
     def sync_external_changes?
       sync_out_in? || sync_bidirectional?

@@ -3,6 +3,7 @@ Nexo::Engine.routes.draw do
     member do
       post :full_sync
       post :incremental_sync
+      post :check_status
     end
   end
 

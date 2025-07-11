@@ -8,6 +8,9 @@
 <%= form_with(url: incremental_sync_folder_path(@folder)) do |f| %>
   <%= f.submit "Incremental sync" %>
 <% end %>
+<%= form_with(url: check_status_folder_path(@folder)) do |f| %>
+  <%= f.submit "Check status" %>
+<% end %>
 
 <pre>
 <%= JSON.pretty_generate @folder.as_json %>
