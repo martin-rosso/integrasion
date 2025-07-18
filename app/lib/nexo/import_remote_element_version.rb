@@ -1,14 +1,16 @@
 module Nexo
   class ImportRemoteElementVersion
     class VersionSuperseded < Errors::Error; end
+    class ImportRemoteVersionFailed < Errors::Error; end
 
-    # @raise [Nexo::Errors::ImportRemoteVersionFailed]
     def perform(element_version)
       validate_element_state!(element_version)
 
       ElementService.new(element_version:).update_synchronizable!
+    rescue ImportRemoteVersionFailed => e
+      Nexo.logger.warn(e.inspect)
     rescue VersionSuperseded
-      Nexo.logger.info { "ImportRemoteElementVersion: version superseded" }
+      Nexo.logger.info("ImportRemoteElementVersion: version superseded")
     end
 
     private
@@ -16,8 +18,8 @@ module Nexo
     def validate_element_state!(element_version)
       element = element_version.element
 
-      raise "element version must be external" if element_version.internal?
-      raise "etag must be present" if element_version.etag.blank?
+      raise Nexo::Errors::Error, "element version must be external" if element_version.internal?
+      raise Nexo::Errors::Error, "etag must be present" if element_version.etag.blank?
 
       # NOTE: this is actually very coupled to the way Google manages etag as a
       # sequential number, if a new protocol or service is added in the future
@@ -32,7 +34,7 @@ module Nexo
       end
 
       if element.conflicted?
-        raise Errors::ImportRemoteVersionFailed, "element conflicted"
+        raise ImportRemoteVersionFailed, "element conflicted"
       end
 
       # :nocov: borderline
@@ -45,21 +47,21 @@ module Nexo
         #   - create synchronizable as if it were new
         #   - discard/undiscard, for this the synchronizable should have been
         #     deleted
-        raise Errors::ImportRemoteVersionFailed, "synchronizable not found"
+        raise ImportRemoteVersionFailed, "synchronizable not found"
       end
 
       if element.discarded?
         # TODO!: this could be that an external element was restored. i.e.:
         #   Event excluded from folder and then restored from Google Calendar
-        raise Errors::ImportRemoteVersionFailed, "element discarded"
+        raise ImportRemoteVersionFailed, "element discarded"
       end
 
       if element.synchronizable.conflicted?
-        raise Errors::ImportRemoteVersionFailed, "synchronizable conflicted"
+        raise ImportRemoteVersionFailed, "synchronizable conflicted"
       end
 
       if element.synchronizable.sequence.nil?
-        raise Errors::ImportRemoteVersionFailed, "synchronizable sequence is null"
+        raise ImportRemoteVersionFailed, "synchronizable sequence is null"
       end
       # :nocov:
     end

@@ -54,11 +54,8 @@ module Nexo
           element = Element.where(uuid: response.id).first
           if element.present?
             Nexo.logger.debug("Element found for event")
-            begin
-              FetchRemoteResourceJob.new.handle_response(element, response)
-            rescue Nexo::Errors::ImportRemoteVersionFailed => e
-              Nexo.logger.error "#{e.class} - #{element.to_gid} - #{e}"
-            end
+
+            FetchRemoteResourceJob.new.handle_response(element, response)
           else
             Nexo.logger.info("Element not found for event. Skipping")
             # TODO!: handle no element. create a synchronizable

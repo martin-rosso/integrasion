@@ -4,7 +4,6 @@ module Nexo
 
     class SynchronizableInvalid < Error; end
     class ConflictingRemoteElementChange < Error; end
-    class ImportRemoteVersionFailed < Error; end
     class UpdateRemoteVersionFailed < Error; end
 
     # From here on, classes are subject to review
