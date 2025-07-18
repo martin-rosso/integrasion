@@ -35,6 +35,20 @@ module Nexo
           end
         end
       end
+
+      def create_from_payload!(folder, payload)
+        Nexo.logger.debug("Synchronizable#create_from_payload!")
+        service = Nexo::ServiceBuilder.instance.build_protocol_service(folder)
+        fields = service.fields_from_payload(payload)
+
+        synchronizable = new
+        attributes = synchronizable.translate_fields(fields)
+        synchronizable.assign_attributes(attributes)
+        synchronizable.sequence = payload["sequence"]
+        synchronizable.save!
+
+        synchronizable
+      end
     end
 
     def method_missing(method_name, *, &)
@@ -63,7 +77,11 @@ module Nexo
       raise "must be implemented in subclass"
     end
 
-    def assign_fields!(fields)
+    def update_from_fields!(fields)
+      raise "must be implemented in subclass"
+    end
+
+    def translate_fields(fields)
       raise "must be implemented in subclass"
     end
     # :nocov:

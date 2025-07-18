@@ -21,7 +21,7 @@ module Nexo
 
     let!(:element) { create(:nexo_element, :synced) }
     let(:remote_service_mock) do
-      instance_double(GoogleCalendarService, get_event: response, fields_from_version: fields)
+      instance_double(GoogleCalendarService, get_event: response, fields_from_payload: fields)
     end
     let(:fields) { { summary: "foo" } }
     let(:response) { instance_double(ApiResponse, etag: Time.current.to_f.to_s, payload: { "status" => "ok" }, id: "fooid") }
@@ -59,7 +59,7 @@ module Nexo
 
       it "not updates the synchronizable" do
         subject
-        expect(remote_service_mock).not_to have_received(:fields_from_version)
+        expect(remote_service_mock).not_to have_received(:fields_from_payload)
         expect(element.reload).to be_conflicted
       end
     end

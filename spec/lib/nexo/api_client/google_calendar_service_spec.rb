@@ -178,9 +178,9 @@ module Nexo
       end
     end
 
-    describe "#fields_from_version" do
+    describe "#fields_from_payload" do
       subject do
-        google_calendar_service.fields_from_version(element_version)
+        google_calendar_service.fields_from_payload(element_version.payload)
       end
 
       context "all-day event" do

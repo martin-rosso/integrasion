@@ -17,7 +17,11 @@
 module Nexo
   class Element < ApplicationRecord
     belongs_to :folder, class_name: "Nexo::Folder"
-    belongs_to :synchronizable, polymorphic: true
+
+    # when blank it's a brand new remote element that needs a synchronizable to
+    # be created
+    belongs_to :synchronizable, polymorphic: true, optional: true
+
     has_many :element_versions, dependent: :destroy, class_name: "Nexo::ElementVersion"
 
     after_initialize do

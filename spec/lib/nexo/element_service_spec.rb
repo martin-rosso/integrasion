@@ -42,6 +42,21 @@ module Nexo
 
       pending "when ActiveRecord::RecordNotUnique"
 
+      context "when importing a remote brand-new record" do
+        let(:element) { create(:nexo_element, synchronizable: nil) }
+        let(:element_version) { create(:nexo_element_version, :unsynced_external_change, element:) }
+
+        before do
+          DummyFolderRule.create!(folder: element.folder, sync_policy: :include, search_regex: ".*")
+        end
+
+        it do
+          expect { subject }.to change(Event, :count).by(1)
+          expect(element.reload.synchronizable).to be_a Event
+          expect(element.reload.synchronizable.summary).to be_present
+        end
+      end
+
       context "all-day" do
         let(:element_version) { create(:nexo_element_version, :all_day, :unsynced_external_change, element:) }
 

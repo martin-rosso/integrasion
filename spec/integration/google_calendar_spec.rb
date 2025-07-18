@@ -271,4 +271,17 @@ describe "Integration tests" do
 
     expect(element.element_versions.where(origin: :internal, nev_status: :ignored_in_conflict).any?).to be_truthy
   end
+
+  it "Remote brand-new events" do
+    folder = get_folder
+
+    print_wait <<~STR
+      Create an event on Google Calendar
+    STR
+
+    # Nexo::EventReceiver.new.synchronizable_updated(event)
+    Nexo::GoogleCalendarSyncService.new(folder.integration).full_or_incremental_sync!(folder)
+
+    expect(Event.count).to eq 2
+  end
 end

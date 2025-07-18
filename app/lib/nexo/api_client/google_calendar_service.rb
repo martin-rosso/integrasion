@@ -115,8 +115,8 @@ module Nexo
       ApiResponse.new(status: :ok)
     end
 
-    def fields_from_version(element_version)
-      event = validate_version!(element_version)
+    def fields_from_payload(payload)
+      event = validate_version!(payload)
 
       {
         date_from: parse_date(event.start),
@@ -136,8 +136,8 @@ module Nexo
 
     private
 
-    def validate_version!(element_version)
-      event_data = ActiveSupport::HashWithIndifferentAccess.new(element_version.payload)
+    def validate_version!(payload)
+      event_data = ActiveSupport::HashWithIndifferentAccess.new(payload)
       event = Google::Apis::CalendarV3::Event.new(**event_data)
 
       validate_datetime!(event.start)

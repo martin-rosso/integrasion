@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_06_23_132502) do
+ActiveRecord::Schema[7.2].define(version: 2025_07_18_012839) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -152,8 +152,8 @@ ActiveRecord::Schema[7.2].define(version: 2025_06_23_132502) do
 
   create_table "nexo_elements", force: :cascade do |t|
     t.bigint "folder_id", null: false
-    t.integer "synchronizable_id", null: false
-    t.string "synchronizable_type", null: false
+    t.integer "synchronizable_id"
+    t.string "synchronizable_type"
     t.string "uuid"
     t.boolean "flagged_for_removal", null: false
     t.integer "removal_reason"

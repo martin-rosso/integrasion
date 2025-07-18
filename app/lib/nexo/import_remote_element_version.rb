@@ -37,31 +37,33 @@ module Nexo
         raise ImportRemoteVersionFailed, "element conflicted"
       end
 
-      # :nocov: borderline
-      if element.synchronizable.blank?
-        # TODO!: this could be that an external element was restored. i.e.:
-        # google calendar event cancelled and restored.
-        # this should be handled in some way, maybe configurable per folder
-        # options are:
-        #   - ignore the element
-        #   - create synchronizable as if it were new
-        #   - discard/undiscard, for this the synchronizable should have been
-        #     deleted
-        raise ImportRemoteVersionFailed, "synchronizable not found"
-      end
+      # if element.synchronizable.blank?
+      #   # TODO!: this could be that an external element was restored. i.e.:
+      #   # google calendar event cancelled and restored.
+      #   # this should be handled in some way, maybe configurable per folder
+      #   # options are:
+      #   #   - ignore the element
+      #   #   - create synchronizable as if it were new
+      #   #   - discard/undiscard, for this the synchronizable should have been
+      #   #     deleted
+      #   raise ImportRemoteVersionFailed, "synchronizable not found"
+      # end
 
+      # :nocov: borderline
       if element.discarded?
         # TODO!: this could be that an external element was restored. i.e.:
         #   Event excluded from folder and then restored from Google Calendar
         raise ImportRemoteVersionFailed, "element discarded"
       end
 
-      if element.synchronizable.conflicted?
-        raise ImportRemoteVersionFailed, "synchronizable conflicted"
-      end
+      if element.synchronizable.present?
+        if element.synchronizable.conflicted?
+          raise ImportRemoteVersionFailed, "synchronizable conflicted"
+        end
 
-      if element.synchronizable.sequence.nil?
-        raise ImportRemoteVersionFailed, "synchronizable sequence is null"
+        if element.synchronizable.sequence.nil?
+          raise ImportRemoteVersionFailed, "synchronizable sequence is null"
+        end
       end
       # :nocov:
     end

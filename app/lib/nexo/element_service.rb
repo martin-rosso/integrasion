@@ -37,37 +37,55 @@ module Nexo
 
     # @raise ActiveRecord::RecordNotUnique
     def update_synchronizable!
-      Nexo.logger.debug("Updating synchronizable")
+      Nexo.logger.debug("update_synchronizable!")
 
       element.with_lock do
         service = ServiceBuilder.instance.build_protocol_service(element_version.element.folder)
-        fields = service.fields_from_version(element_version)
+        fields = service.fields_from_payload(element_version.payload)
 
         # and set the Synchronizable fields according to the Folder#nexo_protocol
         synchronizable = element_version.element.synchronizable
-        synchronizable.assign_fields!(fields)
+        if synchronizable.present?
+          synchronizable.update_from_fields!(fields)
 
-        # synchronizable could have been destroyed
-        if synchronizable.persisted?
-          # si esto se ejecuta en paralelo con SynchronizableChangedJob? (para otro
-          # element del mismo synchronizable) puede haber race conditions
-          synchronizable.increment_sequence!
-          synchronizable.reload
+          # synchronizable could have been destroyed
+          if synchronizable.persisted?
+            # si esto se ejecuta en paralelo con SynchronizableChangedJob? (para otro
+            # element del mismo synchronizable) puede haber race conditions
+            synchronizable.increment_sequence!
+            synchronizable.reload
 
-          ElementService.new(element_version:).update_element_version!(
-            sequence: synchronizable.sequence,
-            nev_status: :synced
-          )
+            ElementService.new(element_version:).update_element_version!(
+              sequence: synchronizable.sequence,
+              nev_status: :synced
+            )
 
-          SynchronizableChangedJob.perform_later(synchronizable, excluded_folders: [ element.folder.id ])
+            SynchronizableChangedJob.perform_later(synchronizable, excluded_folders: [ element.folder.id ])
+          else
+            Nexo.logger.debug("Synchronizable destroyed. Removing other elements")
+            ElementService.new(element_version:).update_element_version!(
+              sequence: nil,
+              nev_status: :synced
+            )
+
+            FolderService.new.destroy_elements(
+              synchronizable, :synchronizable_destroyed, exclude_elements: [ element.id ])
+          end
         else
-          Nexo.logger.debug("Synchronizable destroyed. Removing other elements")
-          ElementService.new(element_version:).update_element_version!(
-            sequence: nil,
-            nev_status: :synced
-          )
-
-          FolderService.new.destroy_elements(synchronizable, :synchronizable_destroyed, exclude_elements: [ element.id ])
+          Nexo.logger.info("Synchronizable not found")
+          policies = PolicyService.instance.policies_for(element.folder)
+          importer_rule = policies.select { |p| p.import_payload?(element_version.payload) }.first
+          if importer_rule.present?
+            Nexo.logger.debug("Found an importer rule")
+            synchronizable = importer_rule.create_synchronizable_from_payload!(element_version.payload)
+            ElementService.new(element:).update_element!(synchronizable:)
+            ElementService.new(element_version:).update_element_version!(
+              nev_status: :synced,
+              sequence: synchronizable.sequence
+            )
+          else
+            Nexo.logger.info("No importer rule found for event. Skipping")
+          end
         end
       end
     end
@@ -126,6 +144,14 @@ module Nexo
 
         _create_internal_version!
       end
+    end
+
+    def create_element_for_remote_resource!(folder, response)
+      Element.create!(
+        folder:,
+        uuid: response.id,
+        ne_status: :pending_external_sync
+      )
     end
 
     def create_element_for!(folder, synchronizable)

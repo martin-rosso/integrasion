@@ -11,21 +11,25 @@ class Event < ApplicationRecord
     end
   end
 
-  def assign_fields!(fields)
+  def update_from_fields!(fields)
     if fields[:status] == "cancelled"
       Nexo.logger.debug("Event status is 'cancelled', destroying event")
       destroy!
     else
-      hsh = {
-        date_from: fields[:date_from],
-        time_from: fields[:time_from],
-        date_to: fields[:date_to],
-        time_to: fields[:time_to],
-        summary: fields[:summary],
-        description: fields[:description]
-      }
+      hsh = translate_fields(fields)
       update!(hsh)
     end
+  end
+
+  def translate_fields(fields)
+    {
+      date_from: fields[:date_from],
+      time_from: fields[:time_from],
+      date_to: fields[:date_to],
+      time_to: fields[:time_to],
+      summary: fields[:summary],
+      description: fields[:description]
+    }
   end
 
   def discarded?

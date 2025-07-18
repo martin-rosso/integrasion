@@ -57,8 +57,10 @@ module Nexo
 
             FetchRemoteResourceJob.new.handle_response(element, response)
           else
-            Nexo.logger.info("Element not found for event. Skipping")
-            # TODO!: handle no element. create a synchronizable
+            element = ElementService.new.create_element_for_remote_resource!(folder, response)
+
+            # FIXME: rename handle_response
+            FetchRemoteResourceJob.new.handle_response(element, response)
           end
         end
 
