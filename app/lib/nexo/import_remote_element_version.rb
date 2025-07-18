@@ -21,6 +21,10 @@ module Nexo
       raise Nexo::Errors::Error, "element version must be external" if element_version.internal?
       raise Nexo::Errors::Error, "etag must be present" if element_version.etag.blank?
 
+      unless element_version.nev_status == "pending_sync"
+        raise Nexo::Errors::Error, "nev_status invalid, should be pending_sync"
+      end
+
       # NOTE: this is actually very coupled to the way Google manages etag as a
       # sequential number, if a new protocol or service is added in the future
       # and it doesnt manage it that way, it would have to be delegated to the
