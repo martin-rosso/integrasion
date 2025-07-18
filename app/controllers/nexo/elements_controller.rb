@@ -6,9 +6,14 @@ module Nexo
     end
 
     def index
-      page = params[:page].to_i || 0
-      page_size = 100
-      @elements = Element.includes(:synchronizable).offset(page * page_size).limit(page_size).order(id: :desc)
+      @elements =
+        Element.includes(:synchronizable).order(id: :desc)
+               .page(params[:page]).per(params[:page_size] || 10)
+
+      if params[:not_synced]
+        @elements = @elements.where.not(ne_status: :synced)
+      end
+      I18n.locale = :en
     end
 
     def show

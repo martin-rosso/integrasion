@@ -1,5 +1,6 @@
+<%= link_to "All", "?" %>
+<%= link_to "Not synced", "?not_synced=1" %>
 <h1>Elements</h1>
-Showing <%= @elements.count %> elements from a total of <%= Nexo::Element.count %>
 <table>
   <tr>
     <th></th>
@@ -22,3 +23,9 @@ Showing <%= @elements.count %> elements from a total of <%= Nexo::Element.count 
     </tr>
   <% end %>
 </table>
+
+<div class="paginator">
+  <%= page_entries_info @elements %>
+  <%= paginate @elements %>
+</div>
+
