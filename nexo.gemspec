@@ -25,4 +25,5 @@ Gem::Specification.new do |spec|
   spec.add_dependency "google-apis-calendar_v3", "~> 0.46.0"
   spec.add_dependency "google-apis-oauth2_v2", "~> 0.19.0"
   spec.add_dependency "googleauth", "~> 1.14"
+  spec.add_dependency "kaminari", "~> 1.2"
 end

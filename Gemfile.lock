@@ -5,6 +5,7 @@ PATH
       google-apis-calendar_v3 (~> 0.46.0)
       google-apis-oauth2_v2 (~> 0.19.0)
       googleauth (~> 1.14)
+      kaminari (~> 1.2)
       rails (>= 7.1)
 
 GEM
@@ -408,7 +409,6 @@ DEPENDENCIES
   factory_bot_rails (~> 6.4.3)
   faker (~> 3.4)
   good_job (~> 4.10)
-  kaminari
   nexo!
   pg (~> 1.5)
   puma
