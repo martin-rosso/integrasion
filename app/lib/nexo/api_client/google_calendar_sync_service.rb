@@ -59,7 +59,7 @@ module Nexo
           else
             element = ElementService.new.create_element_for_remote_resource!(folder, response)
 
-            # FIXME: rename handle_response
+            # TODO!: rename handle_response
             FetchRemoteResourceJob.new.handle_response(element, response)
           end
         end

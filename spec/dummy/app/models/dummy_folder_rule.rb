@@ -25,12 +25,12 @@ class DummyFolderRule < ApplicationRecord
     [ Event.all ]
   end
 
-  # FIXME: definir la interfaz y comportamiento esperado para este método
+  # Determines if a remote payload (brand-new resource) should be imported as a
+  # new synchronizable
   def import_payload?(payload)
     true
   end
 
-  # FIXME: definir la interfaz y comportamiento esperado para este método
   def create_synchronizable_from_payload!(payload)
     Event.create_from_payload!(folder, payload)
   end
