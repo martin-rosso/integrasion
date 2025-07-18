@@ -8,7 +8,7 @@ module Nexo
       service: "google",
       secret: JSON.parse(ENV.fetch('SEED_GOOGLE_APIS_CLIENT_SECRET'))
     )
-    user = User.first
+    user = User.first || FactoryBot.create(:user)
     integration = Nexo::Integration.create!(
       user:,
       client:,
@@ -21,8 +21,9 @@ module Nexo
         integration:,
         secret: ENV.fetch('SEED_GOOGLE_APIS_TOKEN'),
         nt_status: :active,
-        environment: "development"
+        environment: Rails.env
       )
+      puts "WARN: token not valid" unless integration.token?
     end
   end
 end
