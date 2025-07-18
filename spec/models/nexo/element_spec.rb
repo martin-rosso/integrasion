@@ -4,8 +4,8 @@
 #
 #  id                  :bigint           not null, primary key
 #  folder_id           :bigint           not null
-#  synchronizable_id   :integer          not null
-#  synchronizable_type :string           not null
+#  synchronizable_id   :integer
+#  synchronizable_type :string
 #  uuid                :string
 #  flagged_for_removal :boolean          not null
 #  removal_reason      :integer

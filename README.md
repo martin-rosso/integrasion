@@ -33,6 +33,10 @@ Configure good_job
 - Restore locally discarded Events. It creates a new Google Calendar event.
 - Import remote brand new Google Calendar events
 
+- Recurring google events
+
+- IMPORTANTE: loggear las exceptions de los jobs
+
 - Llevar mucho control de los jobs y las exceptions que puedan surgir como
   ActiveRecord::PreparedStatementCacheExpired
 

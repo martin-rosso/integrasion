@@ -13,7 +13,7 @@
 #  updated_at             :datetime         not null
 #  google_next_sync_token :string
 #  sync_direction         :integer          not null
-#  nf_status              :integer          default(0), not null
+#  nf_status              :integer          default("initial"), not null
 #
 module Nexo
   class Folder < ApplicationRecord
