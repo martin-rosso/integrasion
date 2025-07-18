@@ -34,8 +34,9 @@
   <tr>
     <th></th>
     <th>Origin</th>
-    <th>Status</th>
+    <th>nev_status</th>
     <th>Sequence</th>
+    <th>Payload status</th>
     <th>ETag</th>
     <th>Created at</th>
     <th>Updated at</th>
@@ -46,6 +47,7 @@
       <td><%= version.origin %></td>
       <td><%= version.nev_status %></td>
       <td><%= version.sequence %></td>
+      <td><%= version.payload["status"] %></td>
       <td><%= version.etag %></td>
       <td><%= version.created_at %></td>
       <td><%= version.updated_at %></td>

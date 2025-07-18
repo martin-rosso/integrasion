@@ -1,6 +1,6 @@
 # :nocov: TODO
 module Nexo
-  class ElementsController < ApplicationController
+  class ElementsController < NexoController
     before_action except: :index do
       @element = Element.find(params[:id])
     end
@@ -12,6 +12,9 @@ module Nexo
 
       if params[:not_synced]
         @elements = @elements.where.not(ne_status: :synced)
+      end
+      if params[:without_synchronizable]
+        @elements = @elements.where(synchronizable_id: nil)
       end
       I18n.locale = :en
     end

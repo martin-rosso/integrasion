@@ -28,10 +28,7 @@ Configure good_job
 
 ## Unhandled cases / TODO's
 
-- Restore cancelled/deleted Google Calendar events from Recycle bin, both locally and remotelly
-  deleted
-- Restore locally discarded Events. It creates a new Google Calendar event.
-- Import remote brand new Google Calendar events
+- Restore locally discarded Events. It creates a new Google Calendar event?
 
 - Recurring google events
 

@@ -1,6 +1,6 @@
 # :nocov: TODO
 module Nexo
-  class ElementVersionsController < ApplicationController
+  class ElementVersionsController < NexoController
     def show
       @element_version = ElementVersion.find(params[:id])
     end

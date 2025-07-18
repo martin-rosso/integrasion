@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= content_for(:title) || "Nexo" %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= yield :head %>
+
+    <style>
+      table th {
+        font-weight: bold;
+      }
+      table th, table td {
+        border: 1px solid lightgrey;
+        padding: 0.4em;
+      }
+    </style>
+  </head>
+
+  <body>
+    <h1><%= link_to "NEXO", root_path %></h1>
+    <% flash.each do |flash_type, message| %>
+      <% if flash_type == "alert" %>
+        <div style="color: red">
+      <% else %>
+        <div style="color: blue">
+      <% end %>
+        <%= flash_type %>:
+        <%= message %>
+      </div>
+    <% end %>
+    <%= link_to "Folders", folders_path %>
+    <%= link_to "Elements", elements_path %>
+    |
+    <%= link_to "Home", main_app.root_path %>
+    <hr>
+    <%= yield %>
+  </body>
+</html>

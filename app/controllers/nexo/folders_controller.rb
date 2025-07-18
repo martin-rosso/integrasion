@@ -1,6 +1,6 @@
 # :nocov: TODO
 module Nexo
-  class FoldersController < ApplicationController
+  class FoldersController < NexoController
     before_action except: :index do
       @folder = Folder.find(params[:id])
     end
