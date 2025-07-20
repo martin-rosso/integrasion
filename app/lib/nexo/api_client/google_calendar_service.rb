@@ -53,7 +53,7 @@ module Nexo
       # sidebranch
       # TODO!: validate uuid presence
 
-      # TODO: try with cancelled
+      # TODO: try with cancelled / maybe its the same
       client.delete_event(element.folder.external_identifier, element.uuid, options: ifmatch_options(element))
       ApiResponse.new(payload: nil, status: :ok, etag: nil)
     rescue Google::Apis::ClientError => e
@@ -211,6 +211,7 @@ module Nexo
         summary: calendar_event.summary,
         description: calendar_event.description,
         transparency: calendar_event.transparency,
+        status: calendar_event.nce_status,
         # sequence: calendar_event.sequence
       )
 

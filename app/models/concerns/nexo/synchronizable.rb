@@ -8,6 +8,10 @@ module Nexo
       #   inserta en un google calendar y luego se elimina, luego ya no se
       #   puede volver a insertar con el mismo uuid, sería mejor que el id se
       #   genere automáticamente por google y guardarlo en Element
+      #
+      # sequence
+      #   autoincremental integer, starting at 0. its recommended that
+      #   the attribute is always initialized with 0 value on creation
       %i[
         sequence
       ]
@@ -42,9 +46,8 @@ module Nexo
         fields = service.fields_from_payload(payload)
 
         synchronizable = new
-        attributes = synchronizable.translate_fields(fields)
+        attributes = synchronizable.translate_fields(fields, for_create: true, folder:)
         synchronizable.assign_attributes(attributes)
-        synchronizable.sequence = payload["sequence"]
         synchronizable.save!
 
         synchronizable
@@ -81,7 +84,7 @@ module Nexo
       raise "must be implemented in subclass"
     end
 
-    def translate_fields(fields)
+    def translate_fields(fields, for_create: false, folder: nil)
       raise "must be implemented in subclass"
     end
     # :nocov:

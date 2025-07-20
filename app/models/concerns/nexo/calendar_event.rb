@@ -4,6 +4,11 @@ module Nexo
 
     extend ActiveSupport::Concern
 
+    # nce_status (Nexo Calendar Event Status)
+    #
+    # - confirmed
+    # - tentative (unused)
+    # - cancelled (deleted)
     define_protocol(:nexo_calendar_event, %i[
       date_from
       date_to
@@ -11,6 +16,7 @@ module Nexo
       time_to
       summary
       description
+      nce_status
     ])
 
     def change_is_significative_to_sequence?

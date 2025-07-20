@@ -21,7 +21,11 @@ class Event < ApplicationRecord
     end
   end
 
-  def translate_fields(fields)
+  def nce_status
+    discarded? ? "cancelled" : "confirmed"
+  end
+
+  def translate_fields(fields, for_create: false, folder: nil)
     {
       date_from: fields[:date_from],
       time_from: fields[:time_from],
