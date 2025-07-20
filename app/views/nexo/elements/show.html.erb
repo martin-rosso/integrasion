@@ -17,6 +17,10 @@
 <%= form_with(url: update_status_element_path(@element)) do |f| %>
   <%= f.submit "Update status" %>
 <% end %>
+
+<%= form_with(url: modify_element_path(@element)) do |f| %>
+  <%= f.button(:operation, value: "delete") { "Delete" } %>
+<% end %>
 <br>
 
 <h4>Element</h4>
@@ -47,7 +51,7 @@
       <td><%= version.origin %></td>
       <td><%= version.nev_status %></td>
       <td><%= version.sequence %></td>
-      <td><%= version.payload["status"] %></td>
+      <td><%= version.remote_status %></td>
       <td><%= version.etag %></td>
       <td><%= version.created_at %></td>
       <td><%= version.updated_at %></td>

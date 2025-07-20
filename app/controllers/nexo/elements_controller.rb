@@ -42,8 +42,6 @@ module Nexo
       EventReceiver.new.synchronizable_updated(event)
 
       redirect_to @element, notice: "Modified"
-    rescue StandardError => e
-      redirect_to @element, alert: e.message
     end
 
     def fetch_remote
@@ -56,8 +54,16 @@ module Nexo
       ElementService.new(element: @element).resolve_conflict!
 
       redirect_to @element, notice: "Conflict solved"
-    rescue StandardError => e
-      redirect_to @element, alert: e.message
+    end
+
+    def modify
+      case params[:operation]
+      when "delete"
+        DeleteRemoteResourceJob.perform_later(@element)
+        redirect_to @element, notice: "Enqueued DeleteRemoteResourceJob"
+      else
+        redirect_to @element, alert: "Unknown action"
+      end
     end
   end
 end

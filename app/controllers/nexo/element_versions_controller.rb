@@ -20,8 +20,6 @@ module Nexo
       end
 
       redirect_to @element_version, notice:
-    rescue StandardError => e
-      redirect_to @element_version, alert: e.message
     end
   end
 end

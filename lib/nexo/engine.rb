@@ -20,6 +20,9 @@ module Nexo
   end
 
   mattr_accessor :api_jobs_throttle
+  mattr_accessor :admin_controller_parent_class
+
+  self.admin_controller_parent_class = ActionController::Base
 
   # @!visibility private
   class Engine < ::Rails::Engine

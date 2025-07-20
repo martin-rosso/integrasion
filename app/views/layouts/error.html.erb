@@ -1,0 +1,8 @@
+<h1>ERROR</h1>
+
+<% if @exception.present? %>
+  <h4><%= @exception.message %></h4>
+   <pre>
+  <%= JSON.pretty_generate @exception.backtrace %>
+   </pre>
+<% end %>

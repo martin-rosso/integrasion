@@ -44,5 +44,9 @@ module Nexo
     serialize :payload, coder: JSON
 
     validates :origin, presence: true
+
+    def remote_status
+      payload["status"] if payload.is_a?(Hash)
+    end
   end
 end

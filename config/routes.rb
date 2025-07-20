@@ -14,6 +14,7 @@ Nexo::Engine.routes.draw do
       post :resolve_conflict
       post :modify_local
       post :update_status
+      post :modify
     end
   end
 
