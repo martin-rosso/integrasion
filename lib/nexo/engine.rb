@@ -1,6 +1,7 @@
 require "googleauth"
 require "google-apis-oauth2_v2"
 require "google-apis-calendar_v3"
+require "kaminari"
 
 module Nexo
   def self.folder_rules
