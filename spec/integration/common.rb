@@ -3,9 +3,7 @@ def print_wait(string)
   puts string
   puts "-"
   puts "Then press Enter to continue"
-  io = IO.new(IO.sysopen(`tty`.chomp("\n"), 'w+'))
-  # byebug
-  io.gets
+  IO.new(IO.sysopen(`tty`.chomp("\n"), 'w+')).gets
 end
 
 def create_events(event_count, with_time: false, name: "Test event")
@@ -32,42 +30,6 @@ def create_events(event_count, with_time: false, name: "Test event")
   end
 end
 
-def get_folder(external_identifier: nil)
-  folder = Nexo::Folder.kept.first
-  Nexo.logger.info("Folder found: #{folder}") if folder.present?
-
-  unless folder.present?
-    integration = Nexo::Integration.first
-    if external_identifier.present?
-      folder = Nexo::Folder.create!(
-        integration:,
-        sync_direction: :sync_bidirectional,
-        external_identifier:,
-        nexo_protocol: :calendar,
-        name: "Nexo Integration Test",
-        description: "Automatically created calendar for Nexo Automated Test"
-      )
-      Nexo.logger.info("Created folder WITH EXTERNAL ID: #{folder}")
-      DummyFolderRule.create!(folder:, sync_policy: :include, search_regex: ".*")
-    else
-      folder = Nexo::Folder.create!(
-        integration:,
-        sync_direction: :sync_bidirectional,
-        external_identifier:,
-        nexo_protocol: :calendar,
-        name: "Nexo Integration Test",
-        description: "Automatically created calendar for Nexo Automated Test"
-      )
-      DummyFolderRule.create!(folder:, sync_policy: :include, search_regex: ".*")
-      Nexo.logger.info("Created folder: #{folder}")
-      Nexo::EventReceiver.new.folder_changed(folder)
-      sleep 3
-    end
-  end
-
-  folder
-end
-
 def build_client(folder)
   service = Nexo::ServiceBuilder.instance.build_protocol_service(folder)
   service.send(:client)
@@ -76,17 +38,6 @@ end
 def get_event(element)
   client = build_client(element.folder)
   client.get_event(element.folder.external_identifier, element.uuid)
-end
-
-def exec_test(test)
-  name = test[:name]
-  "Starting test: #{name}".tap {  Nexo.logger.info(_1); puts _1 }
-  begin
-    test[:block].call
-  ensure
-    clear_remote_events
-    puts "Events cleared"
-  end
 end
 
 def destroy_elements
@@ -132,7 +83,8 @@ end
 
 def clear_remote_events
   Nexo.logger.info "Clearing remote events"
-  folder = get_folder
+  folder = Nexo::Folder.first
+  return unless folder.present?
   service = Nexo::ServiceBuilder.instance.build_protocol_service(folder)
   client = service.send(:client)
   cid = folder.external_identifier

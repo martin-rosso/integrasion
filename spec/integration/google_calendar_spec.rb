@@ -14,25 +14,41 @@ describe "Integration tests" do
 
   before do |example|
     load File.expand_path("../../db/seeds.rb", Rails.root)
-
-    get_folder(external_identifier: ENV.fetch("FOLDER_EXTERNAL_ID"))
-    # get_folder
-
     puts "*************************************"
     puts "Running test: #{example.description}"
   end
 
+  let!(:folder) do
+    aux = Nexo::Folder.create!(
+      integration: Nexo::Integration.first,
+      sync_direction: :sync_bidirectional,
+      external_identifier:,
+      nexo_protocol: :calendar,
+      name: "Nexo Integration Test",
+      description: "Automatically created calendar for Nexo Automated Test"
+    )
+    DummyFolderRule.create!(folder: aux, sync_policy: :include, search_regex: ".*")
+    aux
+  end
+
+  let(:external_identifier) { ENV.fetch("FOLDER_EXTERNAL_ID") }
+
   after do
-    # clear_all
     clear_remote_events
   end
 
-  xit "create the folder and get its external_identifier for later tests" do
-    ret = get_folder
-    sleep 2
-    ret.reload
-    id = ret.external_identifier
-    puts "FOLDER_EXTERNAL_ID=#{id}"
+  if ENV.fetch("CREATE_FOLDER", false)
+    context "create folder" do
+      let(:external_identifier) { nil }
+
+      it "create the folder and get its external_identifier for later tests" do
+        folder
+        Nexo::EventReceiver.new.folder_changed(folder)
+        sleep 3
+        id = folder.reload.external_identifier
+        puts "FOLDER_EXTERNAL_ID=#{id}"
+      end
+    end
   end
 
   it "The event with time is blocking/busy. The all-day event, non-blocking/free" do
@@ -43,7 +59,6 @@ describe "Integration tests" do
   end
 
   it "Update to event summary" do
-    folder = get_folder
     event = create_events(1, with_time: false, name: "To be updated").first
 
     print_wait "Check the calendar event is created with name: 'To be updated'"
@@ -55,7 +70,6 @@ describe "Integration tests" do
   end
 
   it "Update to conflicted event fails" do
-    folder = get_folder
     event = create_events(1, with_time: false, name: "Modify this").first
 
     print_wait <<~STR
@@ -72,7 +86,6 @@ describe "Integration tests" do
   end
 
   it "Delete to conflicted event fails" do
-    folder = get_folder
     event = create_events(1, with_time: false, name: "Modify this, also").first
 
     print_wait <<~STR
@@ -90,7 +103,6 @@ describe "Integration tests" do
   end
 
   it "Remote update doesn't change the sequence" do
-    folder = get_folder
     event = create_events(1, with_time: false, name: "Change the SUMMARY of this").first
 
     element = event.nexo_elements.first
@@ -111,7 +123,6 @@ describe "Integration tests" do
   end
 
   it "Remote update does change the sequence" do
-    folder = get_folder
     event = create_events(1, with_time: false, name: "Change the DATE of this").first
 
     element = event.nexo_elements.first
@@ -133,7 +144,6 @@ describe "Integration tests" do
   end
 
   it "if we send dont send the secuence, it gets updated by google" do
-    folder = get_folder
     event = create_events(1, with_time: false, name: "To be updated without sequence").first
 
     # print_wait "Check the calendar event is created with name: 'To be updated without sequence'"
@@ -151,7 +161,6 @@ describe "Integration tests" do
   end
 
   it "if we send a fixed sequence it gets accepted, and an invalid one gets rejected" do
-    folder = get_folder
     event = create_events(1, with_time: false, name: "To be updated without sequence").first
 
     event.summary = "One week before"
@@ -176,7 +185,6 @@ describe "Integration tests" do
   end
 
   it "if we send the same sequence with a date change the sequence is incremented" do
-    folder = get_folder
     event = create_events(1, with_time: false, name: "To be updated without sequence").first
 
     event.summary = "One week before"
@@ -193,7 +201,6 @@ describe "Integration tests" do
   end
 
   it "Successful bidirectional sync" do
-    folder = get_folder
     event = create_events(1, with_time: false, name: "Bidirectional sync").first
 
     print_wait <<~STR
@@ -216,7 +223,6 @@ describe "Integration tests" do
   end
 
   it "Conflicting bidirectional sync. Local wins" do
-    folder = get_folder
     event = create_events(1, with_time: false, name: "Bidirectional sync").first
 
     print_wait <<~STR
@@ -245,7 +251,6 @@ describe "Integration tests" do
   end
 
   it "Conflicting bidirectional sync. Remote wins" do
-    folder = get_folder
     event = create_events(1, with_time: false, name: "Bidirectional sync").first
 
     print_wait <<~STR
@@ -272,16 +277,21 @@ describe "Integration tests" do
     expect(element.element_versions.where(origin: :internal, nev_status: :ignored_in_conflict).any?).to be_truthy
   end
 
-  it "Remote brand-new events" do
-    folder = get_folder
-
-    print_wait <<~STR
-      Create an event on Google Calendar
-    STR
-
-    # Nexo::EventReceiver.new.synchronizable_updated(event)
+  it "Sync: cancelled events" do
+    event = create_events(1, with_time: false, name: "To be deleted").first
     Nexo::GoogleCalendarSyncService.new(folder.integration).full_or_incremental_sync!(folder)
 
-    expect(Event.count).to eq 2
+    sleep 1
+
+    event.destroy
+    Nexo::EventReceiver.new.synchronizable_destroyed(event)
+
+    sleep 1
+
+    Nexo::GoogleCalendarSyncService.new(folder.integration).full_or_incremental_sync!(folder)
+
+    expect(Nexo::Element.count).to eq 1
+    expect(Nexo::Element.first.last_remote_version.remote_status).to eq "cancelled"
+    expect(Nexo::ElementVersion.count).to eq 2
   end
 end
