@@ -39,7 +39,8 @@ module Nexo
       synced: 1,
       ignored_in_conflict: 2,
       superseded: 3,
-      ignored_by_sync_direction: 4
+      ignored_by_sync_direction: 4,
+      ignored_by_deletion: 5
 
     serialize :payload, coder: JSON
 

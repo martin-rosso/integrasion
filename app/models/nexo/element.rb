@@ -32,7 +32,13 @@ module Nexo
     scope :kept, -> { where(discarded_at: nil) }
 
     enum :removal_reason, no_longer_included_in_folder: 0, synchronizable_destroyed: 1
-    enum :ne_status, synced: 0, pending_external_sync: 1, pending_local_sync: 2, conflicted: 3
+
+    enum :ne_status,
+      synced: 0,
+      pending_external_sync: 1,
+      pending_local_sync: 2,
+      conflicted: 3,
+      pending_remote_delete: 4
 
     scope :conflicted, -> { where(ne_status: :conflicted) }
 

@@ -26,13 +26,19 @@ module Nexo
 
     def discard!
       element.update!(discarded_at: Time.current)
+      _update_ne_status!
     end
 
+    # The reason of `flagged_for_removal` is that there is a time gap between
+    # the the user action of removing the element and the actual API call that
+    # deletes the remote element. At some point is necesary to know if the
+    # element is being deleted, like when fetching a remote version previous to
+    # the actual delete API call.
     def flag_for_removal!(removal_reason)
       Nexo.logger.debug("Flagging an element for removal")
 
-      # TODO!: the reason for this? just monitoring?
       element.update!(flagged_for_removal: true, removal_reason:)
+      _update_ne_status!
     end
 
     # @raise ActiveRecord::RecordNotUnique
@@ -45,7 +51,12 @@ module Nexo
 
         # and set the Synchronizable fields according to the Folder#nexo_protocol
         synchronizable = element_version.element.synchronizable
-        if synchronizable.present?
+        if element.flagged_for_removal?
+          Nexo.logger.info("Element flagged for removal")
+          ElementService.new(element_version:).update_element_version!(
+            nev_status: :ignored_by_deletion
+          )
+        elsif synchronizable.present?
           synchronizable.update_from_fields!(fields)
 
           # synchronizable could have been destroyed
@@ -226,6 +237,8 @@ module Nexo
           :pending_external_sync
         elsif local_change
           :pending_local_sync
+        elsif element.flagged_for_removal? && element.discarded_at.nil?
+          :pending_remote_delete
         else
           :synced
         end
