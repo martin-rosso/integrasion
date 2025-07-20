@@ -28,14 +28,20 @@ Configure good_job
 
 ## Unhandled cases / TODO's
 
+- Buscar la manera de wrappear los jobs en un with_tenant
+    cuáles jobs?
+    los que se disparan desde Google webhooks
+    aunque quizá la posta es qeu esas routes estén scopeadas dentro del tid
+- Testear el "no longer included in folder"
+    o sea, modificar una rule y ver qué ande
+
 - Restore locally discarded Events. It creates a new Google Calendar event?
-
 - Recurring google events
-
 - IMPORTANTE: loggear las exceptions de los jobs
-
 - Llevar mucho control de los jobs y las exceptions que puedan surgir como
   ActiveRecord::PreparedStatementCacheExpired
+
+
 
 ## Contributing
 Contribution directions go here.
