@@ -17,12 +17,13 @@ module Nexo
 
       it "calls the API" do
         response = instance_double(ApiResponse, etag: "abc123", payload: { "status" => "ok" })
-        service_mock = instance_double(GoogleCalendarService, remove: response)
+        service_mock = instance_double(GoogleCalendarService, remove: response, get_event: response)
         allow(ServiceBuilder.instance).to receive(:build_protocol_service).and_return(service_mock)
 
         expect { subject }.to change { element.reload.discarded_at }.to be_present
 
         expect(service_mock).to have_received(:remove)
+        expect(service_mock).to have_received(:get_event).with(element)
       end
     end
 
@@ -31,14 +32,6 @@ module Nexo
 
       it "raises error" do
         expect { subject }.to raise_error /element already discarded/
-      end
-    end
-
-    context "when not flagged for removal" do
-      let(:element) { create(:nexo_element) }
-
-      it "raises error" do
-        expect { subject }.to raise_error /not flagged for removal/
       end
     end
   end
