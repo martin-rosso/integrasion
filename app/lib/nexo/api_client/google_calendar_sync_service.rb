@@ -8,7 +8,8 @@ module Nexo
     def incremental_sync!(folder)
       raise Nexo::Errors::Error, "no sync token" if folder.google_next_sync_token.blank?
 
-      Nexo.logger.debug("performing incremental sync")
+      Nexo.logger.info("performing incremental sync")
+
       sync!(folder, sync_token: folder.google_next_sync_token)
     rescue Google::Apis::ClientError => e
       if e.message.match /fullSyncRequired/
@@ -51,11 +52,14 @@ module Nexo
         events.items.each do |event|
           response = ApiResponse.new(payload: event.to_h, etag: event.etag, id: event.id)
 
-          element = Element.where(uuid: response.id).first
+          element = Element.kept.where(uuid: response.id).first
+
           if element.present?
             Nexo.logger.debug("Element found for event")
 
             FetchRemoteResourceJob.new.handle_response(element, response)
+          elsif event.status == "cancelled"
+            Nexo.logger.debug("Skipping cancelled event")
           else
             element = ElementService.new.create_element_for_remote_resource!(folder, response)
 
