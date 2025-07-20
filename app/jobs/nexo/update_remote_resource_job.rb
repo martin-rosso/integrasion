@@ -70,10 +70,6 @@ module Nexo
         raise Errors::ElementDiscarded
       end
 
-      if element.synchronizable.respond_to?(:discarded?) && element.synchronizable.discarded?
-        raise Errors::SynchronizableDiscarded
-      end
-
       if element.folder.discarded?
         raise Errors::FolderDiscarded
       end

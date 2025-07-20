@@ -137,19 +137,6 @@ module Nexo
       end
     end
 
-    context "when synchronizable is discarded" do
-      let(:element) { create(:nexo_element) }
-      let(:element_version) { create(:nexo_element_version, :unsynced_local_change, element: element) }
-
-      before do
-        allow_any_instance_of(Event).to receive(:discarded?).and_return(true)
-      end
-
-      it do
-        expect { subject }.to raise_error(Errors::SynchronizableDiscarded)
-      end
-    end
-
     context "when folder is discarded" do
       let(:element) { create(:nexo_element) }
       let(:element_version) { create(:nexo_element_version, :unsynced_local_change, element: element) }
