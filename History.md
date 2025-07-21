@@ -1,4 +1,16 @@
 
+0.1.7 / 2025-07-20
+==================
+
+  * feat: admin views
+  * fix: respect discarded elements on incremental sync
+  * fix: retry DeleteRemoteResourceJob on conflict
+  * fix: update remote anyway if synchronizable is discarded
+  * fix: add nce_status & change translate_fields signature
+  * fix: ne_status & nev_status for deletion flow
+  * fix: nev_status default value
+  * test: integration test refactor
+
 0.1.6 / 2025-07-18
 ==================
 
