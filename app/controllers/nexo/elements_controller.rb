@@ -16,7 +16,6 @@ module Nexo
       if params[:without_synchronizable]
         @elements = @elements.where(synchronizable_id: nil)
       end
-      I18n.locale = :en
     end
 
     def show
