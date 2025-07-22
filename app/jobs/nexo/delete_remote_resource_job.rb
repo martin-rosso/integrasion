@@ -10,12 +10,18 @@ module Nexo
     def perform(element)
       raise "element already discarded" if element.discarded?
 
-      ServiceBuilder.instance.build_protocol_service(element.folder).remove(element)
+      service = ServiceBuilder.instance.build_protocol_service(element.folder)
+      service.remove(element)
+      service_response = service.get_event(element)
 
+      ElementService.new(element:).create_element_version!(
+        origin: :internal,
+        etag: service_response.etag,
+        payload: service_response.payload,
+        sequence: nil,
+        nev_status: :synced
+      )
       ElementService.new(element:).discard!
-
-      # Fetch the removed/cancelled version
-      FetchRemoteResourceJob.perform_now(element)
     rescue Errors::ConflictingRemoteElementChange => e
       Nexo.logger.warn <<~STR
         ConflictingRemoteElementChange for #{element.to_gid}. \

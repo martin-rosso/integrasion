@@ -69,6 +69,24 @@ describe "Integration tests" do
     print_wait "Check the new name of the event"
   end
 
+  it "Locally deleted event" do
+    event = create_events(1, with_time: false, name: "To be deleted").first
+
+    sleep 1
+
+    event.destroy
+    Nexo::EventReceiver.new.synchronizable_destroyed(event)
+    element = Nexo::Element.first
+
+    Nexo::FetchRemoteResourceJob.perform_now(element)
+
+    expect(element.element_versions.count).to eq 2
+    satisfy = element.element_versions.all? do |version|
+      version.origin == "internal" && version.nev_status == "synced"
+    end
+    expect(satisfy).to be_truthy
+  end
+
   it "Update to conflicted event fails" do
     event = create_events(1, with_time: false, name: "Modify this").first
 
