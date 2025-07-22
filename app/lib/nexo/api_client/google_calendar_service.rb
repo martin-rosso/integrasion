@@ -67,8 +67,7 @@ module Nexo
 
     def get_event(element)
       validate_folder_state!(element.folder)
-      # sidebranch
-      # TODO!: validate uuid presence
+      return nil unless element.uuid.present?
 
       # would be nice to send If-None-Match header, but Google API doesn't seem
       # to accept it
