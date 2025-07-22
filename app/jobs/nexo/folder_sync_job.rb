@@ -23,7 +23,11 @@ module Nexo
           query.find_each do |synchronizable|
             Nexo.logger.debug { "Processing synchronizable: #{synchronizable}" }
 
-            folder_service.find_element_and_sync(folder, synchronizable)
+            begin
+              folder_service.find_element_and_sync(folder, synchronizable)
+            rescue Errors::Error => e
+              Nexo.logger.warn e.inspect
+            end
           end
         end
       end
