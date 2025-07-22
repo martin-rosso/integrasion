@@ -24,7 +24,15 @@ module Nexo
       instance_double(GoogleCalendarService, get_event: response, fields_from_payload: fields)
     end
     let(:fields) { { summary: "foo" } }
-    let(:response) { instance_double(ApiResponse, etag: Time.current.to_f.to_s, payload: { "status" => "ok" }, id: "fooid") }
+    let(:response) do
+      instance_double(
+        ApiResponse,
+        etag: Time.current.to_f.to_s,
+        payload: read_payload_json("google_calendar_event_with_time"),
+        id: "fooid"
+      )
+    end
+
     let!(:synchronizable) { element.synchronizable }
 
     before do
@@ -57,10 +65,12 @@ module Nexo
 
       it_behaves_like "when there is new version from remote server"
 
-      it "not updates the synchronizable" do
+      it "solves the conflict" do
+        statuses = element.element_versions.pluck(:nev_status)
+        expect(statuses).to contain_exactly("synced", "pending_sync")
         subject
-        expect(remote_service_mock).not_to have_received(:fields_from_payload)
-        expect(element.reload).to be_conflicted
+        statuses = element.element_versions.pluck(:nev_status)
+        expect(statuses).to contain_exactly("synced", "pending_sync", "ignored_in_conflict")
       end
     end
 
@@ -70,7 +80,7 @@ module Nexo
       it_behaves_like "when there is new version from remote server"
 
       it "sets ne_status to pending_external_sync" do
-        expect { subject }.to raise_error(ActiveRecord::RecordInvalid)
+        subject
         expect(element.reload).to be_pending_external_sync
       end
     end

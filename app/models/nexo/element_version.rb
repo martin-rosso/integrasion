@@ -46,6 +46,10 @@ module Nexo
 
     validates :origin, presence: true
 
+    def payload_updated_at
+      Time.zone.parse(payload["updated"]) if payload && payload["updated"]
+    end
+
     def remote_status
       payload["status"] if payload.is_a?(Hash)
     end

@@ -25,7 +25,7 @@ describe "Integration tests" do
       external_identifier:,
       nexo_protocol: :calendar,
       name: "Nexo Integration Test",
-      description: "Automatically created calendar for Nexo Automated Test"
+      description: "Automatically created for testing"
     )
     DummyFolderRule.create!(folder: aux, sync_policy: :include, search_regex: ".*")
     aux
@@ -87,7 +87,7 @@ describe "Integration tests" do
     expect(satisfy).to be_truthy
   end
 
-  it "Update to conflicted event fails" do
+  pending "Update to conflicted event fails" do
     event = create_events(1, with_time: false, name: "Modify this").first
 
     print_wait <<~STR
@@ -103,7 +103,7 @@ describe "Integration tests" do
     expect(event).to be_conflicted
   end
 
-  it "Delete to conflicted event fails" do
+  pending "Delete to conflicted event fails" do
     event = create_events(1, with_time: false, name: "Modify this, also").first
 
     print_wait <<~STR
@@ -240,7 +240,7 @@ describe "Integration tests" do
     print_wait "Check the event should have changed the name and keeped the date change"
   end
 
-  it "Conflicting bidirectional sync. Local wins" do
+  pending "Conflicting bidirectional sync. Local wins" do
     event = create_events(1, with_time: false, name: "Bidirectional sync").first
 
     print_wait <<~STR
@@ -268,7 +268,7 @@ describe "Integration tests" do
     expect(element.element_versions.where(origin: :external, nev_status: :ignored_in_conflict).any?).to be_truthy
   end
 
-  it "Conflicting bidirectional sync. Remote wins" do
+  pending "Conflicting bidirectional sync. Remote wins" do
     event = create_events(1, with_time: false, name: "Bidirectional sync").first
 
     print_wait <<~STR

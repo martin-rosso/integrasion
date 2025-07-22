@@ -5,7 +5,7 @@ module Nexo
   # - Creation of Element's
   # - Creation of ElementVersion on local changes
   # - Flagging Element's for removal
-  # - Enqueues UpdateRemoteResourceJob, DeleteRemoteResourceJob
+  # - Enqueues DeleteRemoteResourceJob
   class FolderService
     # @raise [ActiveRecord::RecordNotUnique] on ElementVersion creation
     def find_element_and_sync(folder, synchronizable)

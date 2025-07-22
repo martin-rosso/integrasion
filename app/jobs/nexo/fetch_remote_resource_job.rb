@@ -45,14 +45,6 @@ module Nexo
           Nexo.logger.debug(response.payload)
 
           element_version = save_element_version(response)
-
-          # FIXME: if element conflicted, resolve instead
-          #        what if conflict occurs when creating an internal version?
-          if element.folder.sync_external_changes?
-            ImportRemoteElementVersion.new.perform(element_version)
-          else
-            Nexo.logger.info("Element version ignored_by_sync_direction")
-          end
         end
       else
         Nexo.logger.debug("Remote element missing")

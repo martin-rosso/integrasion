@@ -104,10 +104,14 @@ module Nexo
           it "creates a version" do
             DummyFolderRule.create!(folder: element.folder, search_regex: ".*")
 
-            assert_no_enqueued_jobs do
+            assert_enqueued_jobs(1, only: UpdateRemoteResourceJob) do
               expect { subject }.to change(ElementVersion, :count).by(1)
               element.reload
-              expect(element).to be_conflicted
+
+              # NOTE: this depends on ElementVersion#payload_updated_at being
+              # prior to Event#updated_at, which is true due to the hardcoded
+              # payload jsons, but its no robust at all.
+              expect(element).to be_pending_local_sync
             end
           end
         end

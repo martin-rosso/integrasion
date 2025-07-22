@@ -102,15 +102,18 @@ module Nexo
     end
 
     def resolve_conflict!
+      Nexo.logger.debug("_resolve_conflict!")
+
       unless element.conflicted?
         raise "element not conflicted"
       end
 
       # both lock on Element and start a transaction
       element.with_lock do
-        external_change = element.element_versions.where(origin: :external, nev_status: :pending_sync).order(:etag).last
-        local_change = element.element_versions.where(origin: :internal, nev_status: :pending_sync).order(:sequence).last
+        external_change = _last_pending_external_change
+        local_change = _last_pending_internal_change
 
+        # FIXME: maybe this is unnecesary, because is done in _perform_sync!
         if last_synced = element.element_versions.where(nev_status: :synced).order(:sequence).last
           if local_change.sequence < last_synced.sequence
             raise "there a newer synced sequence"
@@ -121,20 +124,59 @@ module Nexo
           end
         end
 
-        Nexo.logger.debug { "resolving conflict" }
-        remote_update = Time.zone.parse(external_change.payload["updated"])
+        remote_update = external_change.payload_updated_at
+        # FIXME: should check the version's updated_at?
         local_update = element.synchronizable.updated_at
         Nexo.logger.debug { "Remote updated at: #{remote_update}. Local updated at #{local_update}" }
         if remote_update > local_update
-          Nexo.logger.debug { "Remote wins, ignoring local change" }
+          Nexo.logger.debug("Remote wins")
           _update_status_on_conflict_with_winner!(external_change)
-          ImportRemoteElementVersion.new.perform(external_change)
         else
-          Nexo.logger.debug { "Local wins, discarding remote changes" }
+          Nexo.logger.debug("Local wins")
           _update_status_on_conflict_with_winner!(local_change)
-          UpdateRemoteResourceJob.perform_later(local_change)
         end
       end
+    end
+
+    def _perform_sync!
+      external_change = _last_pending_external_change
+      local_change = _last_pending_internal_change
+
+      if element.conflicted?
+        raise "WARN: this souldnt happen. conflicted element, cant perform sync"
+      end
+
+      if last_synced = _last_synced_version
+        if local_change.sequence < last_synced.sequence
+          raise "there a newer synced sequence"
+        end
+
+        if external_change.etag < last_synced.etag
+          raise "there a newer synced etag"
+        end
+      end
+
+      if element.pending_local_sync?
+        Nexo.logger.info("_perform_sync!: Local change: enqueuing UpdateRemoteResourceJob")
+        UpdateRemoteResourceJob.perform_later(local_change)
+      elsif element.pending_external_sync?
+        Nexo.logger.info("_perform_sync!: External change: running ImportRemoteElementVersion")
+        ImportRemoteElementVersion.new.perform(external_change)
+      else
+        Nexo.logger.info("Element's ne_status is: #{element.ne_status}. Nothing to do")
+      end
+    end
+
+    def _last_pending_external_change
+      element.element_versions.where(origin: :external, nev_status: :pending_sync).order(:etag).last
+    end
+
+    def _last_pending_internal_change
+      element.element_versions.where(origin: :internal, nev_status: :pending_sync).order(:sequence).last
+    end
+
+    def _last_synced_version
+      element.element_versions.where(nev_status: :synced).order(:sequence).last
     end
 
     def update_ne_status!
@@ -197,28 +239,19 @@ module Nexo
         origin: :internal,
         sequence: element.synchronizable.sequence,
         nev_status:
-      ).tap do |element_version|
-        Nexo.logger.debug("ElementVersion created")
-
-        if element.pending_local_sync?
-          Nexo.logger.debug("Enqueuing UpdateRemoteResourceJob")
-
-          UpdateRemoteResourceJob.perform_later(element_version)
-        elsif element.conflicted?
-          Nexo.logger.info("Element conflicted, so not enqueuing UpdateRemoteResourceJob")
-        elsif element.synced?
-          Nexo.logger.info("Element's ne_status is: #{element.ne_status}. No need to push any changes.")
-        else
-          # :nocov: borderline
-          Nexo.logger.info("Element's ne_status is: #{element.ne_status}. That's weird.")
-          # :nocov:
-        end
-      end
+      )
     end
 
     def _create_element_version!(attributes)
       ElementVersion.create!(attributes.merge(element:)).tap do
+        Nexo.logger.debug("ElementVersion created")
         _update_ne_status!
+
+        if element.conflicted?
+          resolve_conflict!
+        end
+
+        _perform_sync!
       end
     end
 
@@ -241,8 +274,11 @@ module Nexo
         elsif local_change
           :pending_local_sync
         elsif element.flagged_for_removal? && element.discarded_at.nil?
+          # This probably indicates an error during remote deletion
           :pending_remote_delete
         elsif last_remote.present? && last_remote.nev_status != "synced"
+          # This probably indicates a remote change that couldnt be imported
+          # because of sync_direction
           :unsynced_remote_change
         else
           :synced

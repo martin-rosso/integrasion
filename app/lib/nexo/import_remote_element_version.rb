@@ -7,8 +7,8 @@ module Nexo
       validate_element_state!(element_version)
 
       ElementService.new(element_version:).update_synchronizable!
-    rescue ImportRemoteVersionFailed => e
-      Nexo.logger.warn(e.inspect)
+    # rescue ImportRemoteVersionFailed => e
+    #   Nexo.logger.warn(e.inspect)
     rescue VersionSuperseded
       Nexo.logger.info("ImportRemoteElementVersion: version superseded")
     end
