@@ -35,6 +35,9 @@ Configure good_job
 - Testear el "no longer included in folder"
     o sea, modificar una rule y ver qué ande
 
+- Al crear una Nexo::Folder, si falla el job de insert, que se muestre de
+  alguna manera el error
+
 - Restore locally discarded Events. It creates a new Google Calendar event?
 - Recurring google events
 - IMPORTANTE: loggear las exceptions de los jobs

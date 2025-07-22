@@ -112,6 +112,7 @@ module Nexo
         local_change = element.element_versions.where(origin: :internal, nev_status: :pending_sync).order(:sequence).last
         last_synced = element.element_versions.where(nev_status: :synced).order(:sequence).last
 
+        # FIXME: last synced could be nil
         if local_change.sequence < last_synced.sequence
           raise "there a newer synced sequence"
         end

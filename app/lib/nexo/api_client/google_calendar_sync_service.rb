@@ -61,6 +61,7 @@ module Nexo
           elsif event.status == "cancelled"
             Nexo.logger.debug("Skipping cancelled event")
           else
+            Nexo.logger.debug("Creating element for remote resource")
             element = ElementService.new.create_element_for_remote_resource!(folder, response)
 
             # TODO!: rename handle_response

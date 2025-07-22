@@ -33,6 +33,8 @@ module Nexo
 
         element_version = save_element_version(response)
 
+        # FIXME: if element conflicted, resolve instead
+        #        what if conflict occurs when creating an internal version?
         if element.folder.sync_external_changes?
           ImportRemoteElementVersion.new.perform(element_version)
         else
