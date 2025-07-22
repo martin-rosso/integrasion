@@ -231,6 +231,8 @@ module Nexo
         element.folder.sync_internal_changes? &&
           element.element_versions.where(origin: :internal, nev_status: :pending_sync).any?
 
+      last_remote = element.last_remote_version
+
       element.ne_status =
         if external_change && local_change
           :conflicted
@@ -240,6 +242,8 @@ module Nexo
           :pending_local_sync
         elsif element.flagged_for_removal? && element.discarded_at.nil?
           :pending_remote_delete
+        elsif last_remote.present? && last_remote.nev_status != "synced"
+          :unsynced_remote_change
         else
           :synced
         end

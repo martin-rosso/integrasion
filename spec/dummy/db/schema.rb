@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_07_18_012839) do
+ActiveRecord::Schema[7.2].define(version: 2025_07_21_161923) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -161,7 +161,9 @@ ActiveRecord::Schema[7.2].define(version: 2025_07_18_012839) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "ne_status", null: false
+    t.integer "ne_remote_status"
     t.index ["discarded_at"], name: "index_nexo_elements_on_discarded_at"
+    t.index ["folder_id", "uuid"], name: "index_nexo_elements_on_folder_id_and_uuid", unique: true, where: "(discarded_at IS NULL)"
     t.index ["folder_id"], name: "index_nexo_elements_on_folder_id"
     t.index ["synchronizable_id"], name: "index_nexo_elements_on_synchronizable_id"
     t.index ["synchronizable_type"], name: "index_nexo_elements_on_synchronizable_type"
