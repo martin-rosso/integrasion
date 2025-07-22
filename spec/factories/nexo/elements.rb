@@ -20,19 +20,19 @@ FactoryBot.define do
     association :synchronizable, factory: :event
 
     flagged_for_removal { false }
-    # uuid { Digest::MD5.hexdigest(Faker::Lorem.word) }
+    # uuid { Digest::MD5.hexdigest(Faker::Lorem.sentence) }
 
     # To fulfill the not null constraint. Anyway this will be updated by the
     # after create callback
     ne_status { :synced }
 
     trait :discarded do
-      uuid { Digest::MD5.hexdigest(Faker::Lorem.word) }
+      uuid { Digest::MD5.hexdigest(Faker::Lorem.sentence) }
       discarded_at { Faker::Date.backward }
     end
 
     trait :conflicted do
-      uuid { Digest::MD5.hexdigest(Faker::Lorem.word) }
+      uuid { Digest::MD5.hexdigest(Faker::Lorem.sentence) }
       element_versions {
         [
           build(:nexo_element_version, :unsynced_local_change),
@@ -49,7 +49,7 @@ FactoryBot.define do
     end
 
     trait :unsynced_local_change_to_update do
-      uuid { Digest::MD5.hexdigest(Faker::Lorem.word) }
+      uuid { Digest::MD5.hexdigest(Faker::Lorem.sentence) }
       element_versions {
         [
           build(:nexo_element_version, :synced, sequence: synchronizable.sequence - 1),
@@ -59,7 +59,7 @@ FactoryBot.define do
     end
 
     trait :unsynced_external_change do
-      uuid { Digest::MD5.hexdigest(Faker::Lorem.word) }
+      uuid { Digest::MD5.hexdigest(Faker::Lorem.sentence) }
       element_versions {
         [
           build(:nexo_element_version, :synced, sequence: synchronizable.sequence),
@@ -69,18 +69,18 @@ FactoryBot.define do
     end
 
     trait :synced do
-      uuid { Digest::MD5.hexdigest(Faker::Lorem.word) }
+      uuid { Digest::MD5.hexdigest(Faker::Lorem.sentence) }
       element_versions { build_list(:nexo_element_version, 1, :synced, sequence: synchronizable.sequence) }
     end
 
     trait :flagged_for_removal do
-      uuid { Digest::MD5.hexdigest(Faker::Lorem.word) }
+      uuid { Digest::MD5.hexdigest(Faker::Lorem.sentence) }
       flagged_for_removal { true }
       removal_reason { "synchronizable_destroyed" }
     end
 
     trait :with_ghost_synchronizable do
-      uuid { Digest::MD5.hexdigest(Faker::Lorem.word) }
+      uuid { Digest::MD5.hexdigest(Faker::Lorem.sentence) }
       after(:create) do |element, context|
         element.update_columns(synchronizable_id: rand(999999))
       end
