@@ -7,12 +7,17 @@ module Nexo
 
     def index
       @elements =
-        Element.includes(:synchronizable).order(id: :desc)
+        Element.includes(:synchronizable, :folder).order(id: :desc)
                .page(params[:page]).per(params[:page_size] || 10)
+
+      if params[:folder_id]
+        @elements = @elements.where(folder_id: params[:folder_id])
+      end
 
       if params[:not_synced]
         @elements = @elements.where.not(ne_status: :synced)
       end
+
       if params[:without_synchronizable]
         @elements = @elements.where(synchronizable_id: nil)
       end
@@ -43,23 +48,20 @@ module Nexo
       redirect_to @element, notice: "Modified"
     end
 
-    def fetch_remote
-      FetchRemoteResourceJob.perform_later(@element)
-
-      redirect_to @element, notice: "Enqueued FetchRemoteResourceJob"
-    end
-
     def resolve_conflict
       ElementService.new(element: @element).resolve_conflict!
 
       redirect_to @element, notice: "Conflict solved"
     end
 
-    def modify
+    def perform_operation
       case params[:operation]
       when "delete"
         DeleteRemoteResourceJob.perform_later(@element)
         redirect_to @element, notice: "Enqueued DeleteRemoteResourceJob"
+      when "fetch_remote"
+        FetchRemoteResourceJob.perform_later(@element)
+        redirect_to @element, notice: "Enqueued FetchRemoteResourceJob"
       else
         redirect_to @element, alert: "Unknown action"
       end

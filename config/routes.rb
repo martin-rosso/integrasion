@@ -5,16 +5,16 @@ Nexo::Engine.routes.draw do
       post :full_sync
       post :incremental_sync
       post :check_status
+      post :perform_operation
     end
   end
 
   resources :elements do
     member do
-      post :fetch_remote
       post :resolve_conflict
       post :modify_local
       post :update_status
-      post :modify
+      post :perform_operation
     end
   end
 

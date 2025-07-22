@@ -16,6 +16,10 @@
 <%= form_with(url: check_status_folder_path(@folder)) do |f| %>
   <%= f.submit "Check status" %>
 <% end %>
+<%= form_with(url: perform_operation_folder_path(@folder)) do |f| %>
+  <%= f.button(:operation, value: "fetch_remote_versions") { "Fetch remote versions" } %>
+  <%= f.button(:operation, value: "update_ne_statuses") { "Update ne_statuses" } %>
+<% end %>
 
 <pre>
 <%= JSON.pretty_generate @folder.as_json %>

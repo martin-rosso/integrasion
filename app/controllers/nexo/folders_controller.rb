@@ -37,5 +37,22 @@ module Nexo
 
       redirect_to @folder, notice: "Enqueued incremental sync"
     end
+
+    def perform_operation
+      case params[:operation]
+      when "fetch_remote_versions"
+        @folder.elements.each do |element|
+          FetchRemoteResourceJob.perform_later(element)
+        end
+        redirect_to @folder, notice: "Enqueued FetchRemoteResourceJob's"
+      when "update_ne_statuses"
+        @folder.elements.each do |element|
+          ElementService.new(element:).update_ne_status!
+        end
+        redirect_to @folder, notice: "Updated ne_statuses"
+      else
+        redirect_to @element, alert: "Unknown action"
+      end
+    end
   end
 end

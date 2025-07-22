@@ -2,10 +2,6 @@
 
 <%= link_to "Back to list", elements_path %>
 <br>
-<%= form_with(url: fetch_remote_element_path(@element)) do |f| %>
-  <%= f.submit "Fetch remote" %>
-<% end %>
-
 <%= form_with(url: resolve_conflict_element_path(@element)) do |f| %>
   <%= f.submit "Resolve conflict" %>
 <% end %>
@@ -18,8 +14,9 @@
   <%= f.submit "Update status" %>
 <% end %>
 
-<%= form_with(url: modify_element_path(@element)) do |f| %>
+<%= form_with(url: perform_operation_element_path(@element)) do |f| %>
   <%= f.button(:operation, value: "delete") { "Delete" } %>
+  <%= f.button(:operation, value: "fetch_remote") { "Fetch remote version" } %>
 <% end %>
 <br>
 
