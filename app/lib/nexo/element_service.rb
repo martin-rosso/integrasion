@@ -110,15 +110,15 @@ module Nexo
       element.with_lock do
         external_change = element.element_versions.where(origin: :external, nev_status: :pending_sync).order(:etag).last
         local_change = element.element_versions.where(origin: :internal, nev_status: :pending_sync).order(:sequence).last
-        last_synced = element.element_versions.where(nev_status: :synced).order(:sequence).last
 
-        # FIXME: last synced could be nil
-        if local_change.sequence < last_synced.sequence
-          raise "there a newer synced sequence"
-        end
+        if last_synced = element.element_versions.where(nev_status: :synced).order(:sequence).last
+          if local_change.sequence < last_synced.sequence
+            raise "there a newer synced sequence"
+          end
 
-        if external_change.etag < last_synced.etag
-          raise "there a newer synced etag"
+          if external_change.etag < last_synced.etag
+            raise "there a newer synced etag"
+          end
         end
 
         Nexo.logger.debug { "resolving conflict" }
