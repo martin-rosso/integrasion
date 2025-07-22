@@ -1,26 +1,37 @@
 <h1>Folder: <%= @folder.name %></h1>
 
 <%= link_to "Back to list", folders_path %>
+|
+<%= link_to "See elements", elements_path(folder_id: @folder.id) %>
+<br>
 <br>
 <!--
-<%= form_with(url: full_sync_folder_path(@folder)) do |f| %>
-  <%= f.submit "Full sync" %>
-<% end %>
 <%= form_with(url: incremental_sync_folder_path(@folder)) do |f| %>
-  <%= f.submit "Incremental sync" %>
+  <%= f.submit "Run Incremental sync" %>
 <% end %>
 -->
 <%= form_with(url: sync_folder_path(@folder)) do |f| %>
-  <%= f.submit "Sync" %>
+  <%= f.submit "Run Google Sync" %>
+<% end %>
+<%= form_with(url: full_sync_folder_path(@folder)) do |f| %>
+  <%= f.submit "Run Google Full sync" %>
 <% end %>
 <%= form_with(url: check_status_folder_path(@folder)) do |f| %>
-  <%= f.submit "Check status" %>
+  <%= f.submit "Update nf_status" %>
 <% end %>
 <%= form_with(url: perform_operation_folder_path(@folder)) do |f| %>
   <%= f.button(:operation, value: "fetch_remote_versions") { "Fetch remote versions" } %>
   <%= f.button(:operation, value: "update_ne_statuses") { "Update ne_statuses" } %>
+  <%= f.button(:operation, value: "folder_sync_job") { "Run FolderSyncJob" } %>
+  <%= f.button(:operation, value: "perform_sync") { "Run perform_sync on all elements" } %>
+  <%= f.button(:operation, value: "discard_folder") { "Discard folder!" } %>
 <% end %>
 
+Token?: <%= @folder.integration.token? %>
 <pre>
 <%= JSON.pretty_generate @folder.as_json %>
+</pre>
+<h4>Policies</h4>
+<pre>
+<%= JSON.pretty_generate @policies.as_json %>
 </pre>

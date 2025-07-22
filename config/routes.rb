@@ -24,5 +24,5 @@ Nexo::Engine.routes.draw do
     end
   end
 
-  root to: redirect('elements')
+  root to: redirect('folders')
 end

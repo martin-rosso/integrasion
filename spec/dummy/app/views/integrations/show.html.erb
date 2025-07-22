@@ -11,6 +11,10 @@
 </table>
 
 <br>
+<%= form_with(url: perform_operation_integration_path(@integration)) do |f| %>
+  <%= f.button(:operation, value: "create_test_folder") { "Create test folder" } %>
+<% end %>
+
 <% if @credentials.present? %>
   <%= form_with url: url_for([:revoke_authorization, @integration]), method: :post do %>
     <%= button_tag "Revoke" %>

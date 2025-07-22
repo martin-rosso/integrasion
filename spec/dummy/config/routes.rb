@@ -4,6 +4,7 @@ Rails.application.routes.draw do
   resources :integrations do
     member do
       post :revoke_authorization
+      post :perform_operation
     end
   end
 

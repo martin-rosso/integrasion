@@ -13,6 +13,7 @@ module Nexo
   #   - invalid: Invalid sequence value. The specified sequence number is below
   #              the current sequence number of the resource. Re-fetch the resource and
   #              use its sequence number on the following request.
+  #   - deleted: Resource has been deleted
   #
   # TODO! when event to update was deleted, create a new one and warn
   class GoogleCalendarService < CalendarService

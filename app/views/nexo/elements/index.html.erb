@@ -1,6 +1,6 @@
-<%= link_to "All", "?" %>
-<%= link_to "Not synced", "?not_synced=1" %>
-<%= link_to "Without synchronizable", "?without_synchronizable=1" %>
+<%= link_to "All", url_for(folder_id: params[:folder_id]) %>
+<%= link_to "Dirty", request.params.merge(dirty: 1) %>
+<%= link_to "Without synchronizable", request.params.merge(without_synchronizable: 1) %>
 <h1>Elements</h1>
 <table>
   <tr>

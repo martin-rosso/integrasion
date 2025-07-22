@@ -12,6 +12,7 @@ module Nexo
     end
 
     def show
+      @policies = PolicyService.instance.policies_for(@folder)
     end
 
     def check_status
@@ -50,8 +51,19 @@ module Nexo
           ElementService.new(element:).update_ne_status!
         end
         redirect_to @folder, notice: "Updated ne_statuses"
+      when "perform_sync"
+        @folder.elements.kept.each do |element|
+          ElementService.new(element:)._perform_sync!
+        end
+        redirect_to @folder, notice: "Executed _perform_sync!"
+      when "folder_sync_job"
+        FolderSyncJob.perform_later(@folder)
+        redirect_to @folder, notice: "Enqueued FolderSyncJob"
+      when "discard_folder"
+        @folder.discard!
+        EventReceiver.new.folder_discarded(@folder)
       else
-        redirect_to @element, alert: "Unknown action"
+        redirect_to @folder, alert: "Unknown action"
       end
     end
   end

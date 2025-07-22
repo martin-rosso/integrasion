@@ -3,7 +3,7 @@ class IntegrationsController < ActionController::Base
 
   layout "application"
 
-  before_action :set_integration, only: [ :show, :edit, :update, :destroy, :revoke_authorization ]
+  before_action :set_integration, only: [ :show, :edit, :update, :destroy, :revoke_authorization, :perform_operation ]
 
   def index
     @integrations = Nexo::Integration.where(discarded_at: nil)
@@ -47,6 +47,26 @@ class IntegrationsController < ActionController::Base
     # con *todos* los permisos efectivos que el usuario haya otorgado aunque el
     # client haya solicitado un subconjunto de los mismos
     @credentials = @service.get_credentials(request)
+  end
+
+  def perform_operation
+    case params[:operation]
+    when "create_test_folder"
+      folder = Nexo::Folder.create!(
+        integration: @integration,
+        sync_direction: :sync_bidirectional,
+        external_identifier: nil,
+        nexo_protocol: :calendar,
+        name: "Nexo Playground #{rand(99)}",
+        description: "Automatically created calendar for"
+      )
+      DummyFolderRule.create!(folder:, sync_policy: :include, search_regex: ".*")
+      Nexo::EventReceiver.new.folder_changed(folder)
+
+      redirect_to @integration, notice: "Created folder: #{folder.name}"
+    else
+      redirect_to @integration, alert: "Unknown action"
+    end
   end
 
   def revoke_authorization

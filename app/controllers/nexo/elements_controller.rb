@@ -8,14 +8,14 @@ module Nexo
     def index
       @elements =
         Element.includes(:synchronizable, :folder).order(id: :desc)
-               .page(params[:page]).per(params[:page_size] || 10)
+               .page(params[:page]).per(params[:page_size] || 25)
 
       if params[:folder_id]
         @elements = @elements.where(folder_id: params[:folder_id])
       end
 
-      if params[:not_synced]
-        @elements = @elements.where.not(ne_status: :synced)
+      if params[:dirty]
+        @elements = @elements.where.not(ne_status: [:synced, :discarded])
       end
 
       if params[:without_synchronizable]
@@ -62,6 +62,19 @@ module Nexo
       when "fetch_remote"
         FetchRemoteResourceJob.perform_later(@element)
         redirect_to @element, notice: "Enqueued FetchRemoteResourceJob"
+      when "perform_sync"
+        ElementService.new(element: @element)._perform_sync!
+        redirect_to @element, notice: "Executed _perform_sync!"
+      when "discard"
+        ElementService.new(element: @element).discard!
+        redirect_to @element, notice: "Element discarded"
+      when "increment_sequence"
+        synchronizable = @element.synchronizable
+        synchronizable.increment_sequence!
+
+        EventReceiver.new.synchronizable_updated(synchronizable)
+
+        redirect_to @element, notice: "Incremented sequence to: #{synchronizable.sequence} and called synchronizable_updated"
       else
         redirect_to @element, alert: "Unknown action"
       end

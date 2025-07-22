@@ -3,21 +3,25 @@ Showing <%= @folders.count %> folders from a total of <%= Nexo::Folder.count %>
 <table>
   <tr>
     <th></th>
+    <th>ID</th>
     <th>User</th>
     <th>Name</th>
     <th>Status</th>
     <th>Updated at</th>
     <th>Created at</th>
+    <th>Discarded at</th>
     <th></th>
   </tr>
   <% @folders.each do |folder| %>
     <tr>
       <td><%= link_to "Show", folder_path(folder) %></td>
+      <td><%= folder.id %></td>
       <td><%= folder.integration.user %></td>
       <td><%= folder.name %></td>
       <td><%= folder.nf_status %></td>
       <td><%= folder.updated_at %></td>
       <td><%= folder.created_at %></td>
+      <td><%= folder.discarded_at %></td>
       <td><%= link_to "Elements", elements_path(folder_id: folder.id) %></td>
     </tr>
   <% end %>

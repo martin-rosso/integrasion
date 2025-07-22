@@ -1,6 +1,8 @@
 <h1>Element: <%= @element.synchronizable %></h1>
 
-<%= link_to "Back to list", elements_path %>
+<%= link_to "Back to list", elements_path(folder_id: @element.folder.id) %>
+| <%= link_to "Go to #{@element.folder}", folder_path(@element.folder) %>
+<br>
 <br>
 <%= form_with(url: resolve_conflict_element_path(@element)) do |f| %>
   <%= f.submit "Resolve conflict" %>
@@ -17,6 +19,9 @@
 <%= form_with(url: perform_operation_element_path(@element)) do |f| %>
   <%= f.button(:operation, value: "delete") { "Delete" } %>
   <%= f.button(:operation, value: "fetch_remote") { "Fetch remote version" } %>
+  <%= f.button(:operation, value: "perform_sync") { "Run perform_sync!" } %>
+  <%= f.button(:operation, value: "increment_sequence") { "Increment local sequence" } %>
+  <%= f.button(:operation, value: "discard") { "discard" } %>
 <% end %>
 <br>
 
@@ -39,6 +44,7 @@
     <th>Sequence</th>
     <th>Payload status</th>
     <th>ETag</th>
+    <th>Payload updated_at</th>
     <th>Created at</th>
     <th>Updated at</th>
   </tr>
@@ -50,6 +56,7 @@
       <td><%= version.sequence %></td>
       <td><%= version.remote_status %></td>
       <td><%= version.etag %></td>
+      <td><%= version.payload_updated_at %></td>
       <td><%= version.created_at %></td>
       <td><%= version.updated_at %></td>
     </tr>
