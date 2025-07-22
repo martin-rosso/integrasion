@@ -1,1 +1,0 @@
-bundle exec rspec --exclude-pattern "spec/integration/*"
