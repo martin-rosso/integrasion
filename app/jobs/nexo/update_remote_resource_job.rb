@@ -32,8 +32,7 @@ module Nexo
           end
         end
 
-      # FIXME: move to element service
-      element.update(ne_remote_status: :found)
+      ElementService.new(element:).update_element!(ne_remote_status: :found)
       ElementService.new(element_version:).update_element_version!(
         nev_status: :synced,
         etag: response.etag,

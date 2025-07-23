@@ -29,7 +29,7 @@ module Nexo
 
       if response.present?
         Nexo.logger.debug("Remote element found")
-        element.update(ne_remote_status: :found)
+        ElementService.new(element:).update_element!(ne_remote_status: :found)
 
         if version = element.element_versions.where(etag: response.etag).first
           # Nexo.logger.debug { "No new version fetched from remote server" }
@@ -48,7 +48,7 @@ module Nexo
         end
       else
         Nexo.logger.debug("Remote element missing")
-        element.update(ne_remote_status: :missing)
+        ElementService.new(element:).update_element!(ne_remote_status: :missing)
       end
     end
 
