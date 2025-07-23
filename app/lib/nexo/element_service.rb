@@ -98,6 +98,7 @@ module Nexo
               nev_status: :synced,
               sequence: synchronizable.sequence
             )
+            SynchronizableChangedJob.perform_later(synchronizable, excluded_folders: [ element.folder.id ])
           else
             Nexo.logger.info("No importer rule found for event. Skipping")
           end
@@ -151,11 +152,11 @@ module Nexo
       end
 
       if last_synced = _last_synced_version
-        if local_change.sequence < last_synced.sequence
+        if local_change && local_change.sequence < last_synced.sequence
           raise "there a newer synced sequence"
         end
 
-        if external_change.etag < last_synced.etag
+        if external_change && external_change.etag < last_synced.etag
           raise "there a newer synced etag"
         end
       end
