@@ -41,7 +41,7 @@ module Nexo
       _update_ne_status!
     end
 
-    # @raise ActiveRecord::RecordNotUnique
+    # @raise Nexo::Errors::UpdateToSynchronizableFailed
     def update_synchronizable!
       Nexo.logger.debug("update_synchronizable!")
 
@@ -57,7 +57,11 @@ module Nexo
             nev_status: :ignored_by_deletion
           )
         elsif synchronizable.present?
-          synchronizable.update_from_fields!(fields)
+          begin
+            synchronizable.update_from_fields!(fields)
+          rescue ActiveRecord::ActiveRecordError => e
+            raise Errors::UpdateToSynchronizableFailed, e.inspect
+          end
 
           # synchronizable could have been destroyed
           if synchronizable.persisted?
@@ -251,7 +255,12 @@ module Nexo
           resolve_conflict!
         end
 
-        _perform_sync!
+        begin
+          _perform_sync!
+        rescue Errors::UpdateToSynchronizableFailed => e
+          # This shouldnt rollback the ElementVersion creation
+          Nexo.logger.warn(e.inspect)
+        end
       end
     end
 
