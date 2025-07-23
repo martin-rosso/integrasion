@@ -25,6 +25,7 @@
   <%= f.button(:operation, value: "folder_sync_job") { "Run FolderSyncJob" } %>
   <%= f.button(:operation, value: "perform_sync") { "Run perform_sync on all elements" } %>
   <%= f.button(:operation, value: "discard_folder") { "Discard folder!" } %>
+  <%= f.button(:operation, value: "watch") { "watch" } %>
 <% end %>
 
 Token?: <%= @folder.integration.token? %>

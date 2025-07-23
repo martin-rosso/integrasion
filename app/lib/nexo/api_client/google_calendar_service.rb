@@ -124,7 +124,75 @@ module Nexo
       )
       client.watch_event(folder.external_identifier, channel)
 
+      # Return value example:
+      # {"expiration"=>1753894903000,
+      #  "id"=>"123-321",
+      #  "kind"=>"api#channel",
+      #  "resource_id"=>"tzPO9NflP22ZgQxNejOk9TZVCvA",
+      #  "resource_uri"=>
+      #   "https://www.googleapis.com/calendar/v3/calendars/e2b0e85c7aa97c8d30b81f9a4e6cac6cd95aa0ca5e06bca31ae47995e79a546d%40group.calendar.google.com/events?alt=json",
+      #  "token"=>"the-token-312"}
+
       # Headers to parse
+      #
+      #
+      # Sync request (initial request)
+      #
+      # {
+      #   host: 'bien.com.ar:8001',
+      #   accept: '*/*',
+      #   'x-goog-channel-id': '123-321',
+      #   'x-goog-channel-expiration': 'Wed, 30 Jul 2025 17:01:43 GMT',
+      #   'x-goog-resource-state': 'sync',
+      #   'x-goog-message-number': '1',
+      #   'x-goog-resource-id': 'tzPO9NflP22ZgQxNejOk9TZVCvA',
+      #   'x-goog-resource-uri': 'https://www.googleapis.com/calendar/v3/calendars/e2b0e85c7aa97c8d30b81f9a4e6cac6cd95aa0ca5e06bca31ae47995e79a546d%40group.calendar.google.com/events?alt=json',
+      #   'x-goog-channel-token': 'the-token-312',
+      #   'content-length': '0',
+      #   connection: 'keep-alive',
+      #   'user-agent': 'APIs-Google; (+https://developers.google.com/webmasters/APIs-Google.html)',
+      #   'accept-encoding': 'gzip, deflate, br'
+      # }
+      #
+      #
+      #
+      #
+      # Event change requests
+      #
+      # POST /google_webhook 200 4.552 ms - 2
+      # {
+      #   host: 'bien.com.ar:8001',
+      #   accept: '*/*',
+      #   'x-goog-channel-id': '123-321',
+      #   'x-goog-channel-expiration': 'Wed, 30 Jul 2025 17:01:43 GMT',
+      #   'x-goog-resource-state': 'exists',
+      #   'x-goog-message-number': '332449',
+      #   'x-goog-resource-id': 'tzPO9NflP22ZgQxNejOk9TZVCvA',
+      #   'x-goog-resource-uri': 'https://www.googleapis.com/calendar/v3/calendars/e2b0e85c7aa97c8d30b81f9a4e6cac6cd95aa0ca5e06bca31ae47995e79a546d%40group.calendar.google.com/events?alt=json',
+      #   'x-goog-channel-token': 'the-token-312',
+      #   'content-length': '0',
+      #   connection: 'keep-alive',
+      #   'user-agent': 'APIs-Google; (+https://developers.google.com/webmasters/APIs-Google.html)',
+      #   'accept-encoding': 'gzip, deflate, br'
+      # }
+      #
+      # POST /google_webhook 200 2.213 ms - 2
+      # {
+      #   host: 'bien.com.ar:8001',
+      #   accept: '*/*',
+      #   'x-goog-channel-id': '123-321',
+      #   'x-goog-channel-expiration': 'Wed, 30 Jul 2025 17:01:43 GMT',
+      #   'x-goog-resource-state': 'exists',
+      #   'x-goog-message-number': '343282',
+      #   'x-goog-resource-id': 'tzPO9NflP22ZgQxNejOk9TZVCvA',
+      #   'x-goog-resource-uri': 'https://www.googleapis.com/calendar/v3/calendars/e2b0e85c7aa97c8d30b81f9a4e6cac6cd95aa0ca5e06bca31ae47995e79a546d%40group.calendar.google.com/events?alt=json',
+      #   'x-goog-channel-token': 'the-token-312',
+      #   'content-length': '0',
+      #   connection: 'keep-alive',
+      #   'user-agent': 'APIs-Google; (+https://developers.google.com/webmasters/APIs-Google.html)',
+      #   'accept-encoding': 'gzip, deflate, br'
+      # }
+      #
       # {
       #   host: 'bien.com.ar:8001',
       #   accept: '*/*',

@@ -62,6 +62,10 @@ module Nexo
       when "discard_folder"
         @folder.discard!
         EventReceiver.new.folder_discarded(@folder)
+      when "watch"
+        GoogleCalendarService.new(@folder.integration).watch_calendar(@folder)
+
+        redirect_to @folder, notice: "Watching folder"
       else
         redirect_to @folder, alert: "Unknown action"
       end

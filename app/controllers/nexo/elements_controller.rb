@@ -15,7 +15,7 @@ module Nexo
       end
 
       if params[:dirty]
-        @elements = @elements.where.not(ne_status: [:synced, :discarded])
+        @elements = @elements.where.not(ne_status: [ :synced, :discarded ])
       end
 
       if params[:without_synchronizable]
