@@ -1,8 +1,8 @@
+# rubocop:disable all
 require "rails_helper"
 
 require_relative "common"
 
-# rubocop:disable all
 describe "Integration tests" do
   include ActiveJob::TestHelper
 
