@@ -115,6 +115,13 @@ module Nexo
       ApiResponse.new(status: :ok)
     end
 
+    def payload_readonly?(payload)
+      # when event_type is not present, it means that the Event was definitely
+      # destroyed. It is expected that summary is also blank, and start and end
+      # dates are faked (not the original event dates)
+      payload[:event_type].blank?
+    end
+
     def fields_from_payload(payload)
       event = validate_version!(payload)
 

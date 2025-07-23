@@ -26,13 +26,19 @@ module Nexo
       # TODO!: refactor y que no tenga que repetir esta asignación
       #        extraer a algún Service?
       @element = element
+      remote_service = ServiceBuilder.instance.build_protocol_service(element.folder)
 
       if response.present?
-        Nexo.logger.debug("Remote element found")
-        ElementService.new(element:).update_element!(ne_remote_status: :found)
+        if remote_service.payload_readonly?(response.payload)
+          Nexo.logger.debug("Remote element found but READONLY")
+          ElementService.new(element:).update_element!(ne_remote_status: :found_readonly)
+        else
+          Nexo.logger.debug("Remote element found")
+          ElementService.new(element:).update_element!(ne_remote_status: :found)
+        end
 
         if version = element.element_versions.where(etag: response.etag).first
-          # Nexo.logger.debug { "No new version fetched from remote server" }
+          # No need to run it through ElementService
           version.update(payload: response.payload)
 
           if version.saved_changes?

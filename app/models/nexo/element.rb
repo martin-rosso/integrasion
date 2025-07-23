@@ -39,11 +39,13 @@ module Nexo
       pending_local_sync: 2,
       conflicted: 3,
       pending_remote_delete: 4,
-      unsynced_remote_change: 5
+      unsynced_remote_change: 5,
+      discarded: 6
 
     enum :ne_remote_status,
       found: 1,
-      missing: 2
+      missing: 2,
+      found_readonly: 3
 
     scope :conflicted, -> { where(ne_status: :conflicted) }
 

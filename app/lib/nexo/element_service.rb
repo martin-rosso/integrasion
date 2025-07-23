@@ -257,7 +257,9 @@ module Nexo
       last_remote = element.last_remote_version
 
       element.ne_status =
-        if external_change && local_change
+        if element.discarded?
+          :discarded
+        elsif external_change && local_change
           :conflicted
         elsif external_change
           :pending_external_sync
