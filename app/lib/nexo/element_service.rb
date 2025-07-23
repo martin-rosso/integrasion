@@ -118,19 +118,13 @@ module Nexo
         external_change = _last_pending_external_change
         local_change = _last_pending_internal_change
 
-        # FIXME: maybe this is unnecesary, because is done in _perform_sync!
-        if last_synced = element.element_versions.where(nev_status: :synced).order(:sequence).last
-          if local_change.sequence < last_synced.sequence
-            raise "there a newer synced sequence"
-          end
-
-          if external_change.etag < last_synced.etag
-            raise "there a newer synced etag"
-          end
-        end
+        # NOTE: before doing any conflict solving, a supersed check should be
+        # done, i.e.: some of the versions in conflict could be actually
+        # superseded, and should be marked accordingly
 
         remote_update = external_change.payload_updated_at
-        # FIXME: should check the version's updated_at?
+
+        # TODO: should check the version's updated_at?
         local_update = element.synchronizable.updated_at
         Nexo.logger.debug { "Remote updated at: #{remote_update}. Local updated at #{local_update}" }
         if remote_update > local_update
@@ -146,20 +140,6 @@ module Nexo
     def _perform_sync!
       external_change = _last_pending_external_change
       local_change = _last_pending_internal_change
-
-      if element.conflicted?
-        raise "WARN: this souldnt happen. conflicted element, cant perform sync"
-      end
-
-      if last_synced = _last_synced_version
-        if local_change && local_change.sequence < last_synced.sequence
-          raise "there a newer synced sequence"
-        end
-
-        if external_change && external_change.etag < last_synced.etag
-          raise "there a newer synced etag"
-        end
-      end
 
       if element.pending_local_sync?
         Nexo.logger.info("_perform_sync!: Local change: enqueuing UpdateRemoteResourceJob")
