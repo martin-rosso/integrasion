@@ -22,8 +22,10 @@ module Nexo
 
   mattr_accessor :api_jobs_throttle
   mattr_accessor :admin_controller_parent_class
+  mattr_accessor :google_webhook_url
 
   self.admin_controller_parent_class = ActionController::Base
+  self.google_webhook_url = ENV.fetch("NEXO_GOOGLE_WEBHOOK_URL", nil)
 
   # @!visibility private
   class Engine < ::Rails::Engine

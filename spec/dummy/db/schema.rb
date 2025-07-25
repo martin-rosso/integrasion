@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2025_07_21_161923) do
+ActiveRecord::Schema[7.2].define(version: 2025_07_23_172418) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -208,6 +208,22 @@ ActiveRecord::Schema[7.2].define(version: 2025_07_21_161923) do
     t.index ["integration_id"], name: "index_nexo_tokens_on_integration_id"
   end
 
+  create_table "nexo_watch_channels", force: :cascade do |t|
+    t.bigint "folder_id", null: false
+    t.integer "nwc_status", null: false
+    t.integer "touch_count", default: 0, null: false
+    t.datetime "touched_at"
+    t.string "payload"
+    t.datetime "expires_at"
+    t.string "id_channel"
+    t.string "id_resource"
+    t.string "secret_token"
+    t.string "address"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["folder_id"], name: "index_nexo_watch_channels_on_folder_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email"
     t.string "password"
@@ -222,4 +238,5 @@ ActiveRecord::Schema[7.2].define(version: 2025_07_21_161923) do
   add_foreign_key "nexo_integrations", "nexo_clients", column: "client_id"
   add_foreign_key "nexo_integrations", "users"
   add_foreign_key "nexo_tokens", "nexo_integrations", column: "integration_id"
+  add_foreign_key "nexo_watch_channels", "nexo_folders", column: "folder_id"
 end

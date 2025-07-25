@@ -66,6 +66,11 @@ module Nexo
         GoogleCalendarService.new(@folder.integration).watch_calendar(@folder)
 
         redirect_to @folder, notice: "Watching folder"
+      when "stop_watching"
+        watch_channel = @folder.watch_channels.where(nwc_status: :watching).first
+        GoogleCalendarService.new(@folder.integration).stop_watching(watch_channel)
+
+        redirect_to @folder, notice: "Stopped watching channel: #{watch_channel.to_gid}"
       else
         redirect_to @folder, alert: "Unknown action"
       end

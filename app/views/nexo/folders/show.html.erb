@@ -26,6 +26,7 @@
   <%= f.button(:operation, value: "perform_sync") { "Run perform_sync on all elements" } %>
   <%= f.button(:operation, value: "discard_folder") { "Discard folder!" } %>
   <%= f.button(:operation, value: "watch") { "watch" } %>
+  <%= f.button(:operation, value: "stop_watching") { "stop_watching" } %>
 <% end %>
 
 Token?: <%= @folder.integration.token? %>
@@ -35,4 +36,8 @@ Token?: <%= @folder.integration.token? %>
 <h4>Policies</h4>
 <pre>
 <%= JSON.pretty_generate @policies.as_json %>
+</pre>
+<h4>Watch channels</h4>
+<pre>
+<%= JSON.pretty_generate @folder.watch_channels.as_json %>
 </pre>

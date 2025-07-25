@@ -13,6 +13,7 @@
 #  created_at          :datetime         not null
 #  updated_at          :datetime         not null
 #  ne_status           :integer          not null
+#  ne_remote_status    :integer
 #
 require 'rails_helper'
 

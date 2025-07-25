@@ -19,6 +19,7 @@ module Nexo
   class Folder < ApplicationRecord
     belongs_to :integration, class_name: "Nexo::Integration"
     has_many :elements, class_name: "Nexo::Element"
+    has_many :watch_channels, class_name: "Nexo::WatchChannel"
 
     enum :nexo_protocol, calendar: 0, dummy_calendar: 1
     enum :sync_direction, sync_in_out: 0, sync_out_in: 1, sync_bidirectional: 2
