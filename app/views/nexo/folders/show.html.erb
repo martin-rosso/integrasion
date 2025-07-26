@@ -39,5 +39,5 @@ Token?: <%= @folder.integration.token? %>
 </pre>
 <h4>Watch channels</h4>
 <pre>
-<%= JSON.pretty_generate @folder.watch_channels.as_json %>
+<%= JSON.pretty_generate @folder.watch_channels.order(id: :desc).as_json %>
 </pre>

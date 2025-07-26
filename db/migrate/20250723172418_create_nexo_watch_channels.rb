@@ -18,7 +18,7 @@ class CreateNexoWatchChannels < ActiveRecord::Migration[7.2]
       # channel. Stable across different API versions.
       t.string :id_resource
 
-      t.string :secret_token
+      t.string :webhook_token
 
       t.string :address
 

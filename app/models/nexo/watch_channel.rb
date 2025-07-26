@@ -22,7 +22,10 @@ module Nexo
 
     serialize :payload, coder: JSON
 
-    encrypts :secret_token
+    # This is actually the same for all channels, and its
+    # Nexo.google_webhook_token, its redundant by now, but eventually
+    # there could be a specific token for each channel or folder.
+    encrypts :webhook_token
 
     enum :nwc_status,
       watching: 0,

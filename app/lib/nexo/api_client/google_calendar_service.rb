@@ -116,19 +116,30 @@ module Nexo
     end
 
     def watch_calendar(folder)
-      # FIXME: build channel id based on folder, so cant have duplicated channels
-      # FIXME: build secret signed token o algo
       address = Nexo.google_webhook_url
+      raise "no webhook address url" unless address.present?
 
-      calendar_webhook_token = Rails.application.credentials.dig(:google, :calendar_webhook_token)
+      webhook_token = Nexo.google_webhook_token
+      raise "no webhook token" unless webhook_token.present?
+
+      secret_token = Nexo.secret_token
+      raise "no secret_token" unless secret_token.present?
+      data = folder.to_gid.to_s
+      id_channel = OpenSSL::HMAC.hexdigest('sha256', secret_token, data)
 
       channel = Google::Apis::CalendarV3::Channel.new(
-        id: "123-321",
-        token: "the-token-312",
+        id: id_channel,
+        token: webhook_token,
         type: "web_hook",
         address:,
       )
       response = client.watch_event(folder.external_identifier, channel)
+      # response = Google::Apis::CalendarV3::Channel.new(
+      #   id: "e1e62805d1d8450d38396fe9d8df92399d91377d07e3f9e991141568cc87ca94",
+      #   resource_id: "tzPO9NflP22ZgQxNejOk9TZVCvA",
+      #   token: webhook_token,
+      #   expiration: Time.now.to_i * 1000
+      # )
       expires_at = begin
                      Time.zone.at(response.expiration / 1000)
                    rescue StandardError => e
@@ -142,7 +153,7 @@ module Nexo
         expires_at:,
         id_channel: response.id,
         id_resource: response.resource_id,
-        secret_token: response.token,
+        webhook_token: response.token,
         address:
       )
     end

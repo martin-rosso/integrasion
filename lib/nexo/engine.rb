@@ -22,7 +22,15 @@ module Nexo
 
   mattr_accessor :api_jobs_throttle
   mattr_accessor :admin_controller_parent_class
+
+  # The URL target for Google watch requests
   mattr_accessor :google_webhook_url
+
+  # The token sent by google in every watch request
+  mattr_accessor :google_webhook_token
+
+  # Used to encode Google Calendar channel ids
+  mattr_accessor :secret_token
 
   self.admin_controller_parent_class = ActionController::Base
   self.google_webhook_url = ENV.fetch("NEXO_GOOGLE_WEBHOOK_URL", nil)
