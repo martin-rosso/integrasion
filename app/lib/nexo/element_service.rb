@@ -65,6 +65,8 @@ module Nexo
 
           # synchronizable could have been destroyed
           if synchronizable.persisted?
+            fields_changed = synchronizable.saved_changes
+
             # si esto se ejecuta en paralelo con SynchronizableChangedJob? (para otro
             # element del mismo synchronizable) puede haber race conditions
             synchronizable.increment_sequence!
@@ -72,11 +74,13 @@ module Nexo
 
             ElementService.new(element_version:).update_element_version!(
               sequence: synchronizable.sequence,
+              fields_changed:,
               nev_status: :synced
             )
 
             SynchronizableChangedJob.perform_later(synchronizable, excluded_folders: [ element.folder.id ])
           else
+            # Hard deletion is not recomended
             Nexo.logger.debug("Synchronizable destroyed. Removing other elements")
             ElementService.new(element_version:).update_element_version!(
               sequence: nil,
@@ -89,7 +93,13 @@ module Nexo
         else
           Nexo.logger.info("Synchronizable not found")
           policies = PolicyService.instance.policies_for(element.folder)
-          importer_rule = policies.select { |p| p.import_payload?(element_version.payload) }.first
+          # FIXME: tomar cambios de cached good_job
+          #
+          # FIXME: hay que tomar la policy de mayor prioridad como en
+          # PolicyService#applies?
+          importer_rule = policies.select do |p|
+            p.import_payload?(element_version.payload)
+          end.first
           if importer_rule.present?
             Nexo.logger.debug("Found an importer rule")
             synchronizable = importer_rule.create_synchronizable_from_payload!(element_version.payload)

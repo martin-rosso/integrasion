@@ -43,6 +43,7 @@ module Nexo
       ignored_by_deletion: 5
 
     serialize :payload, coder: JSON
+    serialize :fields_changed, coder: JSON
 
     validates :origin, presence: true
 
